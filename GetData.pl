@@ -8,6 +8,7 @@
 require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
 require "./source/lib/NumCode.pm";
+require "./source/ProperName.pm";
 require "./source/Character.pm";
 
 # パッケージの使用宣言    ---------------#
@@ -40,6 +41,7 @@ sub Main{
     my @objects;        #探索するデータ項目の登録
     my %common_datas;
     
+    push(@objects, ProperName->new()); # 固有名詞読み込み・保持
     if (ConstData::EXE_CHARA) {push(@objects, Character->new());} #キャラページ読み込み
 
     &Init(\@objects, $result_no, $generate_no, \%common_datas);

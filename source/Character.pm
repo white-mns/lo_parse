@@ -19,6 +19,7 @@ require "./source/lib/time.pm";
 require "./source/lib/NumCode.pm";
 
 require "./source/chara/Name.pm";
+require "./source/chara/Profile.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -50,7 +51,8 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)           { $self->{DataHandlers}{Name}           = Name->new();}
+    if (ConstData::EXE_CHARA_NAME)    { $self->{DataHandlers}{Name}    = Name->new();}
+    if (ConstData::EXE_CHARA_PROFILE) { $self->{DataHandlers}{Profile} = Profile->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -116,9 +118,15 @@ sub ParsePage{
     $tree->parse($content);
 
     my $span_in3_nodes = &GetNode::GetNode_Tag_Id("span","in3", \$tree);
+    my $table_ma_nodes     = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
+
+    if(!scalar(@$span_in3_nodes) || !scalar(@$table_ma_nodes)){next;}; # 未継続ロストなどシステムメッセージのみの結果を除外
+
+    my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_nodes[0]);
 
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
+    if (exists($self->{DataHandlers}{Profile})) {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
 
     $tree = $tree->delete;
 }
