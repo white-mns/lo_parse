@@ -24,4 +24,5 @@ use warnings;
     use constant EXE_CHARA => 1;
         use constant EXE_CHARA_NAME    => 1;
         use constant EXE_CHARA_PROFILE => 1;
+        use constant EXE_CHARA_SUBJECT => 1;
 1;

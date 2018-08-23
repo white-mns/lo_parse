@@ -62,6 +62,10 @@ sub Main {
             $upload->DeleteSameResult('pgws', $result_no, $generate_no);
             $upload->Upload("./output/chara/pgws_" . $result_no . "_" . $generate_no . ".csv", 'pgws');
         }
+        if(ConstData::EXE_CHARA_SUBJECT){
+            $upload->DeleteSameResult('subjects', $result_no, $generate_no);
+            $upload->Upload("./output/chara/subject_" . $result_no . "_" . $generate_no . ".csv", 'subjects');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
