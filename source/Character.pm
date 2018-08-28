@@ -21,6 +21,7 @@ require "./source/lib/NumCode.pm";
 require "./source/chara/Name.pm";
 require "./source/chara/Profile.pm";
 require "./source/chara/Subject.pm";
+require "./source/chara/Parameter.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -52,9 +53,10 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)    { $self->{DataHandlers}{Name}    = Name->new();}
-    if (ConstData::EXE_CHARA_PROFILE) { $self->{DataHandlers}{Profile} = Profile->new();}
-    if (ConstData::EXE_CHARA_SUBJECT) { $self->{DataHandlers}{Subject} = Subject->new();}
+    if (ConstData::EXE_CHARA_NAME)      { $self->{DataHandlers}{Name}      = Name->new();}
+    if (ConstData::EXE_CHARA_PROFILE)   { $self->{DataHandlers}{Profile}   = Profile->new();}
+    if (ConstData::EXE_CHARA_SUBJECT)   { $self->{DataHandlers}{Subject}   = Subject->new();}
+    if (ConstData::EXE_CHARA_PARAMETER) { $self->{DataHandlers}{Parameter} = Parameter->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -128,8 +130,9 @@ sub ParsePage{
 
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
-    if (exists($self->{DataHandlers}{Profile})) {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
-    if (exists($self->{DataHandlers}{Subject})) {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{Profile}))   {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
+    if (exists($self->{DataHandlers}{Subject}))   {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{Parameter})) {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
 
     $tree = $tree->delete;
 }

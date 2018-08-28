@@ -66,6 +66,18 @@ sub Main {
             $upload->DeleteSameResult('subjects', $result_no, $generate_no);
             $upload->Upload("./output/chara/subject_" . $result_no . "_" . $generate_no . ".csv", 'subjects');
         }
+        if(ConstData::EXE_CHARA_PARAMETER_FIGHT){
+            $upload->DeleteSameResult('parameter_fights', $result_no, $generate_no);
+            $upload->Upload("./output/chara/parameter_fight_" . $result_no . "_" . $generate_no . ".csv", 'parameter_fights');
+        }
+        if(ConstData::EXE_CHARA_PARAMETER_CONTROL){
+            $upload->DeleteSameResult('parameter_controls', $result_no, $generate_no);
+            $upload->Upload("./output/chara/parameter_control_" . $result_no . "_" . $generate_no . ".csv", 'parameter_controls');
+        }
+        if(ConstData::EXE_CHARA_PARAMETER_PROGRESS){
+            $upload->DeleteSameResult('parameter_progresses', $result_no, $generate_no);
+            $upload->Upload("./output/chara/parameter_progress_" . $result_no . "_" . $generate_no . ".csv", 'parameter_progresses');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
