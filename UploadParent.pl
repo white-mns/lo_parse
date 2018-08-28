@@ -78,6 +78,10 @@ sub Main {
             $upload->DeleteSameResult('parameter_progresses', $result_no, $generate_no);
             $upload->Upload("./output/chara/parameter_progress_" . $result_no . "_" . $generate_no . ".csv", 'parameter_progresses');
         }
+        if(ConstData::EXE_CHARA_CHARACTERISTIC){
+            $upload->DeleteSameResult('characteristics', $result_no, $generate_no);
+            $upload->Upload("./output/chara/characteristic_" . $result_no . "_" . $generate_no . ".csv", 'characteristics');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
