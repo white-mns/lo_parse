@@ -38,7 +38,7 @@ if [ -f ./data/orig/result${LZH_NAME}.lzh ]; then
 fi
 
 perl ./GetData.pl $1 $2
-#perl ./UploadParent.pl $1 $2
+perl ./UploadParent.pl $1 $2
 
 # UTFファイルを圧縮
 if [ -d ./data/utf/result${LZH_NAME} ]; then
