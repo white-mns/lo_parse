@@ -82,6 +82,10 @@ sub Main {
             $upload->DeleteSameResult('characteristics', $result_no, $generate_no);
             $upload->Upload("./output/chara/characteristic_" . $result_no . "_" . $generate_no . ".csv", 'characteristics');
         }
+        if(ConstData::EXE_CHARA_ITEM){
+            $upload->DeleteSameResult('items', $result_no, $generate_no);
+            $upload->Upload("./output/chara/item_" . $result_no . "_" . $generate_no . ".csv", 'items');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";

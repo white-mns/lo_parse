@@ -27,6 +27,7 @@ use warnings;
         use constant EXE_CHARA_PARAMETER_FIGHT    => 0;
         use constant EXE_CHARA_PARAMETER_CONTROL  => 0;
         use constant EXE_CHARA_PARAMETER_PROGRESS => 0;
-        use constant EXE_CHARA_CHARACTERISTIC     => 1;
+        use constant EXE_CHARA_CHARACTERISTIC     => 0;
+        use constant EXE_CHARA_ITEM               => 1;
 
 1;
