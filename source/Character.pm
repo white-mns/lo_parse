@@ -24,6 +24,7 @@ require "./source/chara/Subject.pm";
 require "./source/chara/Parameter.pm";
 require "./source/chara/Characteristic.pm";
 require "./source/chara/Item.pm";
+require "./source/chara/Card.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -61,6 +62,7 @@ sub Init{
     if (ConstData::EXE_CHARA_PARAMETER)      { $self->{DataHandlers}{Parameter}      = Parameter->new();}
     if (ConstData::EXE_CHARA_CHARACTERISTIC) { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
     if (ConstData::EXE_CHARA_ITEM)           { $self->{DataHandlers}{Item}           = Item->new();}
+    if (ConstData::EXE_CHARA_CARD)           { $self->{DataHandlers}{Card}        = Card->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -135,6 +137,7 @@ sub ParsePage{
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
     if (exists($self->{DataHandlers}{Item}) && $$table_ma_nodes[1]) {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{Card}) && $$table_ma_nodes[2]) {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_nodes[2])};
     if (exists($self->{DataHandlers}{Profile}))        {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
     if (exists($self->{DataHandlers}{Subject}))        {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Parameter}))      {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};

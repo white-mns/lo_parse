@@ -19,6 +19,7 @@ use warnings;
     
     use constant EXE_DATA        => 1;
         use constant EXE_DATA_PROPER_NAME => 1;
+        use constant EXE_DATA_CARD_DATA   => 1;
     use constant EXE_CHARA       => 1;
         use constant EXE_CHARA_NAME               => 1;
         use constant EXE_CHARA_PROFILE            => 0;
@@ -28,6 +29,7 @@ use warnings;
         use constant EXE_CHARA_PARAMETER_CONTROL  => 0;
         use constant EXE_CHARA_PARAMETER_PROGRESS => 0;
         use constant EXE_CHARA_CHARACTERISTIC     => 0;
-        use constant EXE_CHARA_ITEM               => 1;
+        use constant EXE_CHARA_ITEM               => 0;
+        use constant EXE_CHARA_CARD               => 1;
 
 1;

@@ -28,4 +28,5 @@ use warnings;
         use constant EXE_CHARA_PARAMETER      => 1;
         use constant EXE_CHARA_CHARACTERISTIC => 1;
         use constant EXE_CHARA_ITEM           => 1;
+        use constant EXE_CHARA_CARD           => 1;
 1;
