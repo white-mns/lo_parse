@@ -109,10 +109,11 @@ sub GetProfileData{
             $nickname    = $right_text;
 
         }elsif($td_text eq "口調"){
-            $right_text =~ /(.+?) \/ (.+?) \/ (.+?)$/;
-            $tone = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
-            $first  = $2;
-            $second = $3;
+            if ($right_text =~ /(.+?) \/ (.+?) \/ (.+?)$/) {
+                $tone = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
+                $first  = $2;
+                $second = $3;
+            }
 
         }elsif($td_text eq "Main"){
             my $pgws_id = $self->{CommonDatas}{ProperName}->GetOrAddId($right_text);
