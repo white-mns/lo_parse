@@ -62,7 +62,7 @@ sub Init{
     if (ConstData::EXE_CHARA_PARAMETER)      { $self->{DataHandlers}{Parameter}      = Parameter->new();}
     if (ConstData::EXE_CHARA_CHARACTERISTIC) { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
     if (ConstData::EXE_CHARA_ITEM)           { $self->{DataHandlers}{Item}           = Item->new();}
-    if (ConstData::EXE_CHARA_CARD)           { $self->{DataHandlers}{Card}        = Card->new();}
+    if (ConstData::EXE_CHARA_CARD)           { $self->{DataHandlers}{Card}           = Card->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -128,35 +128,20 @@ sub ParsePage{
     $tree->parse($content);
 
     my $span_in3_nodes = &GetNode::GetNode_Tag_Id("span","in3", \$tree);
-    my $table_ma_nodes     = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
+    my $table_ma_nodes = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
 
     if(!scalar(@$span_in3_nodes) || !scalar(@$table_ma_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
 
-    my %table_ma_node_hash ;
-    foreach my $table_ma_node (@$table_ma_nodes) {
-        my $td_nodes = &GetNode::GetNode_Tag("td", \$table_ma_node);
-        if (scalar(@$td_nodes) == 0) { return;}
-
-        my $td0_text = $$td_nodes[0]->as_text;
-        if($td0_text =~ "Lv"){
-            $table_ma_node_hash{"Profile"} = $table_ma_node;
-
-        }elsif($td0_text =~ "Ino"){
-            $table_ma_node_hash{"Item"} = $table_ma_node;
-
-        }elsif($td0_text =~ "Sno"){
-            $table_ma_node_hash{"Card"} = $table_ma_node;
-
-        }
-
-    }
-    my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$table_ma_node_hash{"Profile"});
+    my $table_ma_node_hash = {};
+    $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
+    
+    my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_node_hash{"Profile"});
 
 
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
-    if (exists($self->{DataHandlers}{Item}) && $table_ma_node_hash{"Item"}) {$self->{DataHandlers}{Item}->GetData($e_no, $table_ma_node_hash{"Item"})};
-    if (exists($self->{DataHandlers}{Card}) && $table_ma_node_hash{"Card"}) {$self->{DataHandlers}{Card}->GetData($e_no, $table_ma_node_hash{"Card"})};
+    if (exists($self->{DataHandlers}{Item}) && $$table_ma_node_hash{"Item"}) {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
+    if (exists($self->{DataHandlers}{Card}) && $$table_ma_node_hash{"Card"}) {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
     if (exists($self->{DataHandlers}{Profile}))        {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
     if (exists($self->{DataHandlers}{Subject}))        {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Parameter}))      {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
@@ -164,6 +149,32 @@ sub ParsePage{
 
     $tree = $tree->delete;
 }
+
+
+sub DivideTableMaNodes{
+    my $self = shift;
+    my $table_ma_nodes     = shift;
+    my $table_ma_node_hash = shift;
+
+    foreach my $table_ma_node (@$table_ma_nodes) {
+        my $td_nodes = &GetNode::GetNode_Tag("td", \$table_ma_node);
+        if (scalar(@$td_nodes) == 0) { return;}
+
+        my $td0_text = $$td_nodes[0]->as_text;
+        if($td0_text =~ "Lv"){
+            $$table_ma_node_hash{"Profile"} = $table_ma_node;
+
+        }elsif($td0_text =~ "Ino"){
+            $$table_ma_node_hash{"Item"} = $table_ma_node;
+
+        }elsif($td0_text =~ "Sno"){
+            $$table_ma_node_hash{"Card"} = $table_ma_node;
+
+        }
+
+    }
+}
+
 
 #-----------------------------------#
 #       該当ファイル数を取得
