@@ -88,7 +88,6 @@ sub GetData{
 sub GetItemData{
     my $self  = shift;
     my $table_in_node = shift;
-    my ($item_no, $name, $equip, $kind, $effect, $lv, $potency, $potency_str, $precision) = (0, "", 0, 0, 0, -1, 0, "", 0);
     
     # trの抽出
     my $tr_nodes = &GetNode::GetNode_Tag("tr",\$table_in_node);
@@ -96,6 +95,7 @@ sub GetItemData{
  
     #tdの抜出
     foreach my $tr_node (@$tr_nodes){
+        my ($item_no, $name, $equip, $kind, $effect, $lv, $potency, $potency_str, $precision) = (0, "", 0, 0, 0, -1, 0, "", 0);
         my $td_nodes = &GetNode::GetNode_Tag("td",\$tr_node);
         if(scalar(@$td_nodes) < 2){next;};
         
