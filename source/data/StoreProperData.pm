@@ -92,8 +92,9 @@ sub ReadLastData(){
 #    返り値：識別番号
 #-----------------------------------#
 sub GetOrAddId{
-    my $self = shift;
-    my $data = shift;
+    my $self      = shift;
+    my $is_update = shift;
+    my $data      = shift;
     my $name = $$data[0];
 
     
@@ -107,8 +108,10 @@ sub GetOrAddId{
 
     }elsif($self->CheckNeedUpdate($data)){
         # 新しい固有情報を更新
-        my $id = $self->{Datas}{NameMapping}->GetData($name); 
-        $self->_SetData($id, $data);
+        my $id = $self->{Datas}{NameMapping}->GetData($name);
+        if ($is_update){
+            $self->_SetData($id, $data);
+        }
 
         return $id;
     }
