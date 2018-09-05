@@ -25,6 +25,7 @@ require "./source/chara/Parameter.pm";
 require "./source/chara/Characteristic.pm";
 require "./source/chara/Item.pm";
 require "./source/chara/Card.pm";
+require "./source/chara/GetCard.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -63,6 +64,7 @@ sub Init{
     if (ConstData::EXE_CHARA_CHARACTERISTIC) { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
     if (ConstData::EXE_CHARA_ITEM)           { $self->{DataHandlers}{Item}           = Item->new();}
     if (ConstData::EXE_CHARA_CARD)           { $self->{DataHandlers}{Card}           = Card->new();}
+    if (ConstData::EXE_CHARA_GETCARD)        { $self->{DataHandlers}{GetCard}        = GetCard->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -136,7 +138,8 @@ sub ParsePage{
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
     
     my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_node_hash{"Profile"});
-
+    my $b_re2_nodes = &GetNode::GetNode_Tag_Id("b","re2", \$tree);
+    
 
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
@@ -146,11 +149,17 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Subject}))        {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Parameter}))      {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Characteristic})) {$self->{DataHandlers}{Characteristic}->GetData($e_no, $$table_in_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{GetCard}))        {$self->{DataHandlers}{GetCard}->GetData($e_no, $b_re2_nodes)};
 
     $tree = $tree->delete;
 }
 
-
+#-----------------------------------#
+#       maクラスのtableノードを分類
+#-----------------------------------#
+#    引数｜maクラスのtableノード
+#    　　　分配用ハッシュ配列
+##-----------------------------------#
 sub DivideTableMaNodes{
     my $self = shift;
     my $table_ma_nodes     = shift;
@@ -169,9 +178,7 @@ sub DivideTableMaNodes{
 
         }elsif($td0_text =~ "Sno"){
             $$table_ma_node_hash{"Card"} = $table_ma_node;
-
         }
-
     }
 }
 
