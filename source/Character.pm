@@ -26,6 +26,7 @@ require "./source/chara/Characteristic.pm";
 require "./source/chara/Item.pm";
 require "./source/chara/Card.pm";
 require "./source/chara/GetCard.pm";
+require "./source/chara/DropMinSubject.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -57,14 +58,15 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)           { $self->{DataHandlers}{Name}           = Name->new();}
-    if (ConstData::EXE_CHARA_PROFILE)        { $self->{DataHandlers}{Profile}        = Profile->new();}
-    if (ConstData::EXE_CHARA_SUBJECT)        { $self->{DataHandlers}{Subject}        = Subject->new();}
-    if (ConstData::EXE_CHARA_PARAMETER)      { $self->{DataHandlers}{Parameter}      = Parameter->new();}
-    if (ConstData::EXE_CHARA_CHARACTERISTIC) { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
-    if (ConstData::EXE_CHARA_ITEM)           { $self->{DataHandlers}{Item}           = Item->new();}
-    if (ConstData::EXE_CHARA_CARD)           { $self->{DataHandlers}{Card}           = Card->new();}
-    if (ConstData::EXE_CHARA_GETCARD)        { $self->{DataHandlers}{GetCard}        = GetCard->new();}
+    if (ConstData::EXE_CHARA_NAME)             { $self->{DataHandlers}{Name}           = Name->new();}
+    if (ConstData::EXE_CHARA_PROFILE)          { $self->{DataHandlers}{Profile}        = Profile->new();}
+    if (ConstData::EXE_CHARA_SUBJECT)          { $self->{DataHandlers}{Subject}        = Subject->new();}
+    if (ConstData::EXE_CHARA_PARAMETER)        { $self->{DataHandlers}{Parameter}      = Parameter->new();}
+    if (ConstData::EXE_CHARA_CHARACTERISTIC)   { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
+    if (ConstData::EXE_CHARA_ITEM)             { $self->{DataHandlers}{Item}           = Item->new();}
+    if (ConstData::EXE_CHARA_CARD)             { $self->{DataHandlers}{Card}           = Card->new();}
+    if (ConstData::EXE_CHARA_GETCARD)          { $self->{DataHandlers}{GetCard}        = GetCard->new();}
+    if (ConstData::EXE_CHARA_DROP_MIN_SUBJECT) { $self->{DataHandlers}{DropSubject}    = DropMinSubject->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -150,6 +152,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Parameter}))      {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Characteristic})) {$self->{DataHandlers}{Characteristic}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{GetCard}))        {$self->{DataHandlers}{GetCard}->GetData($e_no, $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{DropSubject}))    {$self->{DataHandlers}{DropSubject}->GetData($e_no, $$table_in_ma_nodes[1], $b_re2_nodes)};
 
     $tree = $tree->delete;
 }

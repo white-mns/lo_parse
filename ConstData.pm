@@ -22,12 +22,13 @@ use warnings;
         use constant FLAGMENT_END      => 1;    #部分探索終了
     
     use constant EXE_CHARA => 1;
-        use constant EXE_CHARA_NAME           => 1;
-        use constant EXE_CHARA_PROFILE        => 1;
-        use constant EXE_CHARA_SUBJECT        => 1;
-        use constant EXE_CHARA_PARAMETER      => 1;
-        use constant EXE_CHARA_CHARACTERISTIC => 1;
-        use constant EXE_CHARA_ITEM           => 1;
-        use constant EXE_CHARA_CARD           => 1;
-        use constant EXE_CHARA_GETCARD        => 1;
+        use constant EXE_CHARA_NAME             => 1;
+        use constant EXE_CHARA_PROFILE          => 1;
+        use constant EXE_CHARA_SUBJECT          => 1;
+        use constant EXE_CHARA_PARAMETER        => 1;
+        use constant EXE_CHARA_CHARACTERISTIC   => 1;
+        use constant EXE_CHARA_ITEM             => 1;
+        use constant EXE_CHARA_CARD             => 1;
+        use constant EXE_CHARA_GETCARD          => 1;
+        use constant EXE_CHARA_DROP_MIN_SUBJECT => 1;
 1;

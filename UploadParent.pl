@@ -98,6 +98,10 @@ sub Main {
             $upload->DeleteSameResult('get_cards', $result_no, $generate_no);
             $upload->Upload("./output/chara/get_card_" . $result_no . "_" . $generate_no . ".csv", 'get_cards');
         }
+        if(ConstData::EXE_CHARA_DROP_MIN_SUBJECT){
+            $upload->DeleteSameResult('drop_min_subjects', $result_no, $generate_no);
+            $upload->Upload("./output/chara/drop_min_subject_" . $result_no . "_" . $generate_no . ".csv", 'drop_min_subjects');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
