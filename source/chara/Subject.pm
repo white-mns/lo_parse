@@ -37,30 +37,8 @@ sub Init{
     my $self = shift;
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
-    $self->{SubjectValue}{"斬術"} = 0;
-    $self->{SubjectValue}{"突術"} = 0;
-    $self->{SubjectValue}{"打術"} = 0;
-    $self->{SubjectValue}{"射撃"} = 0;
-    $self->{SubjectValue}{"護衛"} = 0;
-    $self->{SubjectValue}{"舞踊"} = 0;
-    $self->{SubjectValue}{"盗術"} = 0;
-    $self->{SubjectValue}{"料理"} = 0;
-    $self->{SubjectValue}{"工芸"} = 0;
-    $self->{SubjectValue}{"機動"} = 0;
-    $self->{SubjectValue}{"化学"} = 0;
-    $self->{SubjectValue}{"算術"} = 0;
-    $self->{SubjectValue}{"火術"} = 0;
-    $self->{SubjectValue}{"神術"} = 0;
-    $self->{SubjectValue}{"命術"} = 0;
-    $self->{SubjectValue}{"冥術"} = 0;
-    $self->{SubjectValue}{"地学"} = 0;
-    $self->{SubjectValue}{"天文"} = 0;
-    $self->{SubjectValue}{"風水"} = 0;
-    $self->{SubjectValue}{"心理"} = 0;
-    $self->{SubjectValue}{"音楽"} = 0;
-    $self->{SubjectValue}{"呪術"} = 0;
-    $self->{SubjectValue}{"幻術"} = 0;
-    $self->{SubjectValue}{"奇術"} = 0;
+    $self->{SubjectNames} = ["斬術", "突術", "打術", "射撃", "護衛", "舞踊", "盗術", "料理", "工芸", "機動", "化学", "算術", "火術", "神術", "命術", "冥術", "地学", "天文", "風水", "心理", "音楽", "呪術", "幻術", "奇術"];
+    $self->ResetSubjectValue();
 
     #初期化
     $self->{Datas}{Data} = StoreData->new();
@@ -116,10 +94,25 @@ sub GetData{
     
     $self->{ENo} = $e_no;
 
+    $self->ResetSubjectValue();
     $self->GetSubjectData($table_in_ma_node);
     
     return;
 }
+
+#-----------------------------------#
+#    データ取得
+#------------------------------------
+#    引数｜e_no,名前データノード
+#-----------------------------------#
+sub ResetSubjectValue{
+    my $self    = shift;
+
+    foreach my $subject_name (@{$self->{SubjectNames}}) {
+        $self->{SubjectValue}{$subject_name} = 0;
+    }
+}
+
 #-----------------------------------#
 #    学科データ取得
 #------------------------------------
@@ -137,40 +130,19 @@ sub GetSubjectData{
         my $right = $td_node->right;
         my $right_text = ($right && $right =~ /HASH/) ? $right->as_text : $right;
 
-        foreach my $subject_name(keys %{$self->{SubjectValue}}) {
+        foreach my $subject_name (@{$self->{SubjectNames}}) {
             if($td_text eq $subject_name){
-                $self->{SubjectValue}{$subject_name}    = $right_text;
+                $self->{SubjectValue}{$subject_name} = $right_text;
                 last;
             }
         }
     }
 
-    my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo},
-                $self->{SubjectValue}{"斬術"},
-                $self->{SubjectValue}{"突術"},
-                $self->{SubjectValue}{"打術"},
-                $self->{SubjectValue}{"射撃"},
-                $self->{SubjectValue}{"護衛"},
-                $self->{SubjectValue}{"舞踊"},
-                $self->{SubjectValue}{"盗術"},
-                $self->{SubjectValue}{"料理"},
-                $self->{SubjectValue}{"工芸"},
-                $self->{SubjectValue}{"機動"},
-                $self->{SubjectValue}{"化学"},
-                $self->{SubjectValue}{"算術"},
-                $self->{SubjectValue}{"火術"},
-                $self->{SubjectValue}{"神術"},
-                $self->{SubjectValue}{"命術"},
-                $self->{SubjectValue}{"冥術"},
-                $self->{SubjectValue}{"地学"},
-                $self->{SubjectValue}{"天文"},
-                $self->{SubjectValue}{"風水"},
-                $self->{SubjectValue}{"心理"},
-                $self->{SubjectValue}{"音楽"},
-                $self->{SubjectValue}{"呪術"},
-                $self->{SubjectValue}{"幻術"},
-                $self->{SubjectValue}{"奇術"},
-    );
+    my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo});
+
+    foreach my $subject_name (@{$self->{SubjectNames}}) {
+        push (@datas, $self->{SubjectValue}{$subject_name});
+    }
 
     $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, @datas));
 
