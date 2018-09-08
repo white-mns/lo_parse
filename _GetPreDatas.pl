@@ -1,26 +1,20 @@
 #===================================================================
-#        模擬戦結果ファイル抽出スクリプト本体
+#        模擬戦結果ファイル抽出スクリプト
 #-------------------------------------------------------------------
-#            (C) 2016 @white_mns
+#            (C) 2018 @white_mns
 #===================================================================
 
 # モジュール呼び出し    ---------------#
 require "./source/lib/IO.pm";
 require "./source/lib/time.pm";
 require "./source/lib/NumCode.pm";
-require "./source/Character.pm";
-require "./source/Battle.pm";
-
 
 # パッケージの使用宣言    ---------------#
 use strict;
 use warnings;
+
 use HTML::TreeBuilder;
-require LWP::UserAgent;
-require LWP::Simple;
-use HTTP::Request;
-use HTTP::Response;
-use File::Spec;
+use source::lib::GetNode;
 
 # 変数の初期化    ---------------#
 
@@ -43,63 +37,108 @@ $time_checker = undef;
 #        main
 #-----------------------------------#
 sub Main{
-    my $resultNum = $ARGV[0];
-    my $generateNum = $ARGV[1];
+    my $result_no   = $ARGV[0];
+    my $generate_no = $ARGV[1];
 
-	#結果の読み込み
-	my $content = "";
-	$content = AccessOriginalData("http://ykamiya.sakura.ne.jp/result/result_pre/");
+    &Execute($result_no,$generate_no)
+}
 
-	mkdir("./data/orig/result" . $resultNum . "_" . $generateNum, 0755);
-	mkdir("./data/orig/result" . $resultNum . "_" . $generateNum . "/result_pre", 0755);
+#-----------------------------------#
+#    詳細データファイルを探索
+#-----------------------------------#
+#    
+#-----------------------------------#
+sub Execute{
+    my $result_no   = $ARGV[0];
+    my $generate_no = $ARGV[1];
 
-	#スクレイピング準備
-	my $tree = HTML::TreeBuilder->new;
-	$tree->parse($content);
-	
-    my $link_nodes	= &GetNode::GetNode_Tag("a", \$tree);	# スキルノード取得
-    foreach my $link_node (@$link_nodes){
-        my $text = $link_node->as_text;
-        if($text !~ /Pno(.+)\.html/){next;}
-        my $battle_page = $1;
+    print "read files...\n";
 
-        print $battle_page . "\n";
+    my $start = 1;
+    my $end   = 0;
+    my $directory = './data/orig/result' . $result_no;
+    #結果全解析
+    $end = GetFileNo($directory."/result_chara","result_Eno");
 
-	    system "wget -P ./data/orig/result" . $resultNum . "_" . $generateNum . " http://ykamiya.sakura.ne.jp/result/result_pre/result_Pno" . $battle_page . ".html";
-        sleep 5; 	#負荷軽減用
+    print "$start to $end\n";
+
+    for (my $e_no=$start; $e_no<=$end; $e_no++) {
+        if ($e_no % 10 == 0) {print $e_no . "\n"};
+
+        ParsePage($directory, $directory."/result_chara/result_Eno".$e_no.".html",$e_no);
     }
+    
+    return ;
 }
 
 #-----------------------------------#
-#	本家ページの読み込み
+#       ファイルを解析
 #-----------------------------------#
-#	引数｜
-#-----------------------------------#
-sub AccessOriginalData{
-	my $address	= shift;
-	
-	my $content = &HTTPAccess($address);
-	return $content;
-}
-#-----------------------------------#
-#	HTTPアクセス
-#-----------------------------------#
-#	引数｜URL
-#-----------------------------------#
-sub HTTPAccess{
-	my ($URL) = @_; # アクセスする URL
-	
-	my $ua = new LWP::UserAgent;
-	$ua->agent('Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)'); # 任意
-	$ua->timeout(60); # 任意
-	
-	#学内プロキシ
-	#my $http_proxy = "http://172.16.1.1:3128/";
-	#$ua->proxy([qw(http https)], $http_proxy);
+#    引数｜ファイル名
+#    　　　ENo
+##-----------------------------------#
+sub ParsePage{
+    my $directory = shift;
+    my $file_name = shift;
+    my $e_no      = shift;
 
-    print $URL . "\n";    
-	my $req = HTTP::Request->new('GET' => $URL);
-	my $res = $ua->request($req);
-	my $content = $res->content;
-	return $content;
+    #結果の読み込み
+    my $content = "";
+    $content = &IO::FileRead($file_name);
+
+    if (!$content) { return;}
+
+    $content = &NumCode::EncodeEscape($content);
+        
+    #スクレイピング準備
+    my $tree = HTML::TreeBuilder->new;
+    $tree->parse($content);
+
+    my $table_ma_nodes = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
+
+    if(!scalar(@$table_ma_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
+    
+    my $a_nodes = &GetNode::GetNode_Tag("a", \$$table_ma_nodes[0]);
+
+    # リンクを元に模擬戦ファイルの取得
+    foreach my $a_node (@$a_nodes) {
+        if ($a_node->as_text eq "VS") {
+            my $pre_file_name = $a_node->attr("href");
+            $pre_file_name = substr($pre_file_name, 2);
+
+            for (my $i=0;$i<2;$i++) {
+                if ( -s $directory . $pre_file_name) { # 対戦相手の左側ENoと右側Enoで同じ模擬戦ファイルにアクセスが発生するため先に判定
+                    last;
+                }
+
+                system "wget -O "  . $directory . $pre_file_name . " http://ykamiya.ciao.jp/result" . $pre_file_name;
+
+                sleep 2; 	#負荷軽減用
+            }
+        }
+    }
+
+    $tree = $tree->delete;
 }
+
+#-----------------------------------#
+#       該当ファイル数を取得
+#-----------------------------------#
+#    引数｜ディレクトリ名
+#    　　　ファイル接頭辞
+##-----------------------------------#
+sub GetFileNo{
+    my $directory   = shift;
+    my $prefix    = shift;
+
+    #ファイル名リストを取得
+    my @fileList = grep { -f } glob("$directory/$prefix*.html");
+
+    my $max= 0;
+    foreach (@fileList) {
+        $_ =~ /$prefix(\d+).html/;
+        if ($max < $1) {$max = $1;}
+    }
+    return $max
+}
+
