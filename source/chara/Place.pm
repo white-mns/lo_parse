@@ -85,7 +85,6 @@ sub GetPlaceData{
     my $b_re2_nodes = shift;
     my ($invation_col, $invation_lv, $return_col, $return_lv) = ("", -1, "", -1);
     
-    #tdの抜出
     foreach my $b_re2_node (@$b_re2_nodes) {
         my $b_re2_text = $b_re2_node->as_text;
         
