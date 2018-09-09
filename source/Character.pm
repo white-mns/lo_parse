@@ -137,8 +137,8 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $span_in3_nodes = &GetNode::GetNode_Tag_Id("span","in3", \$tree);
-    my $table_ma_nodes = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
+    my $span_in3_nodes = &GetNode::GetNode_Tag_Attr("span", "id", "in3", \$tree);
+    my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma", \$tree);
 
     if(!scalar(@$span_in3_nodes) || !scalar(@$table_ma_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
 
@@ -146,9 +146,9 @@ sub ParsePage{
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
     
     my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_node_hash{"Profile"});
-    my $b_re2_nodes = &GetNode::GetNode_Tag_Id("b","re2", \$tree);
+    my $b_re2_nodes = &GetNode::GetNode_Tag_Attr("b", "id", "re2", \$tree);
     my $div_heading_nodes = &GetNode::GetNode_Tag_Attr("div", "class", "heading", \$tree);
-    my $table_width345_nodes    = &GetNode::GetNode_Tag_Width("table", "345", \$tree);
+    my $table_width345_nodes    = &GetNode::GetNode_Tag_Attr("table", "width", "345", \$tree);
     
 
     # データリスト取得
