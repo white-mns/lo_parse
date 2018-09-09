@@ -28,6 +28,7 @@ require "./source/chara/Card.pm";
 require "./source/chara/Facility.pm";
 require "./source/chara/GetCard.pm";
 require "./source/chara/DropMinSubject.pm";
+require "./source/chara/Place.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -69,6 +70,7 @@ sub Init{
     if (ConstData::EXE_CHARA_FACILITY)         { $self->{DataHandlers}{Facility}       = Facility->new();}
     if (ConstData::EXE_CHARA_GETCARD)          { $self->{DataHandlers}{GetCard}        = GetCard->new();}
     if (ConstData::EXE_CHARA_DROP_MIN_SUBJECT) { $self->{DataHandlers}{DropSubject}    = DropMinSubject->new();}
+    if(ConstData::EXE_CHARA_PLACE)             { $self->{DataHandlers}{Place}          = Place->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -156,6 +158,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Characteristic})) {$self->{DataHandlers}{Characteristic}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{GetCard}))        {$self->{DataHandlers}{GetCard}->GetData($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{DropSubject}))    {$self->{DataHandlers}{DropSubject}->GetData($e_no, $$table_in_ma_nodes[1], $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{Place}))          {$self->{DataHandlers}{Place}->GetData($e_no, $b_re2_nodes)};
 
     $tree = $tree->delete;
 }

@@ -106,6 +106,10 @@ sub Main {
             $upload->DeleteSameResult('drop_min_subjects', $result_no, $generate_no);
             $upload->Upload("./output/chara/drop_min_subject_" . $result_no . "_" . $generate_no . ".csv", 'drop_min_subjects');
         }
+        if(ConstData::EXE_CHARA_PLACE){
+            $upload->DeleteSameResult('places', $result_no, $generate_no);
+            $upload->Upload("./output/chara/place_" . $result_no . "_" . $generate_no . ".csv", 'places');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
