@@ -83,7 +83,6 @@ sub GetGetCardData{
     my $self  = shift;
     my $b_re2_nodes = shift;
     
-    #tdの抜出
     foreach my $b_re2_node (@$b_re2_nodes){
 
         my $b_re2_text = $b_re2_node->as_text;
