@@ -110,6 +110,10 @@ sub Main {
             $upload->DeleteSameResult('places', $result_no, $generate_no);
             $upload->Upload("./output/chara/place_" . $result_no . "_" . $generate_no . ".csv", 'places');
         }
+        if(ConstData::EXE_CHARA_DEVELOPMENT_RESULT){
+            $upload->DeleteSameResult('development_results', $result_no, $generate_no);
+            $upload->Upload("./output/chara/development_result_" . $result_no . "_" . $generate_no . ".csv", 'development_results');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";

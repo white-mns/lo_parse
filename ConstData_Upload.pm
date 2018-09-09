@@ -35,5 +35,6 @@ use warnings;
         use constant EXE_CHARA_GETCARD            => 1;
         use constant EXE_CHARA_DROP_MIN_SUBJECT   => 1;
         use constant EXE_CHARA_PLACE              => 1;
+        use constant EXE_CHARA_DEVELOPMENT_RESULT => 1;
 
 1;
