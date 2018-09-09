@@ -94,6 +94,10 @@ sub Main {
             $upload->DeleteSameResult('cards', $result_no, $generate_no);
             $upload->Upload("./output/chara/card_" . $result_no . "_" . $generate_no . ".csv", 'cards');
         }
+        if(ConstData::EXE_CHARA_FACILITY){
+            $upload->DeleteSameResult('facilities', $result_no, $generate_no);
+            $upload->Upload("./output/chara/facility_" . $result_no . "_" . $generate_no . ".csv", 'facilities');
+        }
         if(ConstData::EXE_CHARA_GETCARD){
             $upload->DeleteSameResult('get_cards', $result_no, $generate_no);
             $upload->Upload("./output/chara/get_card_" . $result_no . "_" . $generate_no . ".csv", 'get_cards');

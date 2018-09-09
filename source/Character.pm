@@ -25,6 +25,7 @@ require "./source/chara/Parameter.pm";
 require "./source/chara/Characteristic.pm";
 require "./source/chara/Item.pm";
 require "./source/chara/Card.pm";
+require "./source/chara/Facility.pm";
 require "./source/chara/GetCard.pm";
 require "./source/chara/DropMinSubject.pm";
 
@@ -65,6 +66,7 @@ sub Init{
     if (ConstData::EXE_CHARA_CHARACTERISTIC)   { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
     if (ConstData::EXE_CHARA_ITEM)             { $self->{DataHandlers}{Item}           = Item->new();}
     if (ConstData::EXE_CHARA_CARD)             { $self->{DataHandlers}{Card}           = Card->new();}
+    if (ConstData::EXE_CHARA_FACILITY)         { $self->{DataHandlers}{Facility}       = Facility->new();}
     if (ConstData::EXE_CHARA_GETCARD)          { $self->{DataHandlers}{GetCard}        = GetCard->new();}
     if (ConstData::EXE_CHARA_DROP_MIN_SUBJECT) { $self->{DataHandlers}{DropSubject}    = DropMinSubject->new();}
 
@@ -147,6 +149,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
     if (exists($self->{DataHandlers}{Item}) && $$table_ma_node_hash{"Item"}) {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
     if (exists($self->{DataHandlers}{Card}) && $$table_ma_node_hash{"Card"}) {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
+    if (exists($self->{DataHandlers}{Facility}))       {$self->{DataHandlers}{Facility}->GetData($e_no, $$table_ma_node_hash{"Facility"})};
     if (exists($self->{DataHandlers}{Profile}))        {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
     if (exists($self->{DataHandlers}{Subject}))        {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Parameter}))      {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
@@ -181,6 +184,9 @@ sub DivideTableMaNodes{
 
         }elsif($td0_text =~ "Sno"){
             $$table_ma_node_hash{"Card"} = $table_ma_node;
+
+        }elsif($td0_text =~ "Ano"){
+            $$table_ma_node_hash{"Facility"} = $table_ma_node;
         }
     }
 }
