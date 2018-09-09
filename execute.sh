@@ -12,7 +12,7 @@ if [ -z "$RESULT_NO" ]; then
     exit
 fi
 
-if [ ! -f ./data/orig/result${LZH_NAME}.zip ]; then
+if [ ! -f ./data/orig/result${LZH_NAME}.lzh ]; then
     wget -O data/orig/result${LZH_NAME}.lzh http://ykamiya.ciao.jp/file/result${RESULT_NO}.lzh
     :
 fi
