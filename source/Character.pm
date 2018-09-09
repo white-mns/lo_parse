@@ -147,6 +147,7 @@ sub ParsePage{
     
     my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_node_hash{"Profile"});
     my $b_re2_nodes = &GetNode::GetNode_Tag_Id("b","re2", \$tree);
+    my $div_heading_nodes = &GetNode::GetNode_Tag_Attr("div", "class", "heading", \$tree);
     my $table_width345_nodes    = &GetNode::GetNode_Tag_Width("table", "345", \$tree);
     
 
@@ -162,7 +163,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{GetCard}))           {$self->{DataHandlers}{GetCard}->GetData($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{DropSubject}))       {$self->{DataHandlers}{DropSubject}->GetData($e_no, $$table_in_ma_nodes[1], $b_re2_nodes)};
     if (exists($self->{DataHandlers}{Place}))             {$self->{DataHandlers}{Place}->GetData($e_no, $b_re2_nodes)};
-    if (exists($self->{DataHandlers}{DevelopmentResult})) {$self->{DataHandlers}{DevelopmentResult}->GetData($e_no, $b_re2_nodes, $table_width345_nodes)};
+    if (exists($self->{DataHandlers}{DevelopmentResult})) {$self->{DataHandlers}{DevelopmentResult}->GetData($e_no, $b_re2_nodes, $div_heading_nodes, $table_width345_nodes)};
 
     $tree = $tree->delete;
 }

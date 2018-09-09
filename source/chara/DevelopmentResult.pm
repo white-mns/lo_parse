@@ -67,11 +67,12 @@ sub GetData{
     my $self    = shift;
     my $e_no    = shift;
     my $b_re2_nodes = shift;
-    my $table_nodes  = shift;
+    my $div_heading_nodes    = shift;
+    my $table_nodes = shift;
     
     $self->{ENo} = $e_no;
 
-    $self->ParseBNode($b_re2_nodes, $table_nodes);
+    $self->ParseBNode($b_re2_nodes, $div_heading_nodes, $table_nodes);
     
     return;
 }
@@ -85,21 +86,14 @@ sub GetData{
 sub ParseBNode{
     my $self  = shift;
     my $b_re2_nodes = shift;
+    my $div_heading_nodes    = shift;
     my $table_nodes  = shift;
     my ($development_result, $bellicose, $party_num) = (-2, -1, -1);
     
     if(ref($table_nodes) && !scalar(@$table_nodes)){return};
     
-    foreach my $b_re2_node (@$b_re2_nodes) {
-        my $b_re2_text = $b_re2_node->as_text;
-        
-        if ($b_re2_text =~ /集合/) {
-            $bellicose = $self->GetBellicose($b_re2_node);
-            
-        }elsif ($b_re2_text =~ /帰還/) {
-            $development_result = $self->GetDevelopmentResult($b_re2_node);
-        }
-    }
+    $bellicose = $self->GetBellicose($b_re2_nodes);
+    $development_result = $self->GetDevelopmentResult($div_heading_nodes);
     
     $party_num = $self->GetPartyNum($table_nodes);
 
@@ -116,17 +110,24 @@ sub ParseBNode{
 #-----------------------------------#
 sub GetBellicose{
     my $self  = shift;
-    my $b_re2_node = shift;
+    my $b_re2_nodes = shift;
     
-    my @right_nodes = $b_re2_node->right;
+    foreach my $b_re2_node (@$b_re2_nodes) {
+        my $b_re2_text = $b_re2_node->as_text;
+        
+        if ($b_re2_text =~ /集合/) {
+            my @right_nodes = $b_re2_node->right;
 
-    foreach my $right_node (@right_nodes) {
-        if ($right_node =~ /HASH/ && ($right_node->tag eq "b" || $right_node->tag eq "hr")) {last;}
+            foreach my $right_node (@right_nodes) {
+                if ($right_node =~ /HASH/ && ($right_node->tag eq "b" || $right_node->tag eq "hr")) {last;}
 
-        if ($right_node =~ /好戦度を (\d) とした/) {
-            return  $1;
+                if ($right_node =~ /好戦度を (\d) とした/) {
+                    return  $1;
+                }
+            }        
         }
     }
+    
     
     return -1;
 }
@@ -137,22 +138,30 @@ sub GetBellicose{
 #-----------------------------------#
 sub GetDevelopmentResult{
     my $self  = shift;
-    my $b_re2_node = shift;
+    my $div_heading_nodes = shift;
     
-    my @right_nodes = $b_re2_node->right;
+    foreach my $div_heading_node (@$div_heading_nodes) {
+        my $div_heading_text = $div_heading_node->as_text;
+        
+        if ($div_heading_text =~ /Battle Result/ && $div_heading_text !~ /Turn/) {
+            my @right_nodes = $div_heading_node->right;
 
-    foreach my $right_node (@right_nodes) {
-        if ($right_node =~ /HASH/ && ($right_node->tag eq "b" || $right_node->tag eq "hr")) {last;}
+            foreach my $right_node (@right_nodes) {
+                if ($right_node !~ /HASH/) {next;}
+                if ($right_node->tag eq "hr") {last;}
 
-        if ($right_node =~ /侵攻に成功した。/) {
-            return  1;
+                if ($right_node->as_text =~ /の勝利！！/) {
+                    return  1;
 
-        }elsif ($right_node =~ /元の場所に戻された/) {
-            return  0;
+                }elsif ($right_node->as_text =~ /勝負は決まらなかった・・・/) {
+                    return  0;
 
-        }elsif ($right_node =~ /負傷したため、前線撤退を余儀なくされた/) {
-            return -1;
-            
+                }elsif ($right_node->as_text =~ /BUGの勝利！！/) {
+                    return -1;
+                    
+                }
+            }
+            return -2;
         }
     }
     
