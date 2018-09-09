@@ -8,7 +8,18 @@ GENERATE_NO=$2
 
 LZH_NAME=${RESULT_NO}_$GENERATE_NO
 
-#wget -O data/orig/result${LZH_NAME}.lzh http://ykamiya.ciao.jp/file/result$RESULT_NO.lzh
+if [ -z "$RESULT_NO" ]; then
+    exit
+fi
+
+if [ ! -f ./data/orig/result${LZH_NAME}.lzh ]; then
+    wget -O data/orig/result${LZH_NAME}.lzh http://ykamiya.ciao.jp/file/result${RESULT_NO}.lzh
+    :
+fi
+
+if [ ! -f ./data/orig/result${LZH_NAME}.lzh ] || [ ! -s ./data/orig/result${LZH_NAME}.lzh ]; then
+    ./_result_download.sh $RESULT_NO $GENERATE_NO
+fi
 
 if [ -f ./data/orig/result${LZH_NAME}.lzh ]; then
     
