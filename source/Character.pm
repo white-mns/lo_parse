@@ -140,7 +140,7 @@ sub ParsePage{
     my $span_in3_nodes = &GetNode::GetNode_Tag_Attr("span", "id", "in3", \$tree);
     my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma", \$tree);
 
-    if(!scalar(@$span_in3_nodes) || !scalar(@$table_ma_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
+    if(!scalar(@$span_in3_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
 
     my $table_ma_node_hash = {};
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
@@ -152,9 +152,9 @@ sub ParsePage{
     
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
-    if (exists($self->{DataHandlers}{Item}) && $$table_ma_node_hash{"Item"}) {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
-    if (exists($self->{DataHandlers}{Card}) && $$table_ma_node_hash{"Card"}) {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
+    if (exists($self->{DataHandlers}{Name}))              {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
+    if (exists($self->{DataHandlers}{Item}))              {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
+    if (exists($self->{DataHandlers}{Card}))              {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
     if (exists($self->{DataHandlers}{Facility}))          {$self->{DataHandlers}{Facility}->GetData($e_no, $$table_ma_node_hash{"Facility"})};
     if (exists($self->{DataHandlers}{Profile}))           {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
     if (exists($self->{DataHandlers}{Subject}))           {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
