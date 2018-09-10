@@ -103,6 +103,7 @@ sub GetData{
     $self->{UseCard}{"-ALL"} = {};
 
     $self->{BattlePage} = $battle_page;
+    $self->{BattlePage} =~ s/-/ VS /;
     
     # 愛称とEnoの紐付け処理
     $self->LinkingNicknameToEno($link_nodes, $table_345_nodes);
