@@ -115,6 +115,16 @@ sub Main {
             $upload->Upload("./output/chara/development_result_" . $result_no . "_" . $generate_no . ".csv", 'development_results');
         }
     }
+    if(ConstData::EXE_BATTLE){
+        if(ConstData::EXE_BATTLE_CARD_USE_PAGE)    {
+            $upload->DeleteSameResult('card_use_pages', $result_no, $generate_no);
+            $upload->Upload("./output/battle/card_use_page_" . $result_no . "_" . $generate_no . ".csv", 'card_use_pages');
+        }
+        if(ConstData::EXE_BATTLE_CARD_USER)    {
+            $upload->DeleteSameResult('card_users', $result_no, $generate_no);
+            $upload->Upload("./output/battle/card_user_" . $result_no . "_" . $generate_no . ".csv", 'card_users');
+        }
+    }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
     return;
