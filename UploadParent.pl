@@ -115,6 +115,12 @@ sub Main {
             $upload->Upload("./output/chara/development_result_" . $result_no . "_" . $generate_no . ".csv", 'development_results');
         }
     }
+    if(ConstData::EXE_NEW){
+        if(ConstData::EXE_NEW_GETCARD)    {
+            $upload->DeleteSameResult('new_get_cards', $result_no, $generate_no);
+            $upload->Upload("./output/new/get_card_" . $result_no . "_" . $generate_no . ".csv", 'new_get_cards');
+        }
+    }
     if(ConstData::EXE_BATTLE){
         if(ConstData::EXE_BATTLE_MAX_CHAIN)    {
             $upload->DeleteSameResult('max_chains', $result_no, $generate_no);
