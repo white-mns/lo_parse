@@ -116,6 +116,10 @@ sub Main {
         }
     }
     if(ConstData::EXE_BATTLE){
+        if(ConstData::EXE_BATTLE_MAX_CHAIN)    {
+            $upload->DeleteSameResult('max_chains', $result_no, $generate_no);
+            $upload->Upload("./output/battle/max_chain_" . $result_no . "_" . $generate_no . ".csv", 'max_chains');
+        }
         if(ConstData::EXE_BATTLE_CARD_USE_PAGE)    {
             $upload->DeleteSameResult('card_use_pages', $result_no, $generate_no);
             $upload->Upload("./output/battle/card_use_page_" . $result_no . "_" . $generate_no . ".csv", 'card_use_pages');
