@@ -41,6 +41,7 @@ use warnings;
         use constant EXE_BATTLE_CARD_USER     => 1;
         use constant EXE_BATTLE_MAX_CHAIN     => 1;
     use constant EXE_NEW         => 1;
-        use constant EXE_NEW_GETCARD => 1;
+        use constant EXE_NEW_GETCARD  => 1;
+        use constant EXE_NEW_CARD_USE => 1;
 
 1;

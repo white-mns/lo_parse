@@ -120,6 +120,10 @@ sub Main {
             $upload->DeleteSameResult('new_get_cards', $result_no, $generate_no);
             $upload->Upload("./output/new/get_card_" . $result_no . "_" . $generate_no . ".csv", 'new_get_cards');
         }
+        if(ConstData::EXE_NEW_CARD_USE)    {
+            $upload->DeleteSameResult('new_card_uses', $result_no, $generate_no);
+            $upload->Upload("./output/new/card_use_" . $result_no . "_" . $generate_no . ".csv", 'new_card_uses');
+        }
     }
     if(ConstData::EXE_BATTLE){
         if(ConstData::EXE_BATTLE_MAX_CHAIN)    {

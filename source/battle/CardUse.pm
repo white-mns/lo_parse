@@ -41,6 +41,8 @@ sub Init{
     $self->{Datas}{CardUsePage} = StoreData->new();
     $self->{Datas}{CardUser}    = StoreData->new();
     $self->{Datas}{MaxChain}    = StoreData->new();
+    $self->{Datas}{NewCardUse}  = StoreData->new();
+    $self->{Datas}{AllCardUse}  = StoreData->new();
 
     my $header_list = "";
    
@@ -77,10 +79,55 @@ sub Init{
 
     $self->{Datas}{MaxChain}->Init($header_list);
     
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "card_id",
+    ];
+
+    $self->{Datas}{NewCardUse}->Init($header_list);
+    $self->{Datas}{AllCardUse}->Init($header_list);
+    
     #出力ファイル設定
     $self->{Datas}{CardUsePage}->SetOutputName( "./output/battle/card_use_page_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     $self->{Datas}{CardUser}->SetOutputName   ( "./output/battle/card_user_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     $self->{Datas}{MaxChain}->SetOutputName   ( "./output/battle/max_chain_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{NewCardUse}->SetOutputName ( "./output/new/card_use_"         . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{AllCardUse}->SetOutputName ( "./output/new/all_card_use_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    
+    $self->ReadLastNewData();
+
+    return;
+}
+
+#-----------------------------------#
+#    既存データを読み込む
+#-----------------------------------#
+sub ReadLastNewData(){
+    my $self      = shift;
+    
+    my $file_name = "";
+    # 前回結果の確定版ファイルを探索
+    for (my $i=5; $i>=0; $i--){
+        $file_name = "./output/new/all_card_use_" . ($self->{ResultNo} - 1) . "_" . $i . ".csv" ;
+        if(-f $file_name) {last;}
+    }
+    
+    #既存データの読み込み
+    my $content = &IO::FileRead ( $file_name );
+    
+    my @file_data = split(/\n/, $content);
+    shift (@file_data);
+    
+    foreach my  $data_set(@file_data){
+        my $new_card_use_datas = []; 
+        @$new_card_use_datas   = split(ConstData::SPLIT, $data_set);
+        my $card_id = $$new_card_use_datas[2];
+        if(!exists($self->{AllCardUse}{$card_id})){
+            $self->{AllCardUse}{$card_id} = [$self->{ResultNo}, $self->{GenerateNo}, $card_id];
+        }
+    }
+
     return;
 }
 
@@ -266,6 +313,8 @@ sub GetCardUseData{
             my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $$data[1], 0, 0]);
             my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $p_no, $card_id, $$data[2], $$data[3]);
             $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
+
+            $self->RecordNewCardUseData($card_id);
         }
     }
     
@@ -284,6 +333,25 @@ sub GetCardUseData{
 }
 
 #-----------------------------------#
+#    新出発動カードの判定と記録
+#------------------------------------
+#    引数｜カード識別番号
+#-----------------------------------#
+sub RecordNewCardUseData{
+    my $self  = shift;
+    my $card_id  = shift;
+
+    if (exists($self->{AllCardUse}{$card_id})) {return;}
+
+    my @new_data = ($self->{ResultNo}, $self->{GenerateNo}, $card_id);
+    $self->{Datas}{NewCardUse}->AddData(join(ConstData::SPLIT, @new_data));
+
+    $self->{AllCardUse}{$card_id} = [$self->{ResultNo}, $self->{GenerateNo}, $card_id];
+
+    return;
+}
+
+#-----------------------------------#
 #    出力
 #------------------------------------
 #    引数｜
@@ -291,6 +359,11 @@ sub GetCardUseData{
 sub Output{
     my $self = shift;
     
+    # 新出データ判定用の既出全取得カード情報の書き出し
+    foreach my $card_id (sort{$a cmp $b} keys %{ $self->{AllCardUse} } ) {
+        $self->{Datas}{AllCardUse}->AddData(join(ConstData::SPLIT, @{ $self->{AllCardUse}{$card_id} }));
+    }
+
     foreach my $object( values %{ $self->{Datas} } ) {
         $object->Output();
     }
