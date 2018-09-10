@@ -106,6 +106,28 @@ sub Main {
             $upload->DeleteSameResult('drop_min_subjects', $result_no, $generate_no);
             $upload->Upload("./output/chara/drop_min_subject_" . $result_no . "_" . $generate_no . ".csv", 'drop_min_subjects');
         }
+        if(ConstData::EXE_CHARA_PLACE){
+            $upload->DeleteSameResult('places', $result_no, $generate_no);
+            $upload->Upload("./output/chara/place_" . $result_no . "_" . $generate_no . ".csv", 'places');
+        }
+        if(ConstData::EXE_CHARA_DEVELOPMENT_RESULT){
+            $upload->DeleteSameResult('development_results', $result_no, $generate_no);
+            $upload->Upload("./output/chara/development_result_" . $result_no . "_" . $generate_no . ".csv", 'development_results');
+        }
+    }
+    if(ConstData::EXE_BATTLE){
+        if(ConstData::EXE_BATTLE_MAX_CHAIN)    {
+            $upload->DeleteSameResult('max_chains', $result_no, $generate_no);
+            $upload->Upload("./output/battle/max_chain_" . $result_no . "_" . $generate_no . ".csv", 'max_chains');
+        }
+        if(ConstData::EXE_BATTLE_CARD_USE_PAGE)    {
+            $upload->DeleteSameResult('card_use_pages', $result_no, $generate_no);
+            $upload->Upload("./output/battle/card_use_page_" . $result_no . "_" . $generate_no . ".csv", 'card_use_pages');
+        }
+        if(ConstData::EXE_BATTLE_CARD_USER)    {
+            $upload->DeleteSameResult('card_users', $result_no, $generate_no);
+            $upload->Upload("./output/battle/card_user_" . $result_no . "_" . $generate_no . ".csv", 'card_users');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";

@@ -28,6 +28,8 @@ require "./source/chara/Card.pm";
 require "./source/chara/Facility.pm";
 require "./source/chara/GetCard.pm";
 require "./source/chara/DropMinSubject.pm";
+require "./source/chara/Place.pm";
+require "./source/chara/DevelopmentResult.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -59,16 +61,18 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
 
     #インスタンス作成
-    if (ConstData::EXE_CHARA_NAME)             { $self->{DataHandlers}{Name}           = Name->new();}
-    if (ConstData::EXE_CHARA_PROFILE)          { $self->{DataHandlers}{Profile}        = Profile->new();}
-    if (ConstData::EXE_CHARA_SUBJECT)          { $self->{DataHandlers}{Subject}        = Subject->new();}
-    if (ConstData::EXE_CHARA_PARAMETER)        { $self->{DataHandlers}{Parameter}      = Parameter->new();}
-    if (ConstData::EXE_CHARA_CHARACTERISTIC)   { $self->{DataHandlers}{Characteristic} = Characteristic->new();}
-    if (ConstData::EXE_CHARA_ITEM)             { $self->{DataHandlers}{Item}           = Item->new();}
-    if (ConstData::EXE_CHARA_CARD)             { $self->{DataHandlers}{Card}           = Card->new();}
-    if (ConstData::EXE_CHARA_FACILITY)         { $self->{DataHandlers}{Facility}       = Facility->new();}
-    if (ConstData::EXE_CHARA_GETCARD)          { $self->{DataHandlers}{GetCard}        = GetCard->new();}
-    if (ConstData::EXE_CHARA_DROP_MIN_SUBJECT) { $self->{DataHandlers}{DropSubject}    = DropMinSubject->new();}
+    if (ConstData::EXE_CHARA_NAME)               { $self->{DataHandlers}{Name}              = Name->new();}
+    if (ConstData::EXE_CHARA_PROFILE)            { $self->{DataHandlers}{Profile}           = Profile->new();}
+    if (ConstData::EXE_CHARA_SUBJECT)            { $self->{DataHandlers}{Subject}           = Subject->new();}
+    if (ConstData::EXE_CHARA_PARAMETER)          { $self->{DataHandlers}{Parameter}         = Parameter->new();}
+    if (ConstData::EXE_CHARA_CHARACTERISTIC)     { $self->{DataHandlers}{Characteristic}    = Characteristic->new();}
+    if (ConstData::EXE_CHARA_ITEM)               { $self->{DataHandlers}{Item}              = Item->new();}
+    if (ConstData::EXE_CHARA_CARD)               { $self->{DataHandlers}{Card}              = Card->new();}
+    if (ConstData::EXE_CHARA_FACILITY)           { $self->{DataHandlers}{Facility}          = Facility->new();}
+    if (ConstData::EXE_CHARA_GETCARD)            { $self->{DataHandlers}{GetCard}           = GetCard->new();}
+    if (ConstData::EXE_CHARA_DROP_MIN_SUBJECT)   { $self->{DataHandlers}{DropSubject}       = DropMinSubject->new();}
+    if (ConstData::EXE_CHARA_PLACE)              { $self->{DataHandlers}{Place}             = Place->new();}
+    if (ConstData::EXE_CHARA_DEVELOPMENT_RESULT) { $self->{DataHandlers}{DevelopmentResult} = DevelopmentResult->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -133,29 +137,33 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $span_in3_nodes = &GetNode::GetNode_Tag_Id("span","in3", \$tree);
-    my $table_ma_nodes = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
+    my $span_in3_nodes = &GetNode::GetNode_Tag_Attr("span", "id", "in3", \$tree);
+    my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma", \$tree);
 
-    if(!scalar(@$span_in3_nodes) || !scalar(@$table_ma_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
+    if(!scalar(@$span_in3_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
 
     my $table_ma_node_hash = {};
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
     
     my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_node_hash{"Profile"});
-    my $b_re2_nodes = &GetNode::GetNode_Tag_Id("b","re2", \$tree);
+    my $b_re2_nodes = &GetNode::GetNode_Tag_Attr("b", "id", "re2", \$tree);
+    my $div_heading_nodes = &GetNode::GetNode_Tag_Attr("div", "class", "heading", \$tree);
+    my $table_width345_nodes    = &GetNode::GetNode_Tag_Attr("table", "width", "345", \$tree);
     
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name}) && $$span_in3_nodes[0]) {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
-    if (exists($self->{DataHandlers}{Item}) && $$table_ma_node_hash{"Item"}) {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
-    if (exists($self->{DataHandlers}{Card}) && $$table_ma_node_hash{"Card"}) {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
-    if (exists($self->{DataHandlers}{Facility}))       {$self->{DataHandlers}{Facility}->GetData($e_no, $$table_ma_node_hash{"Facility"})};
-    if (exists($self->{DataHandlers}{Profile}))        {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
-    if (exists($self->{DataHandlers}{Subject}))        {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
-    if (exists($self->{DataHandlers}{Parameter}))      {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
-    if (exists($self->{DataHandlers}{Characteristic})) {$self->{DataHandlers}{Characteristic}->GetData($e_no, $$table_in_ma_nodes[1])};
-    if (exists($self->{DataHandlers}{GetCard}))        {$self->{DataHandlers}{GetCard}->GetData($e_no, $b_re2_nodes)};
-    if (exists($self->{DataHandlers}{DropSubject}))    {$self->{DataHandlers}{DropSubject}->GetData($e_no, $$table_in_ma_nodes[1], $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{Name}))              {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
+    if (exists($self->{DataHandlers}{Item}))              {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
+    if (exists($self->{DataHandlers}{Card}))              {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
+    if (exists($self->{DataHandlers}{Facility}))          {$self->{DataHandlers}{Facility}->GetData($e_no, $$table_ma_node_hash{"Facility"})};
+    if (exists($self->{DataHandlers}{Profile}))           {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
+    if (exists($self->{DataHandlers}{Subject}))           {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{Parameter}))         {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{Characteristic}))    {$self->{DataHandlers}{Characteristic}->GetData($e_no, $$table_in_ma_nodes[1])};
+    if (exists($self->{DataHandlers}{GetCard}))           {$self->{DataHandlers}{GetCard}->GetData($e_no, $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{DropSubject}))       {$self->{DataHandlers}{DropSubject}->GetData($e_no, $$table_in_ma_nodes[1], $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{Place}))             {$self->{DataHandlers}{Place}->GetData($e_no, $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{DevelopmentResult})) {$self->{DataHandlers}{DevelopmentResult}->GetData($e_no, $b_re2_nodes, $div_heading_nodes, $table_width345_nodes)};
 
     $tree = $tree->delete;
 }

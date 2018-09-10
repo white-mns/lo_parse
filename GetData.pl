@@ -10,6 +10,7 @@ require "./source/lib/time.pm";
 require "./source/lib/NumCode.pm";
 require "./source/ProperName.pm";
 require "./source/Character.pm";
+require "./source/Battle.pm";
 
 # パッケージの使用宣言    ---------------#
 use strict;
@@ -42,7 +43,8 @@ sub Main{
     my %common_datas;
     
     push(@objects, ProperName->new()); # 固有名詞読み込み・保持
-    if (ConstData::EXE_CHARA) {push(@objects, Character->new());} #キャラページ読み込み
+    if (ConstData::EXE_CHARA)  {push(@objects, Character->new());} #キャラページ読み込み
+    if (ConstData::EXE_BATTLE) {push(@objects, Battle->new());}    #模擬戦ページ読み込み
 
     &Init(\@objects, $result_no, $generate_no, \%common_datas);
     &Execute(\@objects);
