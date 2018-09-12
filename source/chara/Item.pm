@@ -112,13 +112,15 @@ sub GetItemData{
         $kind    = $self->{CommonDatas}{ProperName}->GetOrAddId($$td_nodes[2]->as_text);
 
         my $node3   = $$td_nodes[3]->as_text;
+        my $effect_text = "";
         if($node3 =~ /(.+?)Lv(\d+?)$/){
-            $effect = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
+            $effect_text = $1;
             $lv     = $2;
         }else{
-            $effect = $self->{CommonDatas}{ProperName}->GetOrAddId($node3);
+            $effect_text = $node3;
             $lv     = -1;
         }
+        $effect = $self->{CommonDatas}{ProperName}->GetOrAddId($effect_text);
 
         $potency    = $$td_nodes[4]->as_text eq "-" ? -1 : $$td_nodes[4]->as_text;
         $potency_str= $potency;
@@ -127,6 +129,18 @@ sub GetItemData{
         my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $item_no, $name, $equip, $kind, $effect, $lv, $potency, $potency_str, $precision);
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, @datas));
 
+        if ($$td_nodes[2]->as_text =~ /設置/) { #施設名詳細データの取得
+            my $right = $tr_node->right;
+            if ($right->as_text !~ /（区分：(.+)）/) {next;}
+
+            # 新規登録時に配られたカードだけ施設区分名が違っていたのでデータに登録しない
+            my $major_division_text = $1;
+            if ($major_division_text =~ /(武器屋|魔器屋|衣服屋|護符屋)/) {next;}
+
+            my $major_division = $self->{CommonDatas}{ProperName}->GetOrAddId($major_division_text);
+            $self->{CommonDatas}{FacilityDivisionData}->GetOrAddId(1, [$effect,$major_division]);
+
+        }
 
     }
 

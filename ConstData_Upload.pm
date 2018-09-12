@@ -18,8 +18,9 @@ use warnings;
 #      実行する場合は 1 ，実行しない場合は 0 ．
     
     use constant EXE_DATA        => 1;
-        use constant EXE_DATA_PROPER_NAME => 1;
-        use constant EXE_DATA_CARD_DATA   => 1;
+        use constant EXE_DATA_PROPER_NAME            => 1;
+        use constant EXE_DATA_CARD_DATA              => 1;
+        use constant EXE_DATA_FACILITY_DIVISION_DATA => 1;
     use constant EXE_CHARA       => 1;
         use constant EXE_CHARA_NAME               => 1;
         use constant EXE_CHARA_PROFILE            => 1;
@@ -36,9 +37,13 @@ use warnings;
         use constant EXE_CHARA_DROP_MIN_SUBJECT   => 1;
         use constant EXE_CHARA_PLACE              => 1;
         use constant EXE_CHARA_DEVELOPMENT_RESULT => 1;
+        use constant EXE_CHARA_TRAINING           => 1;
     use constant EXE_BATTLE => 1;
         use constant EXE_BATTLE_CARD_USE_PAGE => 1;
         use constant EXE_BATTLE_CARD_USER     => 1;
         use constant EXE_BATTLE_MAX_CHAIN     => 1;
+    use constant EXE_NEW         => 1;
+        use constant EXE_NEW_GETCARD  => 1;
+        use constant EXE_NEW_CARD_USE => 1;
 
 1;

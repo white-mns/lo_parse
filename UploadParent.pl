@@ -52,6 +52,10 @@ sub Main {
             $upload->DeleteAll('card_data');
             $upload->Upload("./output/data/card_data.csv", 'card_data');
         }
+        if(ConstData::EXE_DATA_CARD_DATA){
+            $upload->DeleteAll('facility_division_data');
+            $upload->Upload("./output/data/facility_division_data.csv", 'facility_division_data');
+        }
     }
     if(ConstData::EXE_CHARA){
         if(ConstData::EXE_CHARA_NAME){
@@ -113,6 +117,20 @@ sub Main {
         if(ConstData::EXE_CHARA_DEVELOPMENT_RESULT){
             $upload->DeleteSameResult('development_results', $result_no, $generate_no);
             $upload->Upload("./output/chara/development_result_" . $result_no . "_" . $generate_no . ".csv", 'development_results');
+        }
+        if(ConstData::EXE_CHARA_TRAINING){
+            $upload->DeleteSameResult('trainings', $result_no, $generate_no);
+            $upload->Upload("./output/chara/training_" . $result_no . "_" . $generate_no . ".csv", 'trainings');
+        }
+    }
+    if(ConstData::EXE_NEW){
+        if(ConstData::EXE_NEW_GETCARD)    {
+            $upload->DeleteSameResult('new_get_cards', $result_no, $generate_no);
+            $upload->Upload("./output/new/get_card_" . $result_no . "_" . $generate_no . ".csv", 'new_get_cards');
+        }
+        if(ConstData::EXE_NEW_CARD_USE)    {
+            $upload->DeleteSameResult('new_card_uses', $result_no, $generate_no);
+            $upload->Upload("./output/new/card_use_" . $result_no . "_" . $generate_no . ".csv", 'new_card_uses');
         }
     }
     if(ConstData::EXE_BATTLE){
