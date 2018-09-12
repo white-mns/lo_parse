@@ -131,16 +131,14 @@ sub GetItemData{
 
         if ($$td_nodes[2]->as_text =~ /設置/) { #施設名詳細データの取得
             my $right = $tr_node->right;
-            if ($right->as_text =~ /（区分：(.+)）/) {
-                my $major_division_text = $1;
+            if ($right->as_text !~ /（区分：(.+)）/) {next;}
 
-                # 新規登録時に配られたカードだけ施設区分名が違っていたのでデータに登録しない
-                if ($major_division_text !~ /(武器屋|魔器屋|衣服屋|護符屋)/) {
-                    my $major_division = $self->{CommonDatas}{ProperName}->GetOrAddId($major_division_text);
+            # 新規登録時に配られたカードだけ施設区分名が違っていたのでデータに登録しない
+            my $major_division_text = $1;
+            if ($major_division_text =~ /(武器屋|魔器屋|衣服屋|護符屋)/) {next;}
 
-                    $self->{CommonDatas}{FacilityDivisionData}->GetOrAddId(1, [$effect,$major_division]);
-                }
-            }
+            my $major_division = $self->{CommonDatas}{ProperName}->GetOrAddId($major_division_text);
+            $self->{CommonDatas}{FacilityDivisionData}->GetOrAddId(1, [$effect,$major_division]);
 
         }
 
