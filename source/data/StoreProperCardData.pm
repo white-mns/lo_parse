@@ -1,8 +1,8 @@
 #===================================================================
-#        固有情報記録パッケージ
-#        　・固有名詞に識別番号を割り振り記録する。
-#        　・固有名詞とデータの紐づけをDataMappingに保存
-#        　・固有名詞とIDの紐づけをNameMappingに保存(固有名詞名からIDを求めるため)
+#        カード効果情報記録パッケージ
+#        　・カード効果名＋Lvに識別番号を割り振り記録する。
+#        　・カード効果名＋Lvとデータの紐づけをDataMappingに保存
+#        　・カード効果名＋LvとIDの紐づけをNameMappingに保存(固有名詞名からIDを求めるため)
 #        　・ファイル記録・DB登録用のデータを出力直前にDataMappingからDataに書き出し
 #-------------------------------------------------------------------
 #            (C) 2018 @white_mns
@@ -19,7 +19,7 @@ use ConstData;        #定数呼び出し
 #------------------------------------------------------------------#
 #    パッケージの定義
 #------------------------------------------------------------------#     
-package StoreProperData;
+package StoreProperCardData;
 
 #-----------------------------------#
 #    コンストラクタ
@@ -72,8 +72,8 @@ sub ReadLastData(){
         my $data = []; 
         @$data   = split(ConstData::SPLIT, $data_set);
         
-        $self->{Datas}{DataMapping} -> AddData( $$data[1], $data);
-        $self->{Datas}{NameMapping} -> AddData( $$data[1], $$data[0]);
+        $self->{Datas}{DataMapping} -> AddData( $$data[1].$$data[3], $data);
+        $self->{Datas}{NameMapping} -> AddData( $$data[1].$$data[3], $$data[0]);
         $self->{DataNum}++;
     }
 
@@ -95,7 +95,7 @@ sub GetOrAddId{
     my $self      = shift;
     my $is_update = shift;
     my $data      = shift;
-    my $name = $$data[0];
+    my $name = $$data[0].$$data[2];
 
     
     if(!$self->{Datas}{NameMapping}->CheckHaveData($name)){
@@ -130,7 +130,7 @@ sub CheckNeedUpdate{
     my $self = shift;
     my $data = shift;
 
-    my $mapped_data = $self->{Datas}{DataMapping}->GetData($$data[0]);
+    my $mapped_data = $self->{Datas}{DataMapping}->GetData($$data[0].$$data[2]);
     
     if (scalar(@$data) != scalar(@$mapped_data) - 1) { return 1;}
 
@@ -193,7 +193,7 @@ sub _SetData {
     my $id   = shift;
     my $data = shift;
 
-    my $name = $$data[0];
+    my $name = $$data[0].$$data[2];
     unshift(@$data, $id);
 
     $self->{Datas}{DataMapping}->AddData($name, $data);

@@ -19,6 +19,7 @@ require "./source/lib/NumCode.pm";
 
 require "./source/data/StoreProperName.pm";
 require "./source/data/StoreProperData.pm";
+require "./source/data/StoreProperCardData.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -49,7 +50,7 @@ sub Init{
 
     #インスタンス作成
     $self->{DataHandlers}{ProperName} = StoreProperName->new();
-    $self->{DataHandlers}{CardData}   = StoreProperData->new();
+    $self->{DataHandlers}{CardData}   = StoreProperCardData->new();
 
     #他パッケージへの引き渡し用インスタンス
     $self->{CommonDatas}{ProperName} = $self->{DataHandlers}{ProperName};
