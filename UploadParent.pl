@@ -118,6 +118,10 @@ sub Main {
             $upload->DeleteSameResult('development_results', $result_no, $generate_no);
             $upload->Upload("./output/chara/development_result_" . $result_no . "_" . $generate_no . ".csv", 'development_results');
         }
+        if(ConstData::EXE_CHARA_TRAINING){
+            $upload->DeleteSameResult('trainings', $result_no, $generate_no);
+            $upload->Upload("./output/chara/training_" . $result_no . "_" . $generate_no . ".csv", 'trainings');
+        }
     }
     if(ConstData::EXE_NEW){
         if(ConstData::EXE_NEW_GETCARD)    {
