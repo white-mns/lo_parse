@@ -16,7 +16,7 @@ wget -O ./data/orig/result${RESULT_NO}/base.css http://ykamiya.ciao.jp/result/ba
 wget -O ./data/orig/result${RESULT_NO}/manual.css http://ykamiya.ciao.jp/result/manual.css
 wget -O ./data/orig/result${RESULT_NO}/sub.css http://ykamiya.ciao.jp/result/sub.css
 
-for ((E_NO=$1;E_NO <= 400;E_NO++)) {
+for ((E_NO=1;E_NO <= 400;E_NO++)) {
     for ((i=0;i < 2;i++)) { # 2回までリトライする
         wget -O ./data/orig/result${RESULT_NO}/result_chara/result_Eno${E_NO}.html http://ykamiya.ciao.jp/result/result_chara/result_Eno${E_NO}.html
 
