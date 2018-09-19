@@ -94,7 +94,7 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $table_ma_nodes = &GetNode::GetNode_Tag_Class("table","ma", \$tree);
+    my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma", \$tree);
 
     if(!scalar(@$table_ma_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
     
