@@ -101,8 +101,9 @@ sub GetItemData{
         
         $item_no = $$td_nodes[0]->as_text;
 
+        my $span_nodes = &GetNode::GetNode_Tag("span",\$$td_nodes[1]);
         my $node1   = $$td_nodes[1]->as_text;
-        if($node1 =~ /^【(.+?)】(.+?)$/){
+        if(scalar(@$span_nodes) > 0 && $node1 =~ /^【(.+?)】(.+?)$/){
             $equip = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
             $name  = $2;
         }else{
