@@ -135,7 +135,7 @@ sub GetItemData{
 
             # 新規登録時に配られたカードだけ施設区分名が違っていたのでデータに登録しない
             my $major_division_text = $1;
-            if ($major_division_text =~ /(武器屋|魔器屋|衣服屋|護符屋)/) {next;}
+            if ($major_division_text =~ /(武器屋|魔器屋|衣服屋|護符屋|防具屋|装飾屋)/) {next;}
 
             my $major_division = $self->{CommonDatas}{ProperName}->GetOrAddId($major_division_text);
             $self->{CommonDatas}{FacilityDivisionData}->GetOrAddId(1, [$effect,$major_division]);
