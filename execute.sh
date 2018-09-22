@@ -36,14 +36,8 @@ if [ -f ./data/orig/result${LZH_NAME}.lzh ]; then
     echo "rm orig..."
     rm  -rf result${LZH_NAME}
 
-    echo "shift-jis to utf8..."
+    echo "copy directory..."
     cd ../utf/result${LZH_NAME}/    
-    nkf -w --overwrite result_chara/*.html
-    nkf -w --overwrite result_map/*.html
-    nkf -w --overwrite result_maph/*.html
-    nkf -w --overwrite result_pre/*.html
-    nkf -w --overwrite *.css
-    
     cd ../../../
 
 fi
