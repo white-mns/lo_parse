@@ -38,7 +38,7 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     $self->ResetSubjectValue();
-    $self->{DropSubject} = [];
+    $self->{DropSubject} = {};
     $self->{SubjectNames} = ["斬術", "突術", "打術", "射撃", "護衛", "舞踊", "盗術", "料理", "工芸", "機動", "化学", "算術", "火術", "神術", "命術", "冥術", "地学", "天文", "風水", "心理", "音楽", "呪術", "幻術", "奇術"];
 
     #初期化
@@ -80,6 +80,7 @@ sub Init{
     
     #出力ファイル設定
     $self->{Datas}{Data}->SetOutputName( "./output/chara/drop_min_subject_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->ReadLastData();
     return;
 }
 
@@ -109,11 +110,11 @@ sub ReadLastData(){
         @$data   = split(ConstData::SPLIT, $data_set);
         my $card_id = $$data[2];
         
-        my $subject_num = scalar(@$self->{SubjectNames});
-        $self->{DropSubject}{$card_id} = {};
+        my $subject_num = scalar(@{$self->{SubjectNames}});
+        $self->{DropSubjects}{$card_id} = {};
 
         for (my $i=0; $i< $subject_num; $i++) {
-            $self->{SubjectValue}{$$self->{SubjectNames}[$i]} = $$data[$i+3];
+            $self->{DropSubjects}{$card_id}{${$self->{SubjectNames}}[$i]} = $$data[$i+3];
         }
     }
 
