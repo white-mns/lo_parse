@@ -94,7 +94,8 @@ sub ReadLastData(){
     for (my $i=5; $i>=0; $i--){
         my $file_name = "./output/chara/drop_min_subject_" . ($self->{ResultNo} - 1) . "_" . $i . ".csv" ;
         if(-f $file_name) {
-            $self->{LastGenerateNo} = $i;    
+            $self->{LastGenerateNo} = $i;
+            last;
         }
     }
 
