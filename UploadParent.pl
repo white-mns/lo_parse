@@ -122,6 +122,10 @@ sub Main {
             $upload->DeleteSameResult('trainings', $result_no, $generate_no);
             $upload->Upload("./output/chara/training_" . $result_no . "_" . $generate_no . ".csv", 'trainings');
         }
+        if(ConstData::EXE_CHARA_ITEM_USE){
+            $upload->DeleteSameResult('item_uses', $result_no, $generate_no);
+            $upload->Upload("./output/chara/item_use_" . $result_no . "_" . $generate_no . ".csv", 'item_uses');
+        }
     }
     if(ConstData::EXE_NEW){
         if(ConstData::EXE_NEW_GETCARD)    {
@@ -131,6 +135,10 @@ sub Main {
         if(ConstData::EXE_NEW_CARD_USE)    {
             $upload->DeleteSameResult('new_card_uses', $result_no, $generate_no);
             $upload->Upload("./output/new/card_use_" . $result_no . "_" . $generate_no . ".csv", 'new_card_uses');
+        }
+        if(ConstData::EXE_NEW_ITEM_USE)    {
+            $upload->DeleteSameResult('new_item_uses', $result_no, $generate_no);
+            $upload->Upload("./output/new/item_use_" . $result_no . "_" . $generate_no . ".csv", 'new_item_uses');
         }
     }
     if(ConstData::EXE_BATTLE){
