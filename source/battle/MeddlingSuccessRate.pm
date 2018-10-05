@@ -182,7 +182,7 @@ sub GetMeddlingSuccessRateData{
         my $e_no = -1;
         my $text = $node->as_text;
 
-        if ($text !~ /復活|発動|待機|動静|白紙|低下|上昇|廃棄|効率|確変|伝達|沈着|発揮|素朴|追憶|転化|着実|沈黙/) {next;}
+        if ($text !~ /復活|発動|待機|動静|白紙|低下|上昇|廃棄|効率|伝達|沈着|発揮|素朴|追憶|転化|沈黙/) {next;}
         if ($text !~ /！/) {next;}
         if ($text !~ /Lv(\d+)/) {next;}
         my $lv = $1;
@@ -266,7 +266,7 @@ sub GetMeddlingSuccessRateData{
         $dd_node = $dd_node->right;
         while($dd_node) {
             my $dd_text = $dd_node->as_text;
-            if ($dd_text =~ /強制復活|設定に変換|Blankカードへ強制変換|レベルアップ！！|レベルダウン！|強制廃棄|発動率が変動/) {
+            if ($dd_text =~ /強制復活|設定に変換|Blankカードへ強制変換|レベルアップ！！|レベルダウン！|強制廃棄|制御率が/) {
                 ${${ $self->{Count} }{"0"}{$effect_name}}[2]++;
                 ${${ $self->{Count} }{"0"}{$chain_effect_name}}[2]++;
                 ${${ $self->{Count} }{$e_no}{$effect_name}}[2]++;

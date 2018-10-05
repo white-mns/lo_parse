@@ -267,7 +267,7 @@ sub GetCardUseData{
 
         }else{
             my $parent_text = $node->parent->as_text;
-            if ($parent_text !~ /発動に失敗！\(発動率：(\d+)％\)/) {next;}
+            if ($parent_text !~ /制御に失敗！\(発動率：(\d+)％\)/) {next;}
             $success = 0;
             $control = $1;
         }
