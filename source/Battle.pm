@@ -18,6 +18,7 @@ require "./source/lib/time.pm";
 require "./source/lib/NumCode.pm";
 
 require "./source/battle/CardUse.pm";
+require "./source/battle/MeddlingSuccessRate.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -49,7 +50,8 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
 
     #インスタンス作成
-    if (ConstData::EXE_BATTLE_CARD_USE) { $self->{DataHandlers}{CardUse}   = CardUse->new();}
+    if (ConstData::EXE_BATTLE_CARD_USE)              { $self->{DataHandlers}{CardUse}             = CardUse->new();}
+    if (ConstData::EXE_BATTLE_MEDDLING_SUCCESS_RATE) { $self->{DataHandlers}{MeddlingSuccessRate} = MeddlingSuccessRate->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -129,7 +131,8 @@ sub ParsePage{
     my $table_345_nodes   = &GetNode::GetNode_Tag_Attr("table", "width", "345", \$tree);
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{CardUse})) {$self->{DataHandlers}{CardUse}->GetData($result_page, $font_player_nodes, $font_enemy_nodes, $link_nodes, $table_345_nodes)};
+    if (exists($self->{DataHandlers}{CardUse}))             {$self->{DataHandlers}{CardUse}->GetData            ($result_page, $font_player_nodes, $font_enemy_nodes, $link_nodes, $table_345_nodes)};
+    if (exists($self->{DataHandlers}{MeddlingSuccessRate})) {$self->{DataHandlers}{MeddlingSuccessRate}->GetData($result_page, $font_player_nodes, $font_enemy_nodes, $link_nodes, $table_345_nodes)};
 
     $tree = $tree->delete;
 }

@@ -154,6 +154,10 @@ sub Main {
             $upload->DeleteSameResult('card_users', $result_no, $generate_no);
             $upload->Upload("./output/battle/card_user_" . $result_no . "_" . $generate_no . ".csv", 'card_users');
         }
+        if(ConstData::EXE_BATTLE_MEDDLING_SUCCESS_RATE)    {
+            $upload->DeleteSameResult('meddling_success_rates', $result_no, $generate_no);
+            $upload->Upload("./output/battle/meddling_success_rate_" . $result_no . "_" . $generate_no . ".csv", 'meddling_success_rates');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
