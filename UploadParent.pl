@@ -52,7 +52,7 @@ sub Main {
             $upload->DeleteAll('card_data');
             $upload->Upload("./output/data/card_data.csv", 'card_data');
         }
-        if(ConstData::EXE_DATA_CARD_DATA){
+        if(ConstData::EXE_DATA_FACILITY_DIVISION_DATA){
             $upload->DeleteAll('facility_division_data');
             $upload->Upload("./output/data/facility_division_data.csv", 'facility_division_data');
         }
