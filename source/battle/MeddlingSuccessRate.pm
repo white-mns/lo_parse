@@ -266,7 +266,7 @@ sub GetMeddlingSuccessRateData{
         $dd_node = $dd_node->right;
         while($dd_node) {
             my $dd_text = $dd_node->as_text;
-            if ($dd_text =~ /強制復活|設定に変換|Blankカードへ強制変化|レベルアップ！！|レベルダウン！|強制廃棄|発動率が変動/) {
+            if ($dd_text =~ /強制復活|設定に変換|Blankカードへ強制変換|レベルアップ！！|レベルダウン！|強制廃棄|発動率が変動/) {
                 ${${ $self->{Count} }{"0"}{$effect_name}}[2]++;
                 ${${ $self->{Count} }{"0"}{$chain_effect_name}}[2]++;
                 ${${ $self->{Count} }{$e_no}{$effect_name}}[2]++;
