@@ -226,18 +226,18 @@ sub GetMeddlingSuccessRateData{
         $text =~ s/Chain(\d+)：//;
 
         my $effect_name =  "/" . $text; # 全Chain集計用に、通常の先発発動と混ざらないよう接頭詞を付けておく
-        if (!${ $self->{Count} }{"-ALL"}) {
-            ${ $self->{Count} }{"-ALL"} = {};
+        if (!${ $self->{Count} }{"0"}) {
+            ${ $self->{Count} }{"0"} = {};
         }
         if (!${ $self->{Count} }{$e_no}) {
             ${ $self->{Count} }{$e_no} = {};
         }
 
-        if (!${ $self->{Count} }{"-ALL"}{$effect_name}) {
-            ${ $self->{Count} }{"-ALL"}{$effect_name} = [0, -1, 0, 0, 0, {}];
+        if (!${ $self->{Count} }{"0"}{$effect_name}) {
+            ${ $self->{Count} }{"0"}{$effect_name} = [0, -1, 0, 0, 0, {}];
         }
-        if (!${ $self->{Count} }{"-ALL"}{$chain_effect_name}) {
-            ${ $self->{Count} }{"-ALL"}{$chain_effect_name} = [0, 0, 0, 0, 0, {}];
+        if (!${ $self->{Count} }{"0"}{$chain_effect_name}) {
+            ${ $self->{Count} }{"0"}{$chain_effect_name} = [0, 0, 0, 0, 0, {}];
         }
         if (!${ $self->{Count} }{$e_no}{$effect_name}) {
             ${ $self->{Count} }{$e_no}{$effect_name} = [0, -1, 0, 0, 0, {}];
@@ -253,11 +253,11 @@ sub GetMeddlingSuccessRateData{
             $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0]);
         }
 
-        ${${ $self->{Count} }{"-ALL"}{$effect_name}}[0]       = $card_id;
+        ${${ $self->{Count} }{"0"}{$effect_name}}[0]       = $card_id;
         ${${ $self->{Count} }{$e_no}{$effect_name}}[0]        = $card_id;
-        ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[0] = $card_id;
+        ${${ $self->{Count} }{"0"}{$chain_effect_name}}[0] = $card_id;
         ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[0]  = $card_id;
-        ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[1] = $chain_num;
+        ${${ $self->{Count} }{"0"}{$chain_effect_name}}[1] = $chain_num;
         ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[1]  = $chain_num;
 
         my $dd_node = $node->parent;
@@ -267,8 +267,8 @@ sub GetMeddlingSuccessRateData{
         while($dd_node) {
             my $dd_text = $dd_node->as_text;
             if ($dd_text =~ /強制復活|設定に変換|Blankカードへ強制変化|レベルアップ！！|レベルダウン！|強制廃棄|発動率が変動/) {
-                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[2]++;
-                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[2]++;
+                ${${ $self->{Count} }{"0"}{$effect_name}}[2]++;
+                ${${ $self->{Count} }{"0"}{$chain_effect_name}}[2]++;
                 ${${ $self->{Count} }{$e_no}{$effect_name}}[2]++;
                 ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[2]++;
                 my $font_node_player = &GetNode::GetNode_Tag_Color_NoSize("font", "#009999", \$dd_node);
@@ -286,26 +286,26 @@ sub GetMeddlingSuccessRateData{
                     my $target_lv     = $2;
                     my $target_id     = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$target_effect,"", $target_lv, 0, 0]);
 
-                    if (!${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$target_id}      ) {${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$target_id}       = 0;}
-                    if (!${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$target_id}) {${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$target_id} = 0;}
+                    if (!${${ $self->{Count} }{"0"}{$effect_name}}[5]{$target_id}      ) {${${ $self->{Count} }{"0"}{$effect_name}}[5]{$target_id}       = 0;}
+                    if (!${${ $self->{Count} }{"0"}{$chain_effect_name}}[5]{$target_id}) {${${ $self->{Count} }{"0"}{$chain_effect_name}}[5]{$target_id} = 0;}
                     if (!${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$target_id}       ) {${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$target_id}        = 0;}
                     if (!${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$target_id} ) {${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$target_id}  = 0;}
 
-                    ${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$target_id}       += 1;
-                    ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$target_id} += 1;
+                    ${${ $self->{Count} }{"0"}{$effect_name}}[5]{$target_id}       += 1;
+                    ${${ $self->{Count} }{"0"}{$chain_effect_name}}[5]{$target_id} += 1;
                     ${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$target_id}        += 1;
                     ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$target_id}  += 1;
                 }
 
             }elsif ($dd_text =~ /寸前で回避|失敗/) {
-                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[3]       += 1;
-                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[3] += 1;
+                ${${ $self->{Count} }{"0"}{$effect_name}}[3]       += 1;
+                ${${ $self->{Count} }{"0"}{$chain_effect_name}}[3] += 1;
                 ${${ $self->{Count} }{$e_no}{$effect_name}}[3]        += 1;
                 ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[3]  += 1;
 
             }elsif ($dd_text =~ /適応できるものはなかった|効果範囲に入ったものはなかった|上限に達している|効果が無かった/) {
-                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[4]       += 1;
-                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[4] += 1;
+                ${${ $self->{Count} }{"0"}{$effect_name}}[4]       += 1;
+                ${${ $self->{Count} }{"0"}{$chain_effect_name}}[4] += 1;
                 ${${ $self->{Count} }{$e_no}{$effect_name}}[4]        += 1;
                 ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[4]  += 1;
 
@@ -328,7 +328,7 @@ sub GetMeddlingSuccessRateData{
 #-----------------------------------#
 sub Output(){
     my $self = shift;
-    foreach my $e_no (sort keys(%{$self->{Count}})) {
+    foreach my $e_no (sort{$a <=> $b} keys(%{$self->{Count}})) {
         foreach my $effect_name (sort keys(%{${ $self->{Count} }{$e_no}})) {
             my $data = ${ $self->{Count} }{$e_no}{$effect_name};
             my $cards = join(",",);
@@ -339,12 +339,11 @@ sub Output(){
             my $sum = $count_all;
             $success_rate = $count_all > 0 ? $$data[2] / ($count_all) : 0;
 
-            my $output_e_no = $e_no eq "-ALL" ? 0 : $e_no;
-            $self->{Datas}{MeddlingSuccessRate}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $output_e_no, $$data[0], $$data[1], $$data[2], $$data[3], $$data[4], $sum, $success_rate)));
+            $self->{Datas}{MeddlingSuccessRate}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $e_no, $$data[0], $$data[1], $$data[2], $$data[3], $$data[4], $sum, $success_rate)));
             
-            foreach my $target_id (sort keys(%{$$data[5]})) {
+            foreach my $target_id (sort{$a <=> $b} keys(%{$$data[5]})) {
                 my $count = ${$$data[5]}{$target_id};
-                $self->{Datas}{MeddlingTarget}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $output_e_no, $$data[0], $$data[1], $target_id, $count)));
+                $self->{Datas}{MeddlingTarget}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $e_no, $$data[0], $$data[1], $target_id, $count)));
 
             }
         }
