@@ -310,7 +310,7 @@ sub GetCardUseData{
         foreach my $effect (keys(%{$self->{UseCard}{$e_no}})){
             my $data = $self->{UseCard}{$e_no}{$effect};
             $effect =~ s/Lv\d+//;
-            my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $$data[1], 0, 0]);
+            my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $$data[1], 0, 0, 0]);
             my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $p_no, $card_id, $$data[2], $$data[3]);
             $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
 

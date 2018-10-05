@@ -108,7 +108,7 @@ sub GetCardData{
         $lp     = $$td_nodes[5]->as_text;
         $fp     = $$td_nodes[6]->as_text;
 
-        $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(1, [$effect,$kind, $lv, $lp, $fp]);
+        $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(1, [$effect,$kind, $lv, $lp, $fp, $lp+$fp]);
 
         my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $s_no, $name, $possession, $card_id);
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, @datas));

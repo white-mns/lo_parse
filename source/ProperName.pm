@@ -77,9 +77,10 @@ sub Init{
                 "lv",
                 "lp",
                 "fp",
+                "lpfp",
     ];
     $output_file = "./output/data/". "card_data" . ".csv";
-    $self->{DataHandlers}{CardData}->Init($header_list, $output_file, [" ", -1, -1, -1, -1]);
+    $self->{DataHandlers}{CardData}->Init($header_list, $output_file, [" ", -1, -1, -1, -1, -1]);
 
     # 施設区分情報の初期化
     $header_list = [
