@@ -195,7 +195,7 @@ sub GetMeddlingSuccessRateData{
             if ($dd_node->tag ne "dd") {next;}
             while ($dd_node) {
                 my $dd_text = $dd_node->as_text;
-                if ($dd_text !~ /Action|が後に続く|が発動|が先導する/ || $dd_text =~ /の効果が発動/ ) {
+                if ($dd_text !~ /Action|が後に続く|が発動|が先導する/ ) {
                     $dd_node = $dd_node->left;
                     next;
                 }
@@ -250,7 +250,7 @@ sub GetMeddlingSuccessRateData{
         if ($text =~ /(.+)Lv(\d+)/) {
             my $effect = $1;
             my $lv     = $2;
-            $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0, 0]);
+            $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
         }
 
         ${${ $self->{Count} }{"0"}{$effect_name}}[0]       = $card_id;
@@ -284,7 +284,7 @@ sub GetMeddlingSuccessRateData{
                 if ($target_name =~ /(.+)Lv(\d+)/) {
                     my $target_effect = $1;
                     my $target_lv     = $2;
-                    my $target_id     = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$target_effect,"", $target_lv, 0, 0, 0]);
+                    my $target_id     = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$target_effect, 0, $target_lv, 0, 0, 0]);
 
                     if (!${${ $self->{Count} }{"0"}{$effect_name}}[5]{$target_id}      ) {${${ $self->{Count} }{"0"}{$effect_name}}[5]{$target_id}       = 0;}
                     if (!${${ $self->{Count} }{"0"}{$chain_effect_name}}[5]{$target_id}) {${${ $self->{Count} }{"0"}{$chain_effect_name}}[5]{$target_id} = 0;}
