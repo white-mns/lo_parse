@@ -158,6 +158,10 @@ sub Main {
             $upload->DeleteSameResult('meddling_success_rates', $result_no, $generate_no);
             $upload->Upload("./output/battle/meddling_success_rate_" . $result_no . "_" . $generate_no . ".csv", 'meddling_success_rates');
         }
+        if(ConstData::EXE_BATTLE_MEDDLING_TARGET)    {
+            $upload->DeleteSameResult('meddling_targets', $result_no, $generate_no);
+            $upload->Upload("./output/battle/meddling_target_" . $result_no . "_" . $generate_no . ".csv", 'meddling_targets');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
