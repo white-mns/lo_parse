@@ -286,7 +286,7 @@ sub GetCardUseData{
         if($dd_node->tag ne "dd"){next;}
         while($dd_node){
             my $dd_text = $dd_node->as_text;
-            if($dd_text !~ /Action|が後に続く|が発動|が先導する/ || $dd_text =~ /の効果が発動/ ){
+            if($dd_text !~ /Action|が後に続く|が発動|が先導する/ ){
                 $dd_node = $dd_node->left;
                 next;
             }
