@@ -40,6 +40,7 @@ sub Init{
     #初期化
     $self->{Count} = {};
     $self->{Datas}{MeddlingSuccessRate} = StoreData->new();
+    $self->{Datas}{MeddlingTarget}      = StoreData->new();
 
     my $header_list = "";
     
@@ -54,14 +55,25 @@ sub Init{
                 "no_apply",
                 "sum",
                 "rate",
-                "targets",
     ];
 
     $self->{Datas}{MeddlingSuccessRate}->Init($header_list);
+    
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "e_no",
+                "card_id",
+                "chain",
+                "target_id",
+                "count",
+    ];
 
+    $self->{Datas}{MeddlingTarget}->Init($header_list);
     
     #出力ファイル設定
     $self->{Datas}{MeddlingSuccessRate}->SetOutputName( "./output/battle/meddling_success_rate_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{MeddlingTarget}->SetOutputName     ( "./output/battle/meddling_target_"       . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
     return;
 }
@@ -239,8 +251,6 @@ sub GetMeddlingSuccessRateData{
             my $effect = $1;
             my $lv     = $2;
             $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0]);
-        } else {
-            $card_id   = $text;
         }
 
         ${${ $self->{Count} }{"-ALL"}{$effect_name}}[0]       = $card_id;
@@ -263,29 +273,41 @@ sub GetMeddlingSuccessRateData{
                 ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[2]++;
                 my $font_node_player = &GetNode::GetNode_Tag_Color_NoSize("font", "#009999", \$dd_node);
                 my $font_node_enemy = &GetNode::GetNode_Tag_Color_NoSize("font", "#666600", \$dd_node);
-                my $card = "";
+                my $target_name = "";
                 if (scalar(@$font_node_player)) {
-                    $card = $$font_node_player[0]->as_text;
+                    $target_name = $$font_node_player[0]->as_text;
                 }elsif (scalar(@$font_node_enemy)) {
-                    $card = $$font_node_enemy[0]->as_text;
+                    $target_name = $$font_node_enemy[0]->as_text;
                 }
-                $card =~ s/Act(\d+)：//;
-                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$card}       = 1;
-                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$card} = 1;
-                ${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$card}        = 1;
-                ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$card}  = 1;
+                $target_name =~ s/Act(\d+)：//;
+                # 対象カードと干渉回数を記録
+                if ($target_name =~ /(.+)Lv(\d+)/) {
+                    my $target_effect = $1;
+                    my $target_lv     = $2;
+                    my $target_id     = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$target_effect,"", $target_lv, 0, 0]);
+
+                    if (!${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$target_id}      ) {${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$target_id}       = 0;}
+                    if (!${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$target_id}) {${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$target_id} = 0;}
+                    if (!${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$target_id}       ) {${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$target_id}        = 0;}
+                    if (!${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$target_id} ) {${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$target_id}  = 0;}
+
+                    ${${ $self->{Count} }{"-ALL"}{$effect_name}}[5]{$target_id}       += 1;
+                    ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[5]{$target_id} += 1;
+                    ${${ $self->{Count} }{$e_no}{$effect_name}}[5]{$target_id}        += 1;
+                    ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[5]{$target_id}  += 1;
+                }
 
             }elsif ($dd_text =~ /寸前で回避|失敗/) {
-                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[3]++;
-                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[3]++;
-                ${${ $self->{Count} }{$e_no}{$effect_name}}[3]++;
-                ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[3]++;
+                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[3]       += 1;
+                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[3] += 1;
+                ${${ $self->{Count} }{$e_no}{$effect_name}}[3]        += 1;
+                ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[3]  += 1;
 
             }elsif ($dd_text =~ /適応できるものはなかった|効果範囲に入ったものはなかった|上限に達している|効果が無かった/) {
-                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[4]++;
-                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[4]++;
-                ${${ $self->{Count} }{$e_no}{$effect_name}}[4]++;
-                ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[4]++;
+                ${${ $self->{Count} }{"-ALL"}{$effect_name}}[4]       += 1;
+                ${${ $self->{Count} }{"-ALL"}{$chain_effect_name}}[4] += 1;
+                ${${ $self->{Count} }{$e_no}{$effect_name}}[4]        += 1;
+                ${${ $self->{Count} }{$e_no}{$chain_effect_name}}[4]  += 1;
 
             }elsif ($dd_text =~ /Blankカードに変換/) {
             }elsif ($dd_text =~ /罠が発動/) {
@@ -309,7 +331,7 @@ sub Output(){
     foreach my $e_no (sort keys(%{$self->{Count}})) {
         foreach my $effect_name (sort keys(%{${ $self->{Count} }{$e_no}})) {
             my $data = ${ $self->{Count} }{$e_no}{$effect_name};
-            my $cards = join(",",sort keys(%{$$data[5]}));
+            my $cards = join(",",);
 
             my $use_all   = $$data[2] + $$data[3] + $$data[4];
             my $count_all = $$data[2] + $$data[3];
@@ -318,8 +340,13 @@ sub Output(){
             $success_rate = $count_all > 0 ? $$data[2] / ($count_all) : 0;
 
             my $output_e_no = $e_no eq "-ALL" ? 0 : $e_no;
-            my @data = ($self->{ResultNo}, $self->{GenerateNo}, $output_e_no, $$data[0], $$data[1], $$data[2], $$data[3], $$data[4], $sum, $success_rate, $cards);
-            $self->{Datas}{MeddlingSuccessRate}->AddData(join(ConstData::SPLIT, @data));
+            $self->{Datas}{MeddlingSuccessRate}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $output_e_no, $$data[0], $$data[1], $$data[2], $$data[3], $$data[4], $sum, $success_rate)));
+            
+            foreach my $target_id (sort keys(%{$$data[5]})) {
+                my $count = ${$$data[5]}{$target_id};
+                $self->{Datas}{MeddlingTarget}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $output_e_no, $$data[0], $$data[1], $target_id, $count)));
+
+            }
         }
     }
     foreach my $object( values %{ $self->{Datas} } ) {
