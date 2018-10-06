@@ -31,6 +31,7 @@ require "./source/chara/DropMinSubject.pm";
 require "./source/chara/Place.pm";
 require "./source/chara/DevelopmentResult.pm";
 require "./source/chara/Training.pm";
+require "./source/chara/ItemUse.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -75,6 +76,7 @@ sub Init{
     if (ConstData::EXE_CHARA_PLACE)              { $self->{DataHandlers}{Place}             = Place->new();}
     if (ConstData::EXE_CHARA_DEVELOPMENT_RESULT) { $self->{DataHandlers}{DevelopmentResult} = DevelopmentResult->new();}
     if (ConstData::EXE_CHARA_TRAINING)           { $self->{DataHandlers}{Training}          = Training->new();}
+    if (ConstData::EXE_CHARA_ITEM_USE)           { $self->{DataHandlers}{ItemUse}           = ItemUse->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -167,6 +169,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Place}))             {$self->{DataHandlers}{Place}->GetData($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{DevelopmentResult})) {$self->{DataHandlers}{DevelopmentResult}->GetData($e_no, $b_re2_nodes, $div_heading_nodes, $table_width345_nodes)};
     if (exists($self->{DataHandlers}{Training}))          {$self->{DataHandlers}{Training}->GetData($e_no, $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{ItemUse}))           {$self->{DataHandlers}{ItemUse}->GetData($e_no, $b_re2_nodes)};
 
     $tree = $tree->delete;
 }

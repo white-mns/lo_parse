@@ -267,7 +267,7 @@ sub GetCardUseData{
 
         }else{
             my $parent_text = $node->parent->as_text;
-            if ($parent_text !~ /発動に失敗！\(発動率：(\d+)％\)/) {next;}
+            if ($parent_text !~ /制御に失敗！\(発動率：(\d+)％\)/) {next;}
             $success = 0;
             $control = $1;
         }
@@ -286,7 +286,7 @@ sub GetCardUseData{
         if($dd_node->tag ne "dd"){next;}
         while($dd_node){
             my $dd_text = $dd_node->as_text;
-            if($dd_text !~ /Action|が後に続く|が発動|が先導する/ || $dd_text =~ /の効果が発動/ ){
+            if($dd_text !~ /Action|が後に続く|が発動|が先導する/ ){
                 $dd_node = $dd_node->left;
                 next;
             }
@@ -310,7 +310,7 @@ sub GetCardUseData{
         foreach my $effect (keys(%{$self->{UseCard}{$e_no}})){
             my $data = $self->{UseCard}{$e_no}{$effect};
             $effect =~ s/Lv\d+//;
-            my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $$data[1], 0, 0]);
+            my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $$data[1], 0, 0, 0]);
             my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $p_no, $card_id, $$data[2], $$data[3]);
             $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
 

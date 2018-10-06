@@ -90,11 +90,13 @@ sub Init{
 sub ReadLastData(){
     my $self      = shift;
     
+    $self->{LastGenerateNo} = 0;
     # 前回結果の確定版ファイルを探索
     for (my $i=5; $i>=0; $i--){
         my $file_name = "./output/chara/drop_min_subject_" . ($self->{ResultNo} - 1) . "_" . $i . ".csv" ;
         if(-f $file_name) {
-            $self->{LastGenerateNo} = $i;    
+            $self->{LastGenerateNo} = $i;
+            last;
         }
     }
 

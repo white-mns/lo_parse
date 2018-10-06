@@ -52,7 +52,7 @@ sub Main {
             $upload->DeleteAll('card_data');
             $upload->Upload("./output/data/card_data.csv", 'card_data');
         }
-        if(ConstData::EXE_DATA_CARD_DATA){
+        if(ConstData::EXE_DATA_FACILITY_DIVISION_DATA){
             $upload->DeleteAll('facility_division_data');
             $upload->Upload("./output/data/facility_division_data.csv", 'facility_division_data');
         }
@@ -122,6 +122,10 @@ sub Main {
             $upload->DeleteSameResult('trainings', $result_no, $generate_no);
             $upload->Upload("./output/chara/training_" . $result_no . "_" . $generate_no . ".csv", 'trainings');
         }
+        if(ConstData::EXE_CHARA_ITEM_USE){
+            $upload->DeleteSameResult('item_uses', $result_no, $generate_no);
+            $upload->Upload("./output/chara/item_use_" . $result_no . "_" . $generate_no . ".csv", 'item_uses');
+        }
     }
     if(ConstData::EXE_NEW){
         if(ConstData::EXE_NEW_GETCARD)    {
@@ -131,6 +135,10 @@ sub Main {
         if(ConstData::EXE_NEW_CARD_USE)    {
             $upload->DeleteSameResult('new_card_uses', $result_no, $generate_no);
             $upload->Upload("./output/new/card_use_" . $result_no . "_" . $generate_no . ".csv", 'new_card_uses');
+        }
+        if(ConstData::EXE_NEW_ITEM_USE)    {
+            $upload->DeleteSameResult('new_item_uses', $result_no, $generate_no);
+            $upload->Upload("./output/new/item_use_" . $result_no . "_" . $generate_no . ".csv", 'new_item_uses');
         }
     }
     if(ConstData::EXE_BATTLE){
@@ -145,6 +153,14 @@ sub Main {
         if(ConstData::EXE_BATTLE_CARD_USER)    {
             $upload->DeleteSameResult('card_users', $result_no, $generate_no);
             $upload->Upload("./output/battle/card_user_" . $result_no . "_" . $generate_no . ".csv", 'card_users');
+        }
+        if(ConstData::EXE_BATTLE_MEDDLING_SUCCESS_RATE)    {
+            $upload->DeleteSameResult('meddling_success_rates', $result_no, $generate_no);
+            $upload->Upload("./output/battle/meddling_success_rate_" . $result_no . "_" . $generate_no . ".csv", 'meddling_success_rates');
+        }
+        if(ConstData::EXE_BATTLE_MEDDLING_TARGET)    {
+            $upload->DeleteSameResult('meddling_targets', $result_no, $generate_no);
+            $upload->Upload("./output/battle/meddling_target_" . $result_no . "_" . $generate_no . ".csv", 'meddling_targets');
         }
     }
 
