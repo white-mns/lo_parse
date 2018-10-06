@@ -215,19 +215,15 @@ sub GetMeddlingSuccessRateData{
         $text =~ s/！//;
         $text =~ s/\s//g;
 
-        # 干渉カードの解析
-        my $chain_effect_name = $text;
-        if ($chain_effect_name =~ /：/) { # データ出力時に文字列ソートでカード効果名順にするため、カード効果名が文字列の頭に来るように入れ替え
-            my @chain_effect_name_split = split(/：/, $chain_effect_name);
-            $chain_effect_name = $chain_effect_name_split[1] . "：" . $chain_effect_name_split[0];
-        }
-
         my $chain_num = 0;
         if ($text =~ s/Chain(\d+)：//) {
             $chain_num = $1;
         }
 
-        my $effect_name =  "/" . $text; # 全Chain集計用に、通常の先発発動と混ざらないよう接頭詞を付けておく
+        # 干渉カードの解析
+        my $chain_effect_name = $text . "：" . sprintf("%03d", $chain_num);
+        my $effect_name = $text;
+
         if (!${ $self->{Count} }{"0"})   { ${ $self->{Count} }{"0"}   = {}; }
         if (!${ $self->{Count} }{$e_no}) { ${ $self->{Count} }{$e_no} = {}; }
 
