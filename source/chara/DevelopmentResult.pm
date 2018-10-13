@@ -150,15 +150,15 @@ sub GetDevelopmentResult{
                 if ($right_node !~ /HASH/) {next;}
                 if ($right_node->tag eq "hr") {last;}
 
-                if ($right_node->as_text =~ /の勝利！！/) {
-                    return  1;
-
-                }elsif ($right_node->as_text =~ /勝負は決まらなかった・・・/) {
-                    return  0;
-
-                }elsif ($right_node->as_text =~ /BUGの勝利！！/) {
+                if ($right_node->as_text =~ /BUGの勝利！！/) {
                     return -1;
                     
+                } elsif ($right_node->as_text =~ /の勝利！！/) {
+                    return  1;
+
+                } elsif ($right_node->as_text =~ /勝負は決まらなかった・・・/) {
+                    return  0;
+
                 }
             }
             return -2;
