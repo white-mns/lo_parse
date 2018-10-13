@@ -48,6 +48,10 @@ sub Main {
             $upload->DeleteAll('proper_names');
             $upload->Upload("./output/data/proper_name.csv", 'proper_names');
         }
+        if(ConstData::EXE_DATA_MISSION_NAME){
+            $upload->DeleteAll('mission_names');
+            $upload->Upload("./output/data/mission_name.csv", 'mission_names');
+        }
         if(ConstData::EXE_DATA_CARD_DATA){
             $upload->DeleteAll('card_data');
             $upload->Upload("./output/data/card_data.csv", 'card_data');
@@ -125,6 +129,10 @@ sub Main {
         if(ConstData::EXE_CHARA_ITEM_USE){
             $upload->DeleteSameResult('item_uses', $result_no, $generate_no);
             $upload->Upload("./output/chara/item_use_" . $result_no . "_" . $generate_no . ".csv", 'item_uses');
+        }
+        if(ConstData::EXE_CHARA_MISSION){
+            $upload->DeleteSameResult('missions', $result_no, $generate_no);
+            $upload->Upload("./output/chara/mission_" . $result_no . "_" . $generate_no . ".csv", 'missions');
         }
     }
     if(ConstData::EXE_NEW){

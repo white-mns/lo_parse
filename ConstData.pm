@@ -36,6 +36,7 @@ use warnings;
         use constant EXE_CHARA_DEVELOPMENT_RESULT     => 1;
         use constant EXE_CHARA_TRAINING               => 1;
         use constant EXE_CHARA_ITEM_USE               => 1;
+        use constant EXE_CHARA_MISSION                => 1;
     use constant EXE_BATTLE               => 1;
         use constant EXE_BATTLE_CARD_USE              => 1;
         use constant EXE_BATTLE_MEDDLING_SUCCESS_RATE => 1;

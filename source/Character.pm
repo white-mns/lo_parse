@@ -32,6 +32,7 @@ require "./source/chara/Place.pm";
 require "./source/chara/DevelopmentResult.pm";
 require "./source/chara/Training.pm";
 require "./source/chara/ItemUse.pm";
+require "./source/chara/Mission.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -77,6 +78,7 @@ sub Init{
     if (ConstData::EXE_CHARA_DEVELOPMENT_RESULT) { $self->{DataHandlers}{DevelopmentResult} = DevelopmentResult->new();}
     if (ConstData::EXE_CHARA_TRAINING)           { $self->{DataHandlers}{Training}          = Training->new();}
     if (ConstData::EXE_CHARA_ITEM_USE)           { $self->{DataHandlers}{ItemUse}           = ItemUse->new();}
+    if (ConstData::EXE_CHARA_MISSION)            { $self->{DataHandlers}{Mission}           = Mission->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -153,13 +155,13 @@ sub ParsePage{
     my $b_re2_nodes = &GetNode::GetNode_Tag_Attr("b", "id", "re2", \$tree);
     my $div_heading_nodes = &GetNode::GetNode_Tag_Attr("div", "class", "heading", \$tree);
     my $table_width345_nodes    = &GetNode::GetNode_Tag_Attr("table", "width", "345", \$tree);
-    
 
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}))              {$self->{DataHandlers}{Name}->GetData($e_no, $$span_in3_nodes[0])};
     if (exists($self->{DataHandlers}{Item}))              {$self->{DataHandlers}{Item}->GetData($e_no, $$table_ma_node_hash{"Item"})};
     if (exists($self->{DataHandlers}{Card}))              {$self->{DataHandlers}{Card}->GetData($e_no, $$table_ma_node_hash{"Card"})};
     if (exists($self->{DataHandlers}{Facility}))          {$self->{DataHandlers}{Facility}->GetData($e_no, $$table_ma_node_hash{"Facility"})};
+    if (exists($self->{DataHandlers}{Mission}))           {$self->{DataHandlers}{Mission}->GetData($e_no, $$table_ma_node_hash{"Mission"}, $$table_ma_node_hash{"MissionA"})};
     if (exists($self->{DataHandlers}{Profile}))           {$self->{DataHandlers}{Profile}->GetData($e_no, $$table_in_ma_nodes[2])};
     if (exists($self->{DataHandlers}{Subject}))           {$self->{DataHandlers}{Subject}->GetData($e_no, $$table_in_ma_nodes[1])};
     if (exists($self->{DataHandlers}{Parameter}))         {$self->{DataHandlers}{Parameter}->GetData($e_no, $$table_in_ma_nodes[1])};
@@ -201,6 +203,12 @@ sub DivideTableMaNodes{
 
         }elsif($td0_text =~ "Ano"){
             $$table_ma_node_hash{"Facility"} = $table_ma_node;
+
+        }elsif($td0_text =~ "Mission List"){
+            $$table_ma_node_hash{"Mission"} = $table_ma_node;
+
+        }elsif($td0_text =~ "Mission#A List"){
+            $$table_ma_node_hash{"MissionA"} = $table_ma_node;
         }
     }
 }
