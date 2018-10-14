@@ -134,6 +134,10 @@ sub Main {
             $upload->DeleteSameResult('missions', $result_no, $generate_no);
             $upload->Upload("./output/chara/mission_" . $result_no . "_" . $generate_no . ".csv", 'missions');
         }
+        if(ConstData::EXE_CHARA_MANUFACTURE){
+            $upload->DeleteSameResult('manufactures', $result_no, $generate_no);
+            $upload->Upload("./output/chara/manufacture_" . $result_no . "_" . $generate_no . ".csv", 'manufactures');
+        }
     }
     if(ConstData::EXE_NEW){
         if(ConstData::EXE_NEW_GETCARD)    {
