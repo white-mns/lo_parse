@@ -104,7 +104,7 @@ sub GetManufactureData{
                 if ($node =~ /HASH/ && ($node->tag eq "b" || $node->tag eq "hr")) { last;}
 
                 if ($node =~ /HASH/ && $node->tag eq "span" && $node->attr("id") eq "ho1") {
-                    ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $item_name, $usage, $cost, $kind, $potency, $precision, $total) = ("", 0, -1, -1, "", -1, -1, 0, 0, -1, -1, -1, -1);
+                    ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $item_name, $usage, $cost, $kind, $effect, $effect_lv, $potency, $precision, $total) = ("", 0, -1, -1, "", -1, -1, 0, 0, -1, -1, -1, -1);
 
                     if ($node->as_text =~ /(.+)Lv(\d+)：(.+)/) {
                         $facility_effect = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
