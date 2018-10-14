@@ -3,14 +3,38 @@
 CURENT=`pwd`	#実行ディレクトリの保存
 cd `dirname $0`	#解析コードのあるディレクトリで作業をする
 
+#------------------------------------------------------------------
+# 更新回数、再更新番号の定義確認、設定
+
 RESULT_NO=$1
 GENERATE_NO=$2
-
-LZH_NAME=${RESULT_NO}_$GENERATE_NO
 
 if [ -z "$RESULT_NO" ]; then
     exit
 fi
+
+# 再更新番号の指定がない場合、取得済みで最も再更新番号の大きいファイルを探索して実行する
+if [ -z "$2" ]; then
+    for ((GENERATE_NO=5;GENERATE_NO >=0;GENERATE_NO--)) {
+        
+        LZH_NAME=${RESULT_NO}_$GENERATE_NO
+
+        echo "test $LZH_NAME"
+        if [ -f ./data/utf/result${LZH_NAME}.lzh ]; then
+            echo "execute $LZH_NAME"
+            break
+        fi
+    }
+fi
+
+if [ $GENERATE_NO -lt 0 ]; then
+    exit
+fi
+
+LZH_NAME=${RESULT_NO}_$GENERATE_NO
+
+#------------------------------------------------------------------
+
 
 if [ ! -f ./data/orig/result${LZH_NAME}.lzh ]; then
     wget -O data/orig/result${LZH_NAME}.lzh http://ykamiya.ciao.jp/file/result${RESULT_NO}.lzh
