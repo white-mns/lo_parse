@@ -33,6 +33,7 @@ require "./source/chara/Place.pm";
 require "./source/chara/DevelopmentResult.pm";
 require "./source/chara/Training.pm";
 require "./source/chara/ItemUse.pm";
+require "./source/chara/FacilityUse.pm";
 require "./source/chara/Manufacture.pm";
 
 use ConstData;        #定数呼び出し
@@ -80,6 +81,7 @@ sub Init{
     if (ConstData::EXE_CHARA_DEVELOPMENT_RESULT) { $self->{DataHandlers}{DevelopmentResult} = DevelopmentResult->new();}
     if (ConstData::EXE_CHARA_TRAINING)           { $self->{DataHandlers}{Training}          = Training->new();}
     if (ConstData::EXE_CHARA_ITEM_USE)           { $self->{DataHandlers}{ItemUse}           = ItemUse->new();}
+    if (ConstData::EXE_CHARA_FACILITY_USE)       { $self->{DataHandlers}{FacilityUse}       = FacilityUse->new();}
     if (ConstData::EXE_CHARA_MANUFACTURE)        { $self->{DataHandlers}{Manufacture}       = Manufacture->new();}
 
     #初期化処理
@@ -174,6 +176,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{DevelopmentResult})) {$self->{DataHandlers}{DevelopmentResult}->GetData($e_no, $b_re2_nodes, $div_heading_nodes, $table_width345_nodes)};
     if (exists($self->{DataHandlers}{Training}))          {$self->{DataHandlers}{Training}->GetData         ($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{ItemUse}))           {$self->{DataHandlers}{ItemUse}->GetData          ($e_no, $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{FacilityUse}))       {$self->{DataHandlers}{FacilityUse}->GetData      ($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{Manufacture}))       {$self->{DataHandlers}{Manufacture}->GetData      ($e_no, $b_re2_nodes)};
 
     $tree = $tree->delete;

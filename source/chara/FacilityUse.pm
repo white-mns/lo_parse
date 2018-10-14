@@ -1,5 +1,5 @@
 #===================================================================
-#        作製結果取得パッケージ
+#        施設利用取得パッケージ
 #-------------------------------------------------------------------
 #            (C) 2018 @white_mns
 #===================================================================
@@ -17,7 +17,7 @@ use source::lib::GetNode;
 #------------------------------------------------------------------#
 #    パッケージの定義
 #------------------------------------------------------------------#     
-package Manufacture;
+package FacilityUse;
 
 #-----------------------------------#
 #    コンストラクタ
@@ -38,7 +38,7 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     #初期化
-    $self->{Datas}{Manufacture}    = StoreData->new();
+    $self->{Datas}{FacilityUse}    = StoreData->new();
 
     my $header_list = "";
    
@@ -50,20 +50,14 @@ sub Init{
                 "facility_effect",
                 "facility_lv",
                 "facility_e_no",
-                "item_name",
                 "usage",
                 "cost",
-                "kind",
-                "effect",
-                "effect_lv",
-                "potency",
-                "precision",
-                "total",
+                "success",
     ];
-    $self->{Datas}{Manufacture}->Init($header_list);
+    $self->{Datas}{FacilityUse}->Init($header_list);
    
     #出力ファイル設定
-    $self->{Datas}{Manufacture}->SetOutputName   ( "./output/chara/manufacture_"   . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{FacilityUse}->SetOutputName   ( "./output/chara/facility_use_"   . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
 
     return;
 }
@@ -71,7 +65,7 @@ sub Init{
 #-----------------------------------#
 #    データ取得
 #------------------------------------
-#    引数｜e_no,名前データノード
+#    引数｜e_no,名前データノード,太字データノード
 #-----------------------------------#
 sub GetData{
     my $self    = shift;
@@ -80,16 +74,16 @@ sub GetData{
     
     $self->{ENo} = $e_no;
 
-    $self->GetManufactureData($b_re2_nodes);
+    $self->GetFacilityUseData($b_re2_nodes);
     
     return;
 }
 #-----------------------------------#
-#    作製データ取得
+#    施設利用データ取得
 #------------------------------------
 #    引数｜太字データノード
 #-----------------------------------#
-sub GetManufactureData{
+sub GetFacilityUseData{
     my $self  = shift;
     my $b_re2_nodes = shift;
     
@@ -97,14 +91,14 @@ sub GetManufactureData{
 
         my $b_re2_text = $b_re2_node->as_text;
         if ($b_re2_text =~ /　施設　/) {
-            my ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $item_name, $usage, $cost, $kind, $effect, $effect_lv, $potency, $precision, $total) = ("", 0, -1, -1, "", -1, -1, 0, 0, -1, -1, -1, -1);
+            my ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success) = ("", 0, -1, -1, -1, -1, 1);
             my @right_nodes = $b_re2_node->right;
 
             foreach my $node (@right_nodes) {
                 if ($node =~ /HASH/ && ($node->tag eq "b" || $node->tag eq "hr")) { last;}
 
                 if ($node =~ /HASH/ && $node->tag eq "span" && $node->attr("id") eq "ho1") {
-                    ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $item_name, $usage, $cost, $kind, $effect, $effect_lv, $potency, $precision, $total) = ("", 0, -1, -1, "", -1, -1, 0, 0, -1, -1, -1, -1);
+                    ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success) = ("", 0, -1, -1, -1, -1, 1);
 
                     if ($node->as_text =~ /(.+)Lv(\d+)：(.+)/) {
                         $facility_effect = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
@@ -121,23 +115,16 @@ sub GetManufactureData{
                     $usage = $1;
                 }
 
-                if ($node =~ /作製費(\d+)Tip/) {
+                if ($node =~ /費(\d+)Tip/) {
                     $cost = $1;
                 }
 
-                if ($node =~ /HASH/ && $node->tag eq "span" && $node->attr("id") eq "it1") {
-                    $item_name = $node->as_text;
+                if ($node =~ /が足りなかった。/) {
+                    $success = -1;
                 }
 
-                if ($node =~ /を作製完了。（\+Ino\d+ (.+)\/(.+)Lv(\d+)\/効力(\d+)\/精度(\d+)/) {
-                    $kind      = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
-                    $effect    = $self->{CommonDatas}{ProperName}->GetOrAddId($2);
-                    $effect_lv = $3+0;
-                    $potency   = $4+0;
-                    $precision = $5+0;
-                    $total     = $potency + $precision;
-
-                    $self->{Datas}{Manufacture}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $facility_name, $facility_effect, $facility_lv, $facility_e_no, $item_name, $usage, $cost, $kind, $effect, $effect_lv, $potency, $precision, $total) ));
+                if ($node =~ /（\+Ino\d+/ || $node =~ /が足りなかった。/) {
+                    $self->{Datas}{FacilityUse}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success) ));
                 }
             }        
         }

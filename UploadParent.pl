@@ -138,6 +138,10 @@ sub Main {
             $upload->DeleteSameResult('manufactures', $result_no, $generate_no);
             $upload->Upload("./output/chara/manufacture_" . $result_no . "_" . $generate_no . ".csv", 'manufactures');
         }
+        if(ConstData::EXE_CHARA_FACILITY_USE){
+            $upload->DeleteSameResult('facility_uses', $result_no, $generate_no);
+            $upload->Upload("./output/chara/facility_use_" . $result_no . "_" . $generate_no . ".csv", 'facility_uses');
+        }
     }
     if(ConstData::EXE_NEW){
         if(ConstData::EXE_NEW_GETCARD)    {
