@@ -50,11 +50,13 @@ sub Init{
 
     #インスタンス作成
     $self->{DataHandlers}{ProperName}           = StoreProperName->new();
+    $self->{DataHandlers}{MissionName}          = StoreProperName->new();
     $self->{DataHandlers}{CardData}             = StoreProperCardData->new();
     $self->{DataHandlers}{FacilityDivisionData} = StoreProperData->new();
 
     #他パッケージへの引き渡し用インスタンス
     $self->{CommonDatas}{ProperName}           = $self->{DataHandlers}{ProperName};
+    $self->{CommonDatas}{MissionName}          = $self->{DataHandlers}{MissionName};
     $self->{CommonDatas}{CardData}             = $self->{DataHandlers}{CardData};
     $self->{CommonDatas}{FacilityDivisionData} = $self->{DataHandlers}{FacilityDivisionData};
 
@@ -69,6 +71,14 @@ sub Init{
     $output_file = "./output/data/". "proper_name" . ".csv";
     $self->{DataHandlers}{ProperName}->Init($header_list, $output_file," ");
     
+    # ミッション名の初期化
+    $header_list = [
+                "mission_id",
+                "name",
+    ];
+    $output_file = "./output/data/". "mission_name" . ".csv";
+    $self->{DataHandlers}{MissionName}->Init($header_list, $output_file," ");
+
     # カード情報の初期化
     $header_list = [
                 "card_id",

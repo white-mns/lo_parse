@@ -240,7 +240,7 @@ sub GetEventCardData{
     foreach my $right_node (@right_nodes) {
         if ($right_node =~ /HASH/ && ($right_node->tag eq "b" || $right_node->tag eq "hr")) { last;}
 
-        if ($right_node =~ /HASH/ && $right_node->tag eq "span" && $right_node->as_text =~ m!(.+?)【(.{2,20)Lv(\d+?)】!) {
+        if ($right_node =~ /HASH/ && $right_node->tag eq "span" && $right_node->as_text =~ m!(.+?)【(.{2,20})Lv(\d+?)】!) {
             $name     = $1;
             $effect   = $2;
             $lv       = $3;

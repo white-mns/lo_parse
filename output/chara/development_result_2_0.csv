@@ -44,7 +44,7 @@ result_no	generate_no	e_no	development_result	bellicose	party_num
 2	0	51	1	4	5
 2	0	52	1	2	5
 2	0	53	1	5	2
-2	0	54	1	2	1
+2	0	54	-1	2	1
 2	0	55	1	4	5
 2	0	56	1	5	3
 2	0	57	1	4	4
@@ -89,7 +89,7 @@ result_no	generate_no	e_no	development_result	bellicose	party_num
 2	0	107	1	5	5
 2	0	108	1	5	5
 2	0	109	1	2	5
-2	0	110	1	5	1
+2	0	110	-1	5	1
 2	0	112	1	5	5
 2	0	113	1	5	5
 2	0	114	1	4	5

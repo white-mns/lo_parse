@@ -1,4 +1,5 @@
 #!/bin/bash
+# コマンドページ取得プログラム
 
 CURENT=`pwd`	#実行ディレクトリの保存
 cd `dirname $0`	#解析コードのあるディレクトリで作業をする
@@ -22,7 +23,7 @@ for ((E_NO=1;E_NO <= 400;E_NO++)) {
     }
 }
 
-grep データは存在しません！ -rl ./data/setting/setting${RESULT_NO} | xargs rm
+grep データは存在しません！ -rl ./data/setting/setting${RESULT_NO} | xargs rm # 存在しないキャラのファイルを削除
 
 # ファイルを圧縮
 if [ -d ./data/setting/setting${RESULT_NO} ]; then
