@@ -42,6 +42,7 @@ use warnings;
         use constant EXE_CHARA_ITEM_USE               => 1;
         use constant EXE_CHARA_MISSION                => 1;
         use constant EXE_CHARA_MANUFACTURE            => 1;
+        use constant EXE_CHARA_FACILITY_USE           => 1;
     use constant EXE_BATTLE                  => 1;
         use constant EXE_BATTLE_CARD_USE_PAGE         => 1;
         use constant EXE_BATTLE_CARD_USER             => 1;
