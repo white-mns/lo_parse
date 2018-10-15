@@ -45,8 +45,16 @@ if [ ! -f ./data/utf/result${LZH_NAME}.lzh ] || [ ! -s ./data/utf/result${LZH_NA
 fi
 
 #------------------------------------------------------------------
+# コマンドファイルを展開
+if [ -f ./data/setting/setting${RESULT_NO}.lzh ]; then
+    echo "open setting..."
+    cd ./data/setting
+    lha x -q setting${RESULT_NO}.lzh
+    cd ../../
+fi
 # 圧縮結果ファイルを展開
 if [ -f ./data/utf/result${LZH_NAME}.lzh ]; then
+    echo "open archive..."
     
     cd ./data/utf
 
@@ -65,13 +73,19 @@ if [ -f ./data/utf/result${LZH_NAME}.lzh ]; then
 #------------------------------------------------------------------
 # 展開したファイルを削除
     
+    echo "rm archive..."
     cd ./data/utf
-
-    echo "rm utf..."
     rm  -rf result${LZH_NAME}
-        
     cd ../../
 
+fi
+
+# 展開したコマンドファイルを削除
+if [ -d ./data/setting/setting${RESULT_NO} ]; then
+    echo "rm setting..."
+    cd ./data/setting
+    rm  -rf setting${RESULT_NO}
+    cd ../../
 fi
 
 cd $CURENT  #元のディレクトリに戻る
