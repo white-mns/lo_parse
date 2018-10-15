@@ -168,7 +168,7 @@ sub GetCreateCardData{
         }elsif ($right_node =~ m!生成に成功♪（\+Sno\d+?：(.+?) Lv(\d+?)）!) {
             $effect   = $1;
             $lv       = $2;
-            $card_id  = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0]);
+            $card_id  = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
             $get_type = 1;
 
             my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $name, $card_id, $get_type);
@@ -211,7 +211,7 @@ sub GetDropCardData{
             $name     = $1;
             $effect   = $2;
             $lv       = $3;
-            $card_id  = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0]);
+            $card_id  = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
             $get_type = 2;
 
             my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $name, $card_id, $get_type);
@@ -244,7 +244,7 @@ sub GetEventCardData{
             $name     = $1;
             $effect   = $2;
             $lv       = $3;
-            $card_id  = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0]);
+            $card_id  = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
             $get_type = 3;
 
             $self->RecordNewGetCardData($card_id, 0);

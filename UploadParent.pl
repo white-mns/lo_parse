@@ -143,6 +143,12 @@ sub Main {
             $upload->Upload("./output/chara/facility_use_" . $result_no . "_" . $generate_no . ".csv", 'facility_uses');
         }
     }
+    if(ConstData::EXE_COMMAND){
+        if(ConstData::EXE_COMMAND_ACTION)    {
+            $upload->DeleteSameResult('command_actions', $result_no, $generate_no);
+            $upload->Upload("./output/command/action_" . $result_no . "_" . $generate_no . ".csv", 'command_actions');
+        }
+    }
     if(ConstData::EXE_NEW){
         if(ConstData::EXE_NEW_GETCARD)    {
             $upload->DeleteSameResult('new_get_cards', $result_no, $generate_no);
