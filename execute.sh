@@ -46,10 +46,10 @@ fi
 
 #------------------------------------------------------------------
 # コマンドファイルを展開
-if [ -f ./data/setting/setting${RESULT_NO}.lzh ]; then
-    echo "open setting..."
-    cd ./data/setting
-    lha x -q setting${RESULT_NO}.lzh
+if [ -f ./data/command/command${RESULT_NO}.lzh ]; then
+    echo "open command..."
+    cd ./data/command
+    lha x -q command${RESULT_NO}.lzh
     cd ../../
 fi
 # 圧縮結果ファイルを展開
@@ -81,10 +81,10 @@ if [ -f ./data/utf/result${LZH_NAME}.lzh ]; then
 fi
 
 # 展開したコマンドファイルを削除
-if [ -d ./data/setting/setting${RESULT_NO} ]; then
-    echo "rm setting..."
-    cd ./data/setting
-    rm  -rf setting${RESULT_NO}
+if [ -d ./data/command/command${RESULT_NO} ]; then
+    echo "rm command..."
+    cd ./data/command
+    rm  -rf command${RESULT_NO}
     cd ../../
 fi
 
