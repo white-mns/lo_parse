@@ -8,7 +8,7 @@ for ((RESULT_NO=$1;RESULT_NO <= $2;RESULT_NO++)) {
         
         LZH_NAME=${RESULT_NO}_$GENERATE_NO
 
-        if [ -f ./data/orig/result${LZH_NAME}.lzh ]; then
+        if [ -f ./data/utf/result${LZH_NAME}.lzh ]; then
             echo "start $LZH_NAME"
             ./execute.sh $RESULT_NO $GENERATE_NO
             break
