@@ -34,50 +34,41 @@ fi
 LZH_NAME=${RESULT_NO}_$GENERATE_NO
 
 #------------------------------------------------------------------
-
-
-if [ ! -f ./data/orig/result${LZH_NAME}.lzh ]; then
-    wget -O data/orig/result${LZH_NAME}.lzh http://ykamiya.ciao.jp/file/result${RESULT_NO}.lzh
+# 圧縮結果をダウンロード。なければ各個アクセスするシェルスクリプトを実行
+if [ ! -f ./data/utf/result${LZH_NAME}.lzh ]; then
+    wget -O data/utf/result${LZH_NAME}.lzh http://ykamiya.ciao.jp/file/result${RESULT_NO}.lzh
     :
 fi
 
-if [ ! -f ./data/orig/result${LZH_NAME}.lzh ] || [ ! -s ./data/orig/result${LZH_NAME}.lzh ]; then
+if [ ! -f ./data/utf/result${LZH_NAME}.lzh ] || [ ! -s ./data/utf/result${LZH_NAME}.lzh ]; then
     ./_result_download.sh $RESULT_NO $GENERATE_NO
 fi
 
-if [ -f ./data/orig/result${LZH_NAME}.lzh ]; then
+#------------------------------------------------------------------
+# 圧縮結果ファイルを展開
+if [ -f ./data/utf/result${LZH_NAME}.lzh ]; then
     
-    cd ./data/orig
+    cd ./data/utf
 
     lha x -q result${LZH_NAME}.lzh
-    if [ -d result${RESULT_NO} ]; then
+    if [ -d result${RESULT_NO} ]; then # 前期は半々の割合でresultの後に番号がついていなかったので分岐処理
         mv result${RESULT_NO}  result${LZH_NAME}
     else
         mv result result${LZH_NAME}
     fi
 
-    cp -r  result${LZH_NAME} ../utf/result${LZH_NAME}
-    echo "rm orig..."
-    rm  -rf result${LZH_NAME}
+    cd ../../
 
-    echo "copy directory..."
-    cd ../utf/result${LZH_NAME}/    
-    cd ../../../
+    perl ./GetData.pl      $RESULT_NO $GENERATE_NO
+    perl ./UploadParent.pl $RESULT_NO $GENERATE_NO
 
-fi
-
-perl ./GetData.pl $1 $2
-perl ./UploadParent.pl $1 $2
-
-# UTFファイルを圧縮
-if [ -d ./data/utf/result${LZH_NAME} ]; then
+#------------------------------------------------------------------
+# 展開したファイルを削除
     
-    cd ./data/utf/
+    cd ./data/utf
 
-    echo "utf lzh..."
-    lha -cq result${LZH_NAME}.lzh result${LZH_NAME}
     echo "rm utf..."
-    rm  -r result${LZH_NAME}
+    rm  -rf result${LZH_NAME}
         
     cd ../../
 
