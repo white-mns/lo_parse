@@ -38,7 +38,12 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     #初期化
-    $self->{Datas}{Data} = StoreData->new();
+    $self->{Datas}{Action}     = StoreData->new();
+    $self->{Datas}{ActionRank} = StoreData->new();
+
+    $self->{ActionRank}    = {};
+    $self->{ActionRank}{0} = {};
+    $self->{ActionRank}{1} = {};
 
     my $header_list = "";
    
@@ -53,10 +58,21 @@ sub Init{
                 "card_id",
     ];
 
-    $self->{Datas}{Data}->Init($header_list);
+    $self->{Datas}{Action}->Init($header_list);
     
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "card_id",
+                "rank_type",
+                "rank",
+                "num",
+    ];
+
+    $self->{Datas}{ActionRank}->Init($header_list);
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/command/action_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Action}->SetOutputName    ( "./output/command/action_"         . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{ActionRank}->SetOutputName( "./output/command/action_ranking_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     return;
 }
 
@@ -80,6 +96,7 @@ sub GetData{
     
     return;
 }
+
 #-----------------------------------#
 #    アイテムデータ取得
 #------------------------------------
@@ -98,17 +115,17 @@ sub GetActionData{
     #tdの抜出
     foreach my $tr_node (@$tr_nodes){
         my ($act, $s_no, $timing, $gowait, $card_id) = (-1, -1, 0, 0, 0);
+        my $is_count_num = 1;
         my $td_nodes = &GetNode::GetNode_Tag("td",\$tr_node);
         if(scalar(@$td_nodes) < 2){next;};
         
         $act    = $$td_nodes[0]->as_text;
-        
-        
 
         my $font_nodes = &GetNode::GetNode_Tag("font",\$$td_nodes[1]);
         if(scalar(@$font_nodes) > 0){
             if ($$font_nodes[0]->as_text =~ /Sno(\d+)/) {
                 $s_no = $1;
+                if (exists $$got_s_no{$s_no}) { $is_count_num = 0;}
                 $$got_s_no{$s_no} = 1;
             }
         }
@@ -124,15 +141,40 @@ sub GetActionData{
             my $effect  = $1;
             my $lv      = $2;
             $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+
+            if ($is_count_num) {
+                $self->AddActionNum($effect, $lv);
+            }
         }
 
-        $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $act, $s_no, $timing, $gowait, $card_id) ));
+        $self->{Datas}{Action}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $act, $s_no, $timing, $gowait, $card_id) ));
     }
+    return;
+}
+#-----------------------------------#
+#    アイテムデータ取得
+#------------------------------------
+#    引数｜アイテムデータノード
+#-----------------------------------#
+sub AddActionNum{
+    my $self  = shift;
+    my $effect  = shift;
+    my $lv      = shift;
 
+    my $card_id     = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+    my $card_lv1_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, 1, 0, 0, 0]);
+
+    if (!exists $self->{ActionRank}{0}{$card_id}) {
+        $self->{ActionRank}{0}{$card_id} = 0;
+    }
+    $self->{ActionRank}{0}{$card_id} += 1;
+    if (!exists $self->{ActionRank}{1}{$card_lv1_id}) {
+        $self->{ActionRank}{1}{$card_lv1_id} = 0;
+    }
+    $self->{ActionRank}{1}{$card_lv1_id} += 1;
 
     return;
 }
-
 #-----------------------------------#
 #    出力
 #------------------------------------
@@ -141,6 +183,34 @@ sub GetActionData{
 sub Output{
     my $self = shift;
     
+    # 一枚も使われていないカード効果を登録
+    my $all_card_id = $self->{CommonDatas}{CardData}->GetAllId();
+    foreach my $card_id (@$all_card_id) {
+        if (!exists $self->{ActionRank}{0}{$card_id}) {$self->{ActionRank}{0}{$card_id} = 0;}
+        if (!exists $self->{ActionRank}{1}{$card_id}) {$self->{ActionRank}{1}{$card_id} = 0;}
+    }
+
+    # 取得用ハッシュデータを出力用配列データに変換
+    foreach my $type (sort keys(%{$self->{ActionRank}})) {
+        my $hash = ${$self->{ActionRank}}{$type};
+        my $rank      = 0;
+        my $last_num  = 9999;
+        my $rank_add  = 1;
+
+        foreach my $card_id (sort {${ $hash }{$b} <=> ${ $hash }{$a} }  keys(%$hash)) {
+            my $num = ${$self->{ActionRank}}{$type}{$card_id};
+            if ($num < $last_num) {
+                $rank += $rank_add;
+                $last_num = $num;
+                $rank_add = 1;
+            } else {
+                $rank_add += 1;
+            }
+
+            $self->{Datas}{ActionRank}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $card_id, $type, $rank, $num)));
+        }
+    }
+
     foreach my $object( values %{ $self->{Datas} } ) {
         $object->Output();
     }
