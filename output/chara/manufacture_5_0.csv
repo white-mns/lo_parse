@@ -1,0 +1,4 @@
+result_no	generate_no	e_no	facility_name	facility_effect	facility_lv	facility_e_no	item_name	usage	cost	kind	effect	effect_lv	potency	precision	total	
+5	0	125	武器屋のカード	69	5	117	ゼラチンボディ	5	500	314	333	1	15	11	26
+5	0	276	楽器屋のカード	193	5	305	草笛	5	500	289	333	1	13	13	26
+5	0	346	衣服屋『十文字』	73	3	141	適当なモノ	3	300	132	333	1	8	12	20

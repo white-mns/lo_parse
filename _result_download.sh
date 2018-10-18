@@ -18,6 +18,10 @@ wget -O ./data/utf/result${RESULT_NO}/sub.css http://ykamiya.ciao.jp/result/sub.
 
 for ((E_NO=1;E_NO <= 400;E_NO++)) {
     for ((i=0;i < 2;i++)) { # 2回までリトライする
+        if [ -s ./data/utf/result${RESULT_NO}/result_chara/result_Eno${E_NO}.html ]; then
+            break
+        fi
+
         wget -O ./data/utf/result${RESULT_NO}/result_chara/result_Eno${E_NO}.html http://ykamiya.ciao.jp/result/result_chara/result_Eno${E_NO}.html
 
         sleep 2
