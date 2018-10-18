@@ -56,7 +56,7 @@ sub Execute{
 
     my $start = 1;
     my $end   = 0;
-    my $directory = './data/orig/result' . $result_no;
+    my $directory = './data/utf/result' . $result_no;
     #結果全解析
     $end = GetFileNo($directory."/result_chara","result_Eno");
 
