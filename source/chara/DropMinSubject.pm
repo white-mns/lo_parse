@@ -221,7 +221,7 @@ sub GetDropMinSubjectData{
         if ($right_node =~ /HASH/ && $right_node->tag eq "span" && $right_node->as_text =~ m!(.+?)【(.+?)Lv(\d+?)】!) {
             $effect  = $2;
             $lv      = $3;
-            $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect,"", $lv, 0, 0]);
+            $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
 
             # 新出カードIDの初期化処理
             if(!exists($self->{DropSubjects}{$card_id})){

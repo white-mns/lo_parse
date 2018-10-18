@@ -107,7 +107,7 @@ sub Execute{
     my $directory = './data/utf/result' . $self->{ResultNo} . '_' . $self->{GenerateNo} . '/result_chara';
     if (ConstData::EXE_ALLRESULT) {
         #結果全解析
-        $end = GetFileNo($directory,"result_Eno");
+        $end = GetMaxFileNo($directory,"result_Eno");
     }else{
         #指定範囲解析
         $start = ConstData::FLAGMENT_START;
@@ -221,12 +221,12 @@ sub DivideTableMaNodes{
 
 
 #-----------------------------------#
-#       該当ファイル数を取得
+#       最大ファイル番号を取得
 #-----------------------------------#
 #    引数｜ディレクトリ名
 #    　　　ファイル接頭辞
 ##-----------------------------------#
-sub GetFileNo{
+sub GetMaxFileNo{
     my $directory   = shift;
     my $prefix    = shift;
 

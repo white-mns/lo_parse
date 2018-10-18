@@ -53,5 +53,8 @@ use warnings;
         use constant EXE_NEW_GETCARD                  => 1;
         use constant EXE_NEW_CARD_USE                 => 1;
         use constant EXE_NEW_ITEM_USE                 => 1;
+    use constant EXE_COMMAND                 => 1;
+        use constant EXE_COMMAND_ACTION               => 1;
+        use constant EXE_COMMAND_ACTION_RANKING       => 1;
 
 1;
