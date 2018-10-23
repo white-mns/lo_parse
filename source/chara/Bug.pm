@@ -172,7 +172,10 @@ sub GetBugName{
             my $name = $1;
             $node->attr("href") =~ /Eno(\d+)\.html/;
             my $e_no = $1;
-            $self->AddBugName($name, $e_no, substr($node->left->attr("src"), -11));
+            $name =~ /( .+?)$/;
+            my $name_only = $1;
+            $self->AddBugName($name,      $e_no, substr($node->left->attr("src"), -11));
+            $self->AddBugName($name_only, $e_no, substr($node->left->attr("src"), -11));
         }
     }
     
@@ -214,7 +217,19 @@ sub GetBugEno{
     my $self = shift;
     my $name = shift;
     my $icon_url = shift;
+    
+    my %e_no_hash;
+    my $e_no = 0;
+    foreach my $data (@{ $self->{BugName}{$name} }) {
+        $e_no_hash{$$data[0]} = 1;
+        $e_no = $$data[0];
+    }
 
+    if (scalar(keys %e_no_hash) == 1) {
+        return $e_no;
+    }
+
+    # 同じ名前に対してEnoが複数ある時、アイコンurlで照合する
     foreach my $data (@{ $self->{BugName}{$name} }) {
         if ($icon_url eq $$data[1]) {
             return $$data[0];
