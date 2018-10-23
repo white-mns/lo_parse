@@ -142,6 +142,10 @@ sub Main {
             $upload->DeleteSameResult('facility_uses', $result_no, $generate_no);
             $upload->Upload("./output/chara/facility_use_" . $result_no . "_" . $generate_no . ".csv", 'facility_uses');
         }
+        if (ConstData::EXE_CHARA_BUG) {
+            $upload->DeleteSameResult('bugs', $result_no, $generate_no);
+            $upload->Upload("./output/chara/bug_" . $result_no . "_" . $generate_no . ".csv", 'bugs');
+        }
     }
     if (ConstData::EXE_COMMAND) {
         if (ConstData::EXE_COMMAND_ACTION) {

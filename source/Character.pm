@@ -35,6 +35,7 @@ require "./source/chara/Training.pm";
 require "./source/chara/ItemUse.pm";
 require "./source/chara/FacilityUse.pm";
 require "./source/chara/Manufacture.pm";
+require "./source/chara/Bug.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -83,6 +84,7 @@ sub Init{
     if (ConstData::EXE_CHARA_ITEM_USE)           { $self->{DataHandlers}{ItemUse}           = ItemUse->new();}
     if (ConstData::EXE_CHARA_FACILITY_USE)       { $self->{DataHandlers}{FacilityUse}       = FacilityUse->new();}
     if (ConstData::EXE_CHARA_MANUFACTURE)        { $self->{DataHandlers}{Manufacture}       = Manufacture->new();}
+    if (ConstData::EXE_CHARA_BUG)                { $self->{DataHandlers}{Bug}               = Bug->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -147,18 +149,19 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $span_in3_nodes = &GetNode::GetNode_Tag_Attr("span", "id", "in3", \$tree);
-    my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma", \$tree);
+    my $span_in3_nodes = &GetNode::GetNode_Tag_Attr("span",  "id",    "in3", \$tree);
+    my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma",  \$tree);
 
     if(!scalar(@$span_in3_nodes)){return;}; # 未継続ロストなどシステムメッセージのみの結果を除外
 
     my $table_ma_node_hash = {};
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
     
-    my $table_in_ma_nodes    = &GetNode::GetNode_Tag("table", \$$table_ma_node_hash{"Profile"});
-    my $b_re2_nodes = &GetNode::GetNode_Tag_Attr("b", "id", "re2", \$tree);
-    my $div_heading_nodes = &GetNode::GetNode_Tag_Attr("div", "class", "heading", \$tree);
-    my $table_width345_nodes    = &GetNode::GetNode_Tag_Attr("table", "width", "345", \$tree);
+    my $table_in_ma_nodes    = &GetNode::GetNode_Tag          ("table", \$$table_ma_node_hash{"Profile"});
+    my $b_re2_nodes          = &GetNode::GetNode_Tag_Attr     ("b",     "id",      "re2",     \$tree);
+    my $div_heading_nodes    = &GetNode::GetNode_Tag_Attr     ("div",   "class",   "heading", \$tree);
+    my $table_width345_nodes = &GetNode::GetNode_Tag_Attr     ("table", "width",   "345",     \$tree);
+    my $bug_color2_nodes     = &GetNode::GetNode_Tag_ColorSize("font",  "#996600", "+2",      \$tree);
 
     # データリスト取得
     if (exists($self->{DataHandlers}{Name}))              {$self->{DataHandlers}{Name}->GetData             ($e_no, $$span_in3_nodes[0])};
@@ -178,6 +181,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{ItemUse}))           {$self->{DataHandlers}{ItemUse}->GetData          ($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{FacilityUse}))       {$self->{DataHandlers}{FacilityUse}->GetData      ($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{Manufacture}))       {$self->{DataHandlers}{Manufacture}->GetData      ($e_no, $b_re2_nodes)};
+    if (exists($self->{DataHandlers}{Bug}))               {$self->{DataHandlers}{Bug}->GetData              ($e_no, $bug_color2_nodes)};
 
     $tree = $tree->delete;
 }
