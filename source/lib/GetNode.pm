@@ -10,11 +10,38 @@ use HTML::TreeBuilder;
 #-----------------------------------#
 #    ノードの取得
 #-----------------------------------#
+#    引数｜タグ名、color、size
+#-----------------------------------#
+sub GetNode_Tag_ColorSize {
+    my $tag_name        = shift;
+    my $attr_color      = shift;
+    my $attr_size       = shift;
+    my $node            = shift;
+    
+    my $return_nodes    = [];
+    
+    #各メニュー情報の抜出
+    @$return_nodes = $$node->look_down(
+                _tag => $tag_name,
+                sub {
+                    if( $_[0]->attr('color') && $_[0]->attr('size')){
+                        $_[0]->attr('color') eq $attr_color &&
+                        $_[0]->attr('size') eq $attr_size
+                    }
+                }
+    );
+    return $return_nodes;
+}
+
+
+#-----------------------------------#
+#    ノードの取得
+#-----------------------------------#
 #    引数｜タグ名、color
 #-----------------------------------#
 sub GetNode_Tag_Color_NoSize {
     my $tag_name        = shift;
-    my $attr_width      = shift;
+    my $attr_color      = shift;
     my $node            = shift;
     
     my $return_nodes    = [];
@@ -24,7 +51,7 @@ sub GetNode_Tag_Color_NoSize {
                 _tag => $tag_name,
                 sub {
                     if( $_[0]->attr('color') && !$_[0]->attr('size')){
-                        $_[0]->attr('color') eq $attr_width
+                        $_[0]->attr('color') eq $attr_color
                     }
                 }
     );
