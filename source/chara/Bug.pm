@@ -110,6 +110,8 @@ sub AddBugName{
     my $add_e_no = shift;
     my $add_icon_url = shift;
 
+    if ($add_e_no !~ /^[0-9]+$/) { return;} # Enoとして取得した文字に数字以外が含まれていれば追加しない
+
     # 名前に対応する同じENoとアイコンアドレスの組み合わせが既にあれば追加しない
     foreach my $data (@{ $self->{BugName}{$name} }) {
         if ($add_e_no == $$data[0] && $add_icon_url eq $$data[1]) {
@@ -157,7 +159,7 @@ sub GetBugData{
 }
 
 #-----------------------------------#
-#    BUG出現データ取得
+#    BUG名取得
 #------------------------------------
 #    引数｜Pno
 #           データノード

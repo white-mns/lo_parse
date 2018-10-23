@@ -17,9 +17,9 @@ name	e_no	icon_url
  うえさわ	163	/LOicon.png
  えとわ	214	ture009.png
  おばちゃん	236	/obacon.png
- おやゆぴ	304	no_icon.jpg
  おやゆぴ	304	o/icon0.png
  おやゆぴ	304	/icon01.png
+ おやゆぴ	304	no_icon.jpg
  お金の神様	327	okane1i.png
  お金の神様	327	okane0i.png
  かすかちゃん	191	oujou01.png
@@ -43,7 +43,6 @@ name	e_no	icon_url
  はりねずみさん	265	8082703.png
  はるか	384	aruka_s.jpg
  ひとさしゆぴ	307	to_i_02.jpg
- ひとさしゆぴ	 ひとさしゆぴ	to_i_02.jpg
  ほなみさん	322	1fd_500.jpg
  ぼや	48	e=VY_02.png
  まりあ	42	cnRiTfJ.jpg
@@ -127,8 +126,8 @@ name	e_no	icon_url
  グラッド	216	cAIEqlQ.png
  グリ	248	no_icon.jpg
  グリ	248	/img/no.jpg
- グリフ	86	urihu60.png
  グリフ	146	le=G7-C.jpg
+ グリフ	86	urihu60.png
  グリフ	86	kaiwa60.png
  グロウス	329	yIcon01.png
  ケス	159	no_icon.jpg
@@ -291,8 +290,8 @@ name	e_no	icon_url
  ペルラ	175	le=Pe_1.png
  ボウフラ	277	hura002.png
  マイドー・M・マッカ	193	��いし！
- マフィ	323	no_icon.jpg
  マフィ	323	_mafi01.png
+ マフィ	323	no_icon.jpg
  マリア	63	loi-001.png
  マリー	232	no_icon.jpg
  マリー	232	/img/no.jpg
