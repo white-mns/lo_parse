@@ -172,7 +172,7 @@ sub GetBugName{
             my $name = $1;
             $node->attr("href") =~ /Eno(\d+)\.html/;
             my $e_no = $1;
-            $self->AddBugName($name, $e_no, $node->left->attr("src"));
+            $self->AddBugName($name, $e_no, substr($node->left->attr("src"), -11));
         }
     }
     
@@ -196,7 +196,7 @@ sub GetBugAppearance{
             my $name = $1;
             my $lv   = $2;
             if($last_node =~ /HASH/) {
-                push (@{ $self->{Bug} }, [$self->{ENo}, $name, $lv, $last_node->attr("src")]);
+                push (@{ $self->{Bug} }, [$self->{ENo}, $name, $lv, substr($last_node->attr("src"), -11)]);
             }
         }
         $last_node = $node;
