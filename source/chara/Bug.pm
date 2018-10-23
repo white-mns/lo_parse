@@ -110,6 +110,8 @@ sub AddBugName{
     my $add_e_no = shift;
     my $add_icon_url = shift;
 
+    if ($add_e_no !~ /^[0-9]+$/) { return;} # Enoとして取得した文字に数字以外が含まれていれば追加しない
+
     # 名前に対応する同じENoとアイコンアドレスの組み合わせが既にあれば追加しない
     foreach my $data (@{ $self->{BugName}{$name} }) {
         if ($add_e_no == $$data[0] && $add_icon_url eq $$data[1]) {
@@ -157,7 +159,7 @@ sub GetBugData{
 }
 
 #-----------------------------------#
-#    BUG出現データ取得
+#    BUG名取得
 #------------------------------------
 #    引数｜Pno
 #           データノード
@@ -172,7 +174,10 @@ sub GetBugName{
             my $name = $1;
             $node->attr("href") =~ /Eno(\d+)\.html/;
             my $e_no = $1;
-            $self->AddBugName($name, $e_no, substr($node->left->attr("src"), -11));
+            $name =~ /( [^ ]+?)$/;
+            my $name_only = $1;
+            $self->AddBugName($name,      $e_no, substr($node->left->attr("src"), -11));
+            $self->AddBugName($name_only, $e_no, substr($node->left->attr("src"), -11));
         }
     }
     
@@ -214,7 +219,19 @@ sub GetBugEno{
     my $self = shift;
     my $name = shift;
     my $icon_url = shift;
+    
+    my %e_no_hash;
+    my $e_no = 0;
+    foreach my $data (@{ $self->{BugName}{$name} }) {
+        $e_no_hash{$$data[0]} = 1;
+        $e_no = $$data[0];
+    }
 
+    if (scalar(keys %e_no_hash) == 1) {
+        return $e_no;
+    }
+
+    # 同じ名前に対してEnoが複数ある時、アイコンurlで照合する
     foreach my $data (@{ $self->{BugName}{$name} }) {
         if ($icon_url eq $$data[1]) {
             return $$data[0];
