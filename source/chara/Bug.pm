@@ -174,7 +174,7 @@ sub GetBugName{
             my $name = $1;
             $node->attr("href") =~ /Eno(\d+)\.html/;
             my $e_no = $1;
-            $name =~ /( .+?)$/;
+            $name =~ /( [^ ]+?)$/;
             my $name_only = $1;
             $self->AddBugName($name,      $e_no, substr($node->left->attr("src"), -11));
             $self->AddBugName($name_only, $e_no, substr($node->left->attr("src"), -11));
