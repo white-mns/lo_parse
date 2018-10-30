@@ -25,6 +25,7 @@ name	e_no	icon_url
  くろいの	173	no_icon.jpg
  くろいの	173	/img/no.jpg
  こゆぴ	308	/LO/UP6.png
+ こゆぴ	308	LO/HUP6.png
  ごーるでんにゃべつ	222	no_icon.jpg
  ごーるでんにゃべつ	222	/img/no.jpg
  てるてるぼうず	324	no_icon.jpg
@@ -35,12 +36,14 @@ name	e_no	icon_url
  ねぎ子	83	file=i1.png
  はっぴちゃん	106	no_icon.jpg
  はっぴちゃん	106	bf89b18.gif
+ はむ	73	400x400.jpg
  はりねずみさん	265	8082703.png
  はるか	384	aruka_s.jpg
  ひとさしゆぴ	307	to_i_02.jpg
  ほなみさん	322	1fd_500.jpg
  ぼや	48	e=VY_02.png
  まりあ	42	cnRiTfJ.jpg
+ まりあ	42	wCCTque.jpg
  みしゅりん	316	no_icon.jpg
  みしゅりん	316	/img/no.jpg
  やどりぎひめ	98	no_icon.jpg
@@ -117,6 +120,7 @@ name	e_no	icon_url
  クラヴィス	342	no_icon.jpg
  クラヴィス	342	9EE825.jpeg
  クレイス	139	b66~mv2.png
+ クロ	50	no_icon.jpg
  クーリエ	344	rm_0000.png
  グラッド	216	cAIEqlQ.png
  グリ	248	no_icon.jpg
@@ -174,6 +178,7 @@ name	e_no	icon_url
  シーレ	57	06IA_01.png
  ジェイド	66	icon001.jpg
  ジスティー	294	le=icon.png
+ ジュジュ	120	86%29_s.png
  ジューゴ	325	no_icon.jpg
  ジョーカー	259	ker60-0.png
  ジーン	326	e_ico02.png
@@ -233,6 +238,7 @@ name	e_no	icon_url
  トロィ	59	isui601.png
  ドリス	4	kkheJYO.png
  ドルミーレ	321	muriic1.png
+ ナイ	19	ile=asa.png
  ナイナ	298	no_icon.jpg
  ナイナ	298	/icon01.png
  ナギ	133	no_icon.jpg
@@ -365,6 +371,7 @@ name	e_no	icon_url
  レイア	302	no_icon.jpg
  レイア	302	eia_def.png
  レイア	302	_leia_1.png
+ レイア	302	_2poyan.png
  レイゼ	387	no_icon.jpg
  レイナ	310	86c182a.png
  レゼルト	77	ture014.jpg
@@ -496,6 +503,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 “混沌を狩る者” シェリィ	270	erry-iA.jpg
 ≪希望の守護者≫ ランド	343	no_icon.jpg
 ≪希望の守護者≫ ランド	343	1847238.png
+■■の眷属 ナイ	19	ile=asa.png
 《黄昏の射手》 月夜	75	kiya_i1.png
 「血」のヤルカナ ロズ	113	=loads1.png
 『オールドガール』 渡辺さん	227	8/08/31.png
@@ -605,6 +613,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 三重の『二』 ワーティファナ	81	CD7446F.png
 不思議な死霊術師 ダリダ	287	ida_i02.png
 不思議な死霊術師 ダリダ	287	ida_i04.png
+不思議な死霊術師 ダリダ	287	ida_i01.png
 不憫 ライモニアーノ	92	2544310.png
 乱れ撃つ魔弾の ジョーカー	259	ker60-0.png
 予言探偵 クォート	64	ote_i01.png
@@ -674,6 +683,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 怪生物 グリ	248	/img/no.jpg
 悪霊刀鍛冶 グリフ	146	le=G7-C.jpg
 悲願華の魔女 まりあ	42	cnRiTfJ.jpg
+悲願華の魔女 まりあ	42	wCCTque.jpg
 惑星統一国家スティヴァーレ教皇直属兵『アルカナナイツ』十六番”塔”の騎士 シナバー	226	no_icon.jpg
 惑星統一国家スティヴァーレ教皇直属兵『アルカナナイツ』十六番”塔”の騎士 シナバー	226	oke_ico.png
 成功だった失敗作 シッパイサク	152	hippai5.png
@@ -705,12 +715,14 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 星の声 ステラ	160	yat/158.png
 星を辿る見習い狩人 ラーフ	32	icon/00.png
 時空を駆けるハラペコ レイナ	310	86c182a.png
+暗殺者 クロ	50	no_icon.jpg
 暢気な スプファー	373	no_icon.jpg
 暢気な スプファー	373	/img/no.jpg
 最も私から遠いわたし わたし	147	A005906.png
 木曜の魔女 カシュー	179	no_icon.jpg
 木曜の魔女 カシュー	179	/img/no.jpg
 末っ子 こゆぴ	308	/LO/UP6.png
+末っ子 こゆぴ	308	LO/HUP6.png
 本の虫 シロ	261	3k/siro.png
 来たりて止む風 ナギ	133	no_icon.jpg
 来たりて止む風 ナギ	133	ture007.png
@@ -789,6 +801,8 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 街の自警団　/　騎士 アレク	301	=areku2.png
 街の自警団　/　騎士 レイア	302	eia_def.png
 街の自警団　/　騎士 レイア	302	_leia_1.png
+街の自警団　/　騎士 レイア	302	_2poyan.png
+見回す黒土 チェノー	7	o_st_01.png
 見習い魔法使い ルー	299	/2icon1.png
 見習い魔法使い ルー	299	2iconyu.png
 訓練兵 ウーリ	243	e=umai2.png
