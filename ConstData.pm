@@ -43,6 +43,7 @@ use warnings;
     use constant EXE_BATTLE               => 1;
         use constant EXE_BATTLE_CARD_USE              => 1;
         use constant EXE_BATTLE_MEDDLING_SUCCESS_RATE => 1;
+        use constant EXE_BATTLE_DAMAGE                => 1;
     use constant EXE_COMMAND              => 1;
         use constant EXE_COMMAND_ACTION               => 1;
 1;
