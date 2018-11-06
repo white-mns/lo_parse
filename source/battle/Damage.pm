@@ -43,26 +43,11 @@ sub Init{
     $self->{Datas}{Damage}     = StoreData->new();
 
     my $header_list = "";
-    
-    $header_list = [
-                "result_no",
-                "generate_no",
-                "e_no",
-                "card_id",
-                "chain",
-                "success",
-                "miss",
-                "no_apply",
-                "sum",
-                "rate",
-    ];
-
-    $self->{Datas}{DamageRate}->Init($header_list);
-    
     $header_list = [
                 "result_no",
                 "generate_no",
                 "battle_page",
+                "act_id",
                 "e_no",
                 "party",
                 "card_id",
@@ -102,6 +87,7 @@ sub GetData{
     
     $self->{NicknameToEno} = {};
     $self->{Pno} = {};
+    $self->{ActId} = 0;
 
     $self->{BattlePage} = $battle_page;
     $self->{BattlePage} =~ s/-/ VS /;
@@ -192,6 +178,7 @@ sub GetDamageData{
     foreach my $node (@$nodes) {
         my $e_no = -1;
         my $text = $node->as_text;
+        my $start_node = "";
 
         if ($text !~ /！/) {next;}
         if ($text !~ /Lv(\d+)/) {next;}
@@ -214,6 +201,8 @@ sub GetDamageData{
                 if ($dd_text =~ /(.+\(Pn\d+\))/) {
                     $text = $1;
                     $e_no = $self->{NicknameToEno}{$1};
+                    my $tmp_node = &GetNode::GetNode_Tag("font", \$dd_node);
+                    $start_node = $$tmp_node[0];
                     last;
                 }
 
@@ -273,6 +262,11 @@ sub GetDamageData{
                     next;
                 }
 
+                if ($target_node->attr("color") ne $start_node->attr("color")) { # カウンタなどの反撃処理を除外
+                    $dd_node = $dd_node->right;
+                    next;
+                }
+
                 my $target_text = $target_node->as_text;
 
                 if ($target_text =~ /(.+\(Pn\d+\))/) {
@@ -292,7 +286,8 @@ sub GetDamageData{
                         elsif ($target_text =~ /FPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FP回復")}
                         else                                          { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ")}
 
-                        $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $e_no, $p_no, $card_id, $chain_num, $target_e_no, $target_p_no, $act_type, $element, $damage, $is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb)));
+                        $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId}, $e_no, $p_no, $card_id, $chain_num, $target_e_no, $target_p_no, $act_type, $element, $damage, $is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb)));
+                        $self->{ActId} = $self->{ActId} + 1;
                         ($is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb) = (0, 0, 0, 0, 0);
                     }
                 }
@@ -306,11 +301,11 @@ sub GetDamageData{
                 if    (scalar(@$attack_node)) { $text = $$attack_node[0]->as_text}
                 elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
 
-                if    ($text =~ /WeakPoint/) { $is_weak     = 1}
-                elsif ($text =~ /Critical/)  { $is_critical = 1}
-                elsif ($text =~ /Clean/)     { $is_clean    = 1}
-                elsif ($text =~ /Vanish/)    { $is_vanish   = 1}
-                elsif ($text =~ /Absorb/)    { $is_absorb   = 1}
+                if    ($text =~ /^WeakPoint/) { $is_weak     = 1}
+                elsif ($text =~ /^Critical/)  { $is_critical = 1}
+                elsif ($text =~ /^Clean/)     { $is_clean    = 1}
+                elsif ($text =~ /^Vanish/)    { $is_vanish   = 1}
+                elsif ($text =~ /^Absorb/)    { $is_absorb   = 1}
 
             }
             elsif ($dd_node->tag eq "dt")     { last; }
