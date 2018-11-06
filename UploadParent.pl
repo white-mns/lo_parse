@@ -192,6 +192,10 @@ sub Main {
             $upload->DeleteSameResult('meddling_targets', $result_no, $generate_no);
             $upload->Upload("./output/battle/meddling_target_" . $result_no . "_" . $generate_no . ".csv", 'meddling_targets');
         }
+        if (ConstData::EXE_BATTLE_DAMAGE) {
+            $upload->DeleteSameResult('damages', $result_no, $generate_no);
+            $upload->Upload("./output/battle/damage_" . $result_no . "_" . $generate_no . ".csv", 'damages');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";

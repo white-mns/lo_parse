@@ -232,7 +232,7 @@ sub GetBugEno{
     }
 
     # 同じ名前に対してEnoが複数ある時、アイコンurlで照合する
-    foreach my $data (@{ $self->{BugName}{$name} }) {
+    foreach my $data (reverse @{ $self->{BugName}{$name} }) {
         if ($icon_url eq $$data[1]) {
             return $$data[0];
         }
@@ -254,7 +254,7 @@ sub Output{
         }
     }
 
-    # 新出データ判定用の既出全取得カード情報の書き出し
+    # BUG出現情報の書き出し
     foreach my $data (@{ $self->{Bug} } ) {
         my $bug_e_no = $self->GetBugEno($$data[1], $$data[3]);
         $self->{Datas}{Bug}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $$data[0], $bug_e_no, $$data[2]) ));
