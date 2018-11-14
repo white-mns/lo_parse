@@ -36,6 +36,7 @@ name	e_no	icon_url
  ねぎ子	83	file=i1.png
  はっぴちゃん	106	no_icon.jpg
  はっぴちゃん	106	bf89b18.gif
+ はっぴちゃん	106	072cd25.png
  はむ	73	400x400.jpg
  はりねずみさん	265	8082703.png
  はるか	384	aruka_s.jpg
@@ -50,6 +51,7 @@ name	e_no	icon_url
  やどりぎひめ	98	/img/no.jpg
  るーく	295	54CAA75.png
  わこ	27	e=aikon.png
+ わこちゃん	129	=konnko.png
  わたげ	115	0watage.png
  わたげ	115	tage002.png
  わたし	147	A005906.png
@@ -63,6 +65,7 @@ name	e_no	icon_url
  アナシア	47	rain000.png
  アパラバル	151	no_icon.jpg
  アマリア	45	maria00.png
+ アラン	108	le=lo09.png
  アリス	354	no_icon.jpg
  アルザーン	209	ne_face.png
  アルシェ	58	LAicon6.png
@@ -197,6 +200,7 @@ name	e_no	icon_url
  ズィガード	17	&file=0.png
  セシリア	391	n_nomal.png
  ゼロ	311	.jp/i0z.png
+ ソゥ	126	no_icon.jpg
  ソーン	363	no_icon.jpg
  ソーン	363	/img/no.jpg
  タチバナ・キッカ	116	monicon.png
@@ -458,6 +462,7 @@ name	e_no	icon_url
  羽水	123	laa_c01.png
  聖女	362	mell024.png
  聖女	362	mell029.png
+ 聖女	362	mell035.png
  花の妖精	375	wZOnLPv.png
  花の妖精	375	wJ0q6Pg.png
  苗	183	no_icon.jpg
@@ -482,6 +487,7 @@ name	e_no	icon_url
  黒猫トミー	390	ommy000.jpg
  ＊＊＊＊	328	no_icon.jpg
  ＊＊＊＊	328	/img/no.jpg
+(自称)メイド わこちゃん	129	=konnko.png
 - 土偶	161	no_icon.jpg
 - 土偶	161	/img/no.jpg
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	ile=685.png
@@ -536,6 +542,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 しろくろ ミリウ	103	ot_face.gif
 ただ1人の犠牲 聖女	362	mell024.png
 ただ1人の犠牲 聖女	362	mell029.png
+ただ1人の犠牲 聖女	362	mell035.png
 たまごサンドんまい フィル	56	le=fil1.png
 だいたい寝ている ドルミーレ	321	muriic1.png
 つややかなねこ 野良猫	356	_icon01.png
@@ -545,6 +552,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 なんでも屋 羽水	123	��じだか
 なんでも屋 羽水	123	laa_c01.png
 のんびりふらふら旅行者 ボウフラ	277	hura002.png
+ふわりゆらり、漂う幻影 ソゥ	126	no_icon.jpg
 ぼんよりまほーつかい ネムム	44	o_i_011.png
 まんなか なかゆぴ	318	kayupii.png
 アグロノミスト チーロ	383	no_icon.jpg
@@ -601,6 +609,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ヤルカナレギオン「魂」 スォム	112	/img/no.jpg
 ヤルカナレギオン「魂」 スォム	112	_con449.png
 ヤルカナレギオン「魔女」 シーレ	57	06IA_01.png
+ヤルカナレギオン『愛人』 ワーティファナ	81	CD7446F.png
 ライブラリアン 緋色の狐	256	fiicon5.jpg
 ラジオを背負った猫 ラジオを背負った猫	305	no_icon.jpg
 ラジオを背負った猫 ラジオを背負った猫	305	/img/no.jpg
@@ -673,6 +682,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 平穏に嫌われた者 エーシ	244	=Aicon0.png
 幸せな獣 ミハク	187	mihaku1.png
 幻蝶 シンセミア	320	illa/01.png
+廃棄処分 アルマ	22	e=icon5.png
 形造る影 『ホム』	60	omicon1.png
 彷徨人 スレイン	2	oA_i001.png
 従者 ディート	41	no_icon.jpg
@@ -696,6 +706,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 教授 カグラ	379	no_icon.jpg
 料理人 レーチェ	385	no_icon.jpg
 料理評論家 クマダ	303	umada60.png
+斥候 ケス	159	no_icon.jpg
 新たな生命体を考案する死の天使 エーテル	150	Ether-2.png
 新人自警団員（実戦経験ゼロ） アーロ	271	no_icon.jpg
 新人自警団員（実戦経験ゼロ） アーロ	271	/urDMgu.png
@@ -845,6 +856,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 魔女屋敷の乙女 トレイシー	131	_tcA_01.png
 魔女志望 ユエ	275	no_icon.jpg
 魔女志望 ユエ	275	/img/no.jpg
+魔術師 アラン	108	le=lo09.png
 黄昏の手品師 クーリエ	344	rm_0000.png
 黄昏の手品師 黄昏の手品師	344	rm_0000.png
 黒剣姫 エリストリア	334	4u/icon.jpg
