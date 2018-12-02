@@ -182,7 +182,7 @@ sub GetMeddlingSuccessRateData{
         my $e_no = -1;
         my $text = $node->as_text;
 
-        if ($text !~ /復活|発動|待機|動静|白紙|低下|上昇|廃棄|効率|伝達|沈着|発揮|素朴|追憶|転化|沈黙/) {next;}
+        if ($text !~ /復活|発動|待機|動静|白紙|低下|上昇|廃棄|効率|確変|複製|転写|奪取|鎖奪|伝達|沈着|発揮|素朴|追憶|転化|沈黙/) {next;}
         if ($text !~ /！/) {next;}
         if ($text !~ /Lv(\d+)/) {next;}
         my $lv = $1;

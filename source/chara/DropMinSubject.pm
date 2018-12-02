@@ -81,6 +81,7 @@ sub Init{
     #出力ファイル設定
     $self->{Datas}{Data}->SetOutputName( "./output/chara/drop_min_subject_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     $self->ReadLastData();
+    $self->ReadResetData();
     return;
 }
 
@@ -118,6 +119,35 @@ sub ReadLastData(){
         for (my $i=0; $i< $subject_num; $i++) {
             $self->{DropSubjects}{$card_id}{${$self->{SubjectNames}}[$i]} = $$data[$i+3];
         }
+    }
+
+    return;
+}
+
+#-----------------------------------#
+#    推定値初期化データを読み込み該当カードを初期化する
+#-----------------------------------#
+sub ReadResetData(){
+    my $self      = shift;
+    
+    my $file_name = "./output/data/reset_subject.csv";
+    #既存データの読み込み
+    my $content = &IO::FileRead ( $file_name );
+    
+    my @file_data = split(/\n/, $content);
+    shift (@file_data);
+    
+    foreach my  $data_set(@file_data){
+        my $data = []; 
+        @$data   = split(ConstData::SPLIT, $data_set);
+        my $result_no = $$data[0];
+        my $card_name = $$data[1];
+        if ($self->{ResultNo} == $$data[0]) {
+            my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$$data[1], 0, $$data[2], 0, 0, 0]);
+
+            delete($self->{DropSubjects}{$card_id});
+        }
+        
     }
 
     return;
