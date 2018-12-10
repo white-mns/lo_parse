@@ -50,6 +50,7 @@ sub Init{
                 "e_no",
                 "bug_e_no",
                 "lv",
+                "order",
     ];
 
     $self->{Datas}{Bug}->Init($header_list);
@@ -195,13 +196,15 @@ sub GetBugAppearance{
     my $bug_color2_node = shift; 
 
     my $last_node = "";
+    my $order = 0;
     foreach my $node ($bug_color2_node->right) {
         if ($node =~ /HASH/ && $node->tag eq "div") { last;}
         if ($node =~ /(.+)\(Lv(\d+)\)/) {
             my $name = $1;
             my $lv   = $2;
             if($last_node =~ /HASH/) {
-                push (@{ $self->{Bug} }, [$self->{ENo}, $name, $lv, substr($last_node->attr("src"), -11)]);
+                push (@{ $self->{Bug} }, [$self->{ENo}, $name, $lv, $order, substr($last_node->attr("src"), -11)]);
+                $order += 1;
             }
         }
         $last_node = $node;
@@ -256,8 +259,8 @@ sub Output{
 
     # BUG出現情報の書き出し
     foreach my $data (@{ $self->{Bug} } ) {
-        my $bug_e_no = $self->GetBugEno($$data[1], $$data[3]);
-        $self->{Datas}{Bug}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $$data[0], $bug_e_no, $$data[2]) ));
+        my $bug_e_no = $self->GetBugEno($$data[1], $$data[4]);
+        $self->{Datas}{Bug}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $$data[0], $bug_e_no, $$data[2], $$data[3]) ));
     }
 
     foreach my $object( values %{ $self->{Datas} } ) {
