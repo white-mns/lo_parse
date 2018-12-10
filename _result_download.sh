@@ -33,6 +33,7 @@ for ((E_NO=1;E_NO <= 400;E_NO++)) {
 }
 
 find ./data/utf/result${RESULT_NO} -type f -empty -delete
+wget -O ./data/utf/result${RESULT_NO}/result_pre/ALLpre.html http://ykamiya.ciao.jp/result/result_pre/ALLpre.html
 perl _GetPreDatas.pl $1 $2
 
 # ファイルを圧縮

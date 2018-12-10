@@ -12,6 +12,7 @@ require "./source/ProperName.pm";
 require "./source/Character.pm";
 require "./source/Battle.pm";
 require "./source/Command.pm";
+require "./source/AllPre.pm";
 
 # パッケージの使用宣言    ---------------#
 use strict;
@@ -47,6 +48,7 @@ sub Main{
     if (ConstData::EXE_CHARA)   {push(@objects, Character->new());} #キャラページ読み込み
     if (ConstData::EXE_BATTLE)  {push(@objects, Battle->new());}    #模擬戦ページ読み込み
     if (ConstData::EXE_COMMAND) {push(@objects, Command->new());}   #コマンドページ読み込み
+    if (ConstData::EXE_ALLPRE)  {push(@objects, AllPre->new());}    #模擬戦トップページ読み込み
 
     &Init(\@objects, $result_no, $generate_no, \%common_datas);
     &Execute(\@objects);

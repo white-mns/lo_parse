@@ -199,7 +199,7 @@ sub DivideTableMaNodes{
 
     foreach my $table_ma_node (@$table_ma_nodes) {
         my $td_nodes = &GetNode::GetNode_Tag("td", \$table_ma_node);
-        if (scalar(@$td_nodes) == 0) { return;}
+        if (scalar(@$td_nodes) == 0) { next;}
 
         my $td0_text = $$td_nodes[0]->as_text;
         if($td0_text =~ "Lv"){
