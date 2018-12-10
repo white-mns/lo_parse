@@ -157,6 +157,12 @@ sub Main {
             $upload->Upload("./output/command/action_ranking_" . $result_no . "_" . $generate_no . ".csv", 'command_action_rankings');
         }
     }
+    if (ConstData::EXE_ALLPRE) {
+        if (ConstData::EXE_ALLPRE_PRE_WIN) {
+            $upload->DeleteSameResult('pre_wins', $result_no, $generate_no);
+            $upload->Upload("./output/all_pre/pre_win_" . $result_no . "_" . $generate_no . ".csv", 'pre_wins');
+        }
+    }
     if (ConstData::EXE_NEW) {
         if (ConstData::EXE_NEW_GETCARD) {
             $upload->DeleteSameResult('new_get_cards', $result_no, $generate_no);

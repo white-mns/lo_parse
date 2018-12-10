@@ -40,6 +40,8 @@ use warnings;
         use constant EXE_CHARA_MANUFACTURE            => 1;
         use constant EXE_CHARA_FACILITY_USE           => 1;
         use constant EXE_CHARA_BUG                    => 1;
+    use constant EXE_ALLPRE               => 1;
+        use constant EXE_ALLPRE_PRE_WIN               => 1;
     use constant EXE_BATTLE               => 1;
         use constant EXE_BATTLE_CARD_USE              => 1;
         use constant EXE_BATTLE_MEDDLING_SUCCESS_RATE => 1;
