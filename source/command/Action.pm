@@ -84,9 +84,12 @@ sub Init{
 sub GetData{
     my $self    = shift;
     my $e_no    = shift;
+    my $span_ch1_node  = shift;
     my $table_ma_nodes = shift;
     
     $self->{ENo} = $e_no;
+
+    if ($self->IsDummyData($span_ch1_node)) {return;}
 
     if ($self->{ResultNo} == 3) { # Vol.3以前はコマンドページを取得しなかったため、Vol.3はVol.4の前回設定を参照する
         $self->GetActionData($$table_ma_nodes[1]);
@@ -96,7 +99,25 @@ sub GetData{
     
     return;
 }
+#-----------------------------------#
+#    欠番ダミーデータの判定
+#------------------------------------
+#    引数｜対戦設定タイトルノード
+#-----------------------------------#
+sub IsDummyData{
+    my $self  = shift;
+    my $span_ch1_node = shift;
 
+    if (!$span_ch1_node) {return 1;}
+
+    if ($span_ch1_node->as_text =~ /Eno(\d+)：の対戦設定/) {
+        return 1;
+
+    } else {
+        return 0;
+    }
+}
+ 
 #-----------------------------------#
 #    アイテムデータ取得
 #------------------------------------

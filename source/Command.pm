@@ -166,12 +166,13 @@ sub ParsePage{
     $tree->parse($content);
 
     my $table_ma_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "ma", \$tree);
+    my $span_ch1_nodes = &GetNode::GetNode_Tag_Attr("span",  "id",    "ch1", \$tree);
 
     my $table_ma_node_hash = {};
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
     
     # データリスト取得
-    if (exists($self->{DataHandlers}{Action})) {$self->{DataHandlers}{Action}->GetData($e_no, $$table_ma_node_hash{"Act"})};
+    if (exists($self->{DataHandlers}{Action})) {$self->{DataHandlers}{Action}->GetData($e_no, $$span_ch1_nodes[0], $$table_ma_node_hash{"Act"})};
 
     $tree = $tree->delete;
 }
