@@ -66,9 +66,59 @@ sub Init{
 #    
 #-----------------------------------#
 sub Execute{
+    my $self = shift;
+
+    if ($self->{ResultNo} >= 6) {
+        $self->Execute_6_last();
+
+    } elsif ($self->{ResultNo} >= 3) {
+        $self->Execute_3_5();
+
+    }
+}
+
+#-----------------------------------#
+#    コマンドファイルを抽出(Vol.6～)
+#-----------------------------------#
+#    
+#-----------------------------------#
+sub Execute_6_last{
+    my $self = shift;
+
+    print "read command files...\n";
+
+    my $start = 1;
+    my $end   = 0;
+    my $directory = './data/utf/result' . $self->{ResultNo} . '_' . $self->{GenerateNo} . '/result_com';
+    if (ConstData::EXE_ALLRESULT) {
+        #結果全解析
+        $end = GetMaxFileNo($directory,"result_com");
+        print $end."\n";
+    }else{
+        #指定範囲解析
+        $start = ConstData::FLAGMENT_START;
+        $end   = ConstData::FLAGMENT_END;
+    }
+
+    print "$start to $end\n";
+
+    for (my $e_no=$start; $e_no<=$end; $e_no++) {
+        if ($e_no % 10 == 0) {print $e_no . "\n"};
+
+        $self->ParsePage($directory."/result_com".$e_no.".html",$e_no);
+    }
+    
+    return ;
+}
+#-----------------------------------#
+#    コマンドファイルを抽出(Vol.3～Vol.5)
+#-----------------------------------#
+#    
+#-----------------------------------#
+sub Execute_3_5{
     my $self        = shift;
 
-    print "read files...\n";
+    print "read command files...\n";
 
     my $start = 1;
     my $end   = 0;
