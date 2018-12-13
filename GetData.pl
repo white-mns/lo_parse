@@ -40,6 +40,10 @@ $timeChecker = undef;
 sub Main{
     my $result_no   = $ARGV[0];
     my $generate_no = $ARGV[1];
+    if ($result_no !~ /^[0-9]+$/ || $generate_no !~ /^[0-9]+$/) {
+        print "Undefined ResultNo or GenerateNo\n";
+        return;
+    }
 
     my @objects;        #探索するデータ項目の登録
     my %common_datas;
