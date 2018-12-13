@@ -19,6 +19,7 @@ require "./source/lib/time.pm";
 require "./source/lib/NumCode.pm";
 
 require "./source/command/Action.pm";
+require "./source/command/ParameterDevelopment.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -50,7 +51,8 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
 
     #インスタンス作成
-    if (ConstData::EXE_COMMAND_ACTION) { $self->{DataHandlers}{Action} = Action->new();}
+    if (ConstData::EXE_COMMAND_ACTION)                { $self->{DataHandlers}{Action}               = Action->new();}
+    if (ConstData::EXE_COMMAND_PARAMETER_DEVELOPMENT) { $self->{DataHandlers}{ParameterDevelopment} = ParameterDevelopment->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -172,7 +174,8 @@ sub ParsePage{
     $self->DivideTableMaNodes($table_ma_nodes, $table_ma_node_hash);
     
     # データリスト取得
-    if (exists($self->{DataHandlers}{Action})) {$self->{DataHandlers}{Action}->GetData($e_no, $$span_ch1_nodes[0], $$table_ma_node_hash{"Act"})};
+    if (exists($self->{DataHandlers}{Action}))               {$self->{DataHandlers}{Action}->GetData              ($e_no, $$span_ch1_nodes[0], $$table_ma_node_hash{"Act"})};
+    if (exists($self->{DataHandlers}{ParameterDevelopment})) {$self->{DataHandlers}{ParameterDevelopment}->GetData($e_no, $$span_ch1_nodes[0], $$table_ma_node_hash{"Parameter"})};
 
     $tree = $tree->delete;
 }
@@ -193,11 +196,14 @@ sub DivideTableMaNodes{
         if (scalar(@$td_nodes) == 0) { return;}
 
         my $td0_text = $$td_nodes[0]->as_text;
-        if($td0_text =~ "Act"){
+        if ($td0_text =~ "Act") {
             if (!exists($$table_ma_node_hash{"Act"})) {
                 $$table_ma_node_hash{"Act"} = [];
             }
             push (@{$$table_ma_node_hash{"Act"}}, $table_ma_node);
+
+        } elsif ($td0_text =~ "Lv"){
+            $$table_ma_node_hash{"Parameter"} = $table_ma_node;
 
         }
     }

@@ -57,6 +57,45 @@ sub Init{
 
     #出力ファイル設定
     $self->{Datas}{Parameter}->SetOutputName( "./output/command/parameter_development_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+
+    if ($self->{ResultNo} < 6) {
+        $self->GetLastParameter();
+    }
+
+    return;
+}
+
+#-----------------------------------#
+#    前回時点のパラメータを開拓直前パラメータとして登録する
+#    ・Vol.6以前は対戦設定静的ページが存在しないため
+#-----------------------------------#
+sub GetLastParameter(){
+    my $self      = shift;
+    
+    $self->{LastGenerateNo} = 0;
+    # 前回結果の確定版ファイルを探索
+    for (my $i=5; $i>=0; $i--){
+        my $file_name = "./output/chara/parameter_fight_" . ($self->{ResultNo} - 1) . "_" . $i . ".csv" ;
+        if(-f $file_name) {
+            $self->{LastGenerateNo} = $i;
+            last;
+        }
+    }
+
+    my $file_name = "./output/chara/parameter_fight_" . ($self->{ResultNo} - 1) . "_" . $self->{LastGenerateNo} . ".csv";
+    #既存データの読み込み
+    my $content = &IO::FileRead ( $file_name );
+    
+    my @file_data = split(/\n/, $content);
+    shift (@file_data);
+    
+    foreach my  $data_set(@file_data){
+        my $data = []; 
+        @$data   = split(ConstData::SPLIT, $data_set);
+        
+        $self->{Datas}{Parameter}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $$data[2], $$data[3], $$data[4], $$data[7], $$data[8], 0)));
+    }
+
     return;
 }
 
@@ -73,10 +112,34 @@ sub GetData{
     
     $self->{ENo} = $e_no;
 
-    $self->GetParameterData($table_in_ma_node);
+    if ($self->{ResultNo} >= 6) {
+        if ($self->IsDummyData($span_ch1_node)) {return;}
+    
+        $self->GetParameterData($table_in_ma_node);
+    }
     
     return;
 }
+
+#-----------------------------------#
+#    欠番ダミーデータの判定
+#------------------------------------
+#    引数｜対戦設定タイトルノード
+#-----------------------------------#
+sub IsDummyData{
+    my $self  = shift;
+    my $span_ch1_node = shift;
+
+    if (!$span_ch1_node) {return 1;}
+
+    if ($span_ch1_node->as_text =~ /Eno(\d+)：の対戦設定/) {
+        return 1;
+
+    } else {
+        return 0;
+    }
+}
+ 
 #-----------------------------------#
 #    名前データ取得
 #------------------------------------
@@ -88,27 +151,28 @@ sub GetParameterData{
     my ($lv, $rank, $mlp, $mfp, $cond) = (0, 0, 0, 0, 0);
  
     # tdの抽出
-    my $td_nodes = &GetNode::GetNode_Tag("td",\$table_in_ma_node);
+    my $tr_nodes = &GetNode::GetNode_Tag("tr",\$table_in_ma_node);
+    my $td0_nodes = &GetNode::GetNode_Tag("td",\$$tr_nodes[0]);
+    my $td1_nodes = &GetNode::GetNode_Tag("td",\$$tr_nodes[1]);
 
-    foreach my $td_node(@$td_nodes){
-        my $td_text = $td_node->as_text;
-        my $right = $td_node->right;
-        my $right_text = ($right && $right =~ /HASH/) ? $right->as_text : $right;
+    for (my $i=0;$i < scalar(@$td0_nodes);$i++) {
+        my $td0_text = $$td0_nodes[$i]->as_text;
+        my $td1_text = $$td1_nodes[$i]->as_text;
 
-        if($td_text eq "Lv"){
-            $lv = $right_text;
-        }elsif($td_text eq "Rank"){
-            $rank = $right_text;
-        }elsif($td_text eq "MLP"){
-            $mlp = $right_text;
-        }elsif($td_text eq "MFP"){
-            $mfp = $right_text;
-        }elsif($td_text eq "Cond"){
-            $cond = $self->{CommonDatas}{ProperName}->GetOrAddId($right_text);
+        if($td0_text eq "Lv"){
+            $lv = $td1_text;
+        }elsif($td0_text eq "Rank"){
+            $rank = $td1_text;
+        }elsif($td0_text eq "MLP"){
+            $mlp = $td1_text;
+        }elsif($td0_text eq "MFP"){
+            $mfp = $td1_text;
+        }elsif($td0_text eq "Cond"){
+            $cond = $self->{CommonDatas}{ProperName}->GetOrAddId($td1_text);
         }
     }
 
-    $self->{Datas}{Parameter}->AddData(join(ConstData::SPLIT,    ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $lv, $rank, $mlp, $mfp, $cond)));
+    $self->{Datas}{Parameter}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $lv, $rank, $mlp, $mfp, $cond)));
 
     return;
 }

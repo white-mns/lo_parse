@@ -156,6 +156,10 @@ sub Main {
             $upload->DeleteSameResult('command_action_rankings', $result_no, $generate_no);
             $upload->Upload("./output/command/action_ranking_" . $result_no . "_" . $generate_no . ".csv", 'command_action_rankings');
         }
+        if (ConstData::EXE_COMMAND_PARAMETER_DEVELOPMENT) {
+            $upload->DeleteSameResult('parameter_developments', $result_no, $generate_no);
+            $upload->Upload("./output/command/parameter_development_" . $result_no . "_" . $generate_no . ".csv", 'parameter_developments');
+        }
     }
     if (ConstData::EXE_ALLPRE) {
         if (ConstData::EXE_ALLPRE_PRE_WIN) {
