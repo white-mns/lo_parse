@@ -36,6 +36,7 @@ require "./source/chara/ItemUse.pm";
 require "./source/chara/FacilityUse.pm";
 require "./source/chara/Manufacture.pm";
 require "./source/chara/Bug.pm";
+require "./source/chara/Dice.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -85,6 +86,7 @@ sub Init{
     if (ConstData::EXE_CHARA_FACILITY_USE)       { $self->{DataHandlers}{FacilityUse}       = FacilityUse->new();}
     if (ConstData::EXE_CHARA_MANUFACTURE)        { $self->{DataHandlers}{Manufacture}       = Manufacture->new();}
     if (ConstData::EXE_CHARA_BUG)                { $self->{DataHandlers}{Bug}               = Bug->new();}
+    if (ConstData::EXE_CHARA_DICE)               { $self->{DataHandlers}{Dice}              = Dice->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -182,6 +184,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{FacilityUse}))       {$self->{DataHandlers}{FacilityUse}->GetData      ($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{Manufacture}))       {$self->{DataHandlers}{Manufacture}->GetData      ($e_no, $b_re2_nodes)};
     if (exists($self->{DataHandlers}{Bug}))               {$self->{DataHandlers}{Bug}->GetData              ($e_no, $bug_color2_nodes)};
+    if (exists($self->{DataHandlers}{Dice}))              {$self->{DataHandlers}{Dice}->GetData             ($e_no, $b_re2_nodes)};
 
     $tree = $tree->delete;
 }

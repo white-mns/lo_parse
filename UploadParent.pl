@@ -146,6 +146,10 @@ sub Main {
             $upload->DeleteSameResult('bugs', $result_no, $generate_no);
             $upload->Upload("./output/chara/bug_" . $result_no . "_" . $generate_no . ".csv", 'bugs');
         }
+        if (ConstData::EXE_CHARA_DICE) {
+            $upload->DeleteSameResult('dices', $result_no, $generate_no);
+            $upload->Upload("./output/chara/dice_" . $result_no . "_" . $generate_no . ".csv", 'dices');
+        }
     }
     if (ConstData::EXE_COMMAND) {
         if (ConstData::EXE_COMMAND_ACTION) {
