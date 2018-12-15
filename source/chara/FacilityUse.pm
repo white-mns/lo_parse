@@ -53,6 +53,8 @@ sub Init{
                 "usage",
                 "cost",
                 "success",
+                "number",
+                "recovery_lv",
     ];
     $self->{Datas}{FacilityUse}->Init($header_list);
    
@@ -87,18 +89,19 @@ sub GetFacilityUseData{
     my $self  = shift;
     my $b_re2_nodes = shift;
     
+    my $number = 1;
     foreach my $b_re2_node (@$b_re2_nodes){
 
         my $b_re2_text = $b_re2_node->as_text;
         if ($b_re2_text =~ /　施設　/) {
-            my ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success) = ("", 0, -1, -1, -1, -1, 1);
+            my ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success, $recovery_lv) = ("", 0, -1, -1, -1, -1, 1, 0);
             my @right_nodes = $b_re2_node->right;
 
             foreach my $node (@right_nodes) {
                 if ($node =~ /HASH/ && ($node->tag eq "b" || $node->tag eq "hr")) { last;}
 
                 if ($node =~ /HASH/ && $node->tag eq "span" && $node->attr("id") eq "ho1") {
-                    ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success) = ("", 0, -1, -1, -1, -1, 1);
+                    ($facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success, $recovery_lv) = ("", 0, -1, -1, -1, -1, 1, 0);
 
                     if ($node->as_text =~ /(.+)Lv(\d+)：(.+)/) {
                         $facility_effect = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
@@ -122,9 +125,14 @@ sub GetFacilityUseData{
                 if ($node =~ /が足りなかった。/) {
                     $success = -1;
                 }
+                
+                if ($node =~ /Conditionが回復♪/) {
+                    $recovery_lv = $facility_lv;
+                }
 
                 if ($node =~ /（\+Ino\d+/ || $node =~ /が足りなかった。/) {
-                    $self->{Datas}{FacilityUse}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success) ));
+                    $self->{Datas}{FacilityUse}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success, $number, $recovery_lv) ));
+                    $number += 1;
                 }
             }        
         }

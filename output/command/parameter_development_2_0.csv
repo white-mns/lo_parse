@@ -1,4 +1,4 @@
-result_no	generate_no	e_no	lv	rank	mlp	mfp	cond	
+result_no	generate_no	e_no	lv	rank	mlp	mfp	cond	last_result_no	last_generate_no	
 2	0	1	2	1	186	84	0
 2	0	2	2	1	171	94	0
 2	0	3	2	0	147	102	0

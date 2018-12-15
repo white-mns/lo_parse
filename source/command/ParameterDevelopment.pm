@@ -51,6 +51,8 @@ sub Init{
                 "mlp",
                 "mfp",
                 "cond",
+                "last_result_no",
+                "last_generate_no",
     ];
 
     $self->{Datas}{Parameter}->Init($header_list);
@@ -61,6 +63,8 @@ sub Init{
     if ($self->{ResultNo} < 6) {
         $self->GetLastParameter();
     }
+
+    $self->ReadLastGenerateNo();
 
     return;
 }
@@ -97,6 +101,22 @@ sub GetLastParameter(){
     }
 
     return;
+}
+#-----------------------------------#
+#    前回の再更新番号を取得
+#-----------------------------------#
+sub ReadLastGenerateNo(){
+    my $self      = shift;
+    
+    $self->{LastGenerateNo} = 0;
+    # 前回結果の確定版ファイルを探索
+    for (my $i=5; $i>=0; $i--){
+        my $file_name = "./output/command/parameter_development_" . ($self->{ResultNo} - 1) . "_" . $i . ".csv" ;
+        if(-f $file_name) {
+            $self->{LastGenerateNo} = $i;
+            last;
+        }
+    }
 }
 
 #-----------------------------------#
@@ -172,7 +192,7 @@ sub GetParameterData{
         }
     }
 
-    $self->{Datas}{Parameter}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $lv, $rank, $mlp, $mfp, $cond)));
+    $self->{Datas}{Parameter}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $lv, $rank, $mlp, $mfp, $cond, $self->{ResultNo} - 1, $self->{LastGenerateNo})));
 
     return;
 }

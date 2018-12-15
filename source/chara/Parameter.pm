@@ -87,6 +87,7 @@ sub Init{
     $self->{Datas}{ParameterFight}->SetOutputName( "./output/chara/parameter_fight_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     $self->{Datas}{ParameterControl}->SetOutputName( "./output/chara/parameter_control_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     $self->{Datas}{ParameterProgress}->SetOutputName( "./output/chara/parameter_progress_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+
     return;
 }
 
@@ -106,6 +107,7 @@ sub GetData{
     
     return;
 }
+
 #-----------------------------------#
 #    名前データ取得
 #------------------------------------
