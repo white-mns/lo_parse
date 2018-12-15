@@ -11,6 +11,7 @@ LZH_NAME=${RESULT_NO}_$GENERATE_NO
 mkdir ./data/utf/result${RESULT_NO}
 mkdir ./data/utf/result${RESULT_NO}/result_chara
 mkdir ./data/utf/result${RESULT_NO}/result_pre
+mkdir ./data/utf/result${RESULT_NO}/result_com
 
 wget -O ./data/utf/result${RESULT_NO}/base.css http://ykamiya.ciao.jp/result/base.css
 wget -O ./data/utf/result${RESULT_NO}/manual.css http://ykamiya.ciao.jp/result/manual.css
@@ -32,6 +33,21 @@ for ((E_NO=1;E_NO <= 400;E_NO++)) {
     }
 }
 
+for ((E_NO=1;E_NO <= 400;E_NO++)) {
+    for ((i=0;i < 2;i++)) { # 2回までリトライする
+        if [ -s ./data/utf/result${RESULT_NO}/result_com/result_com${E_NO}.html ]; then
+            break
+        fi
+
+        wget -O ./data/utf/result${RESULT_NO}/result_com/result_com${E_NO}.html http://ykamiya.ciao.jp/result/result_chara/result_com${E_NO}.html
+
+        sleep 2
+
+        if [ -s ./data/utf/result${RESULT_NO}/result_com/result_com${E_NO}.html ]; then
+            break
+        fi
+    }
+}
 find ./data/utf/result${RESULT_NO} -type f -empty -delete
 wget -O ./data/utf/result${RESULT_NO}/result_pre/ALLpre.html http://ykamiya.ciao.jp/result/result_pre/ALLpre.html
 perl _GetPreDatas.pl $1 $2

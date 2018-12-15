@@ -50,6 +50,7 @@ sub Init{
                 "e_no",
                 "i_no",
                 "name",
+                "recovery_lv",
     ];
 
     $self->{Datas}{ItemUse}->Init($header_list);
@@ -69,6 +70,7 @@ sub Init{
     $self->{Datas}{AllItemUse}->SetOutputName( "./output/new/all_item_use_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
     $self->ReadLastNewData();
+    $self->ReadLastItemData();
 
     return;
 }
@@ -103,6 +105,38 @@ sub ReadLastNewData(){
 
     return;
 }
+
+#-----------------------------------#
+#    既存アイテムデータを読み込む
+#-----------------------------------#
+sub ReadLastItemData(){
+    my $self      = shift;
+    
+    my $file_name = "";
+    # 前回結果の確定版ファイルを探索
+    for (my $i=5; $i>=0; $i--){
+        $file_name = "./output/chara/item_" . ($self->{ResultNo} - 1) . "_" . $i . ".csv" ;
+        if(-f $file_name) {last;}
+    }
+    
+    #既存データの読み込み
+    my $content = &IO::FileRead ( $file_name );
+    
+    my @file_data = split(/\n/, $content);
+    shift (@file_data);
+    
+    foreach my  $data_set(@file_data){
+        my $item_datas = []; 
+        @$item_datas   = split(ConstData::SPLIT, $data_set);
+        my $e_no = $$item_datas[2];
+        my $i_no = $$item_datas[3];
+        my $lv = $$item_datas[8];
+        $self->{LastItem}{$e_no}{$i_no} = $lv;
+    }
+
+    return;
+}
+
 #-----------------------------------#
 #    データ取得
 #------------------------------------
@@ -134,21 +168,25 @@ sub GetItemUseData{
         if ($b_re2_text =~ /　使用　/) {
             my @right_nodes = $b_re2_node->right;
 
-            foreach my $right_node (@right_nodes) {
-                if ($right_node =~ /HASH/ && ($right_node->tag eq "b" || $right_node->tag eq "hr")) { last;}
+            foreach my $node (@right_nodes) {
+                if ($node =~ /HASH/ && ($node->tag eq "b" || $node->tag eq "hr")) { last;}
 
-                if ($right_node =~ /HASH/ && $right_node->tag eq "span") {
-                    my ($i_no, $name) = (0, "");
-                    my $text = $right_node->as_text;
+                if ($node =~ /HASH/ && $node->tag eq "span") {
+                    my ($i_no, $name, $recovery_lv) = (0, "", 0);
+                    my $text = $node->as_text;
 
                     if ($text =~ m!Ino(\d+) (.+)!) {
                         $i_no = $1;
                         $name = $2;
 
-                        my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $i_no, $name);
+                        my @item_right_nodes = $node->right;
+                        if ($item_right_nodes[4] =~ /Conditionが回復♪/) {
+                            $recovery_lv = $self->{LastItem}{$self->{ENo}}{$i_no};
+                        }
+
+                        my @datas=($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $i_no, $name, $recovery_lv);
                         $self->{Datas}{ItemUse}->AddData(join(ConstData::SPLIT, @datas));
 
-                        $self->RecordNewItemUseData($name);
                         $self->RecordNewItemUseData($name);
 
                         last;
