@@ -310,7 +310,7 @@ sub GetDamageData{
 
     my $text = $node->as_text;
 
-    if ($text !~ /のダメージ|回復♪/) {return 0;}
+    if ($text !~ /のダメージ|回復♪|寸前で回避/) {return 0;}
 
     my $font_node_player = &GetNode::GetNode_Tag_Color_NoSize("font", "#6633ff", \$node);
     my $font_node_enemy  = &GetNode::GetNode_Tag_Color_NoSize("font", "#996600", \$node);
@@ -332,16 +332,24 @@ sub GetDamageData{
     
         my $damage_node = &GetNode::GetNode_Tag("font", \$target_node);
 
-        if ($$damage_node[1] =~ /HASH/) {
+        if (scalar(@$damage_node) > 1 && $$damage_node[1] =~ /HASH/) {
             $damage = $$damage_node[1]->as_text;
         }
 
-        if ($damage =~ /^\d+$/) {
+        if ($damage =~ /^\d+$/ || $target_text =~ /寸前で回避/) {
+            if ($target_text =~ /寸前で回避/) {$damage = -1}
 
-            if    ($target_text =~ /FPに\d+のダメージ！/) { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FPダメージ")}
-            elsif ($target_text =~ /LPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("LP回復")}
-            elsif ($target_text =~ /FPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FP回復")}
-            else                                          { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ")}
+            if    ($target_text =~ /FPに\d+のダメージ！/) { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FPダメージ");}
+            elsif ($target_text =~ /LPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("LP回復");}
+            elsif ($target_text =~ /FPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FP回復");}
+            else                                          { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ");}
+            if ($target_text =~ /寸前で回避/) {
+                if ($$card{"name"} =~ /侵食|吸魔/) {
+                    $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FPダメージ");
+                } else {
+                    $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ");
+                }
+            }
 
             $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
                         $self->{NicknameToEno}{$nickname}, $self->{NicknameToPno}{$nickname}, $turn, 0, $$card{"id"}, $$card{"chain"},
