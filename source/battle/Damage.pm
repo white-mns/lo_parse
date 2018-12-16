@@ -248,8 +248,8 @@ sub ReadTurnDlNode{
     my $buffers = {};
     my $card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
 
-    $self->ResetAbnormals(\$buffers);
-    $self->ResetPreDamages(\$buffers);
+    $self->ResetAbnormalData(\$buffers);
+    $self->ResetPreDamageData(\$buffers);
 
     foreach my $node (@nodes) {
         if ($node =~ /HASH/ && $node->tag eq "dl") {
@@ -257,10 +257,12 @@ sub ReadTurnDlNode{
             $self->ReadTurnDlNode($turn, $node);
             last;
         }
+        
+        if ($node->as_text =~ /により/) {next;}
 
         if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
-            $self->ResetAbnormals(\$buffers);
-            $self->ResetPreDamages(\$buffers);
+            $self->ResetAbnormalData(\$buffers);
+            $self->ResetPreDamageData(\$buffers);
             #print $node->as_text." | $nickname,".$self->{NicknameToEno}{$nickname}."\n";
             #foreach my $name (keys %$buffers) {
             #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
@@ -268,28 +270,186 @@ sub ReadTurnDlNode{
             #print $$card{"name"}.",".$$card{"id"}.",".$$card{"chain"}."\n";
         }
 
-        if ($self->GetCardData($node, \$card)) {
-            #print $$card{"name"}.",".$$card{"id"}.",".$$card{"chain"}."\n";
-        }
-
-        if ($node->as_text =~ /により/) {next;}
+        $self->GetCardData($node, \$card);
+        $self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node);
+        $self->GetCounterData($turn, $node);
+        $self->GetFieldData($node, \$buffers);
+        $self->GetPreDamageData($node, \$buffers);
         
-        if ($self->GetDamageData($node, $turn, $nickname, $card, $buffers, $trigger_node)) {
-            $self->ResetPreDamages(\$buffers);
-        }
-
-        if ($self->GetPreDamageData($node, \$buffers)) {
-            #foreach my $name (keys %$buffers) {
-            #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
-            #}
+        if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node)) {
+            $self->ResetPreDamageData(\$buffers);
+            $self->ResetFieldData(\$buffers);
         }
     }
 }
 
 #-----------------------------------#
+#    カウンター内容取得
+#------------------------------------
+#    引数｜ターン数
+#          カウンター起点ノード
+#          発動者愛称
+#          カード情報
+#          発動ノード
+#-----------------------------------#
+sub ReadCounterDlNode{
+    my $self     = shift;
+    my $turn     = shift; 
+    my $counter_node = shift;
+    my $nickname     = shift;
+    my $card         = shift;
+    my $trigger_node = shift;
+
+    my $buffers = {};
+
+    my @nodes = $counter_node->right;
+
+    $self->ResetAbnormalData(\$buffers);
+    $self->ResetPreDamageData(\$buffers);
+
+    foreach my $node (@nodes) {
+        if ($node =~ /HASH/ && $node->tag eq "dl") {
+            last;
+        }
+        
+        if ($node->as_text =~ /により/) {next;}
+
+        $self->GetPreDamageData($node, \$buffers);
+
+        if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node)) {
+            $self->ResetPreDamageData(\$buffers);
+            last;
+        }
+
+    }
+}
+#-----------------------------------#
+#    反撃、カウンタ発動時にカード情報を上書き
+#------------------------------------
+#    引数｜ターン数
+#          対象ノード
+#-----------------------------------#
+sub GetCounterData{
+    my $self         = shift;
+    my $turn         = shift;
+    my $node         = shift;
+
+    my $nickname     = "";
+    my $card         = {};
+    my $trigger_node = "";
+
+    my $lv = 0;
+
+    my $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
+    my $counter_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
+
+    if (scalar(@$font_nodes)) {
+
+        my $text = $$font_nodes[0]->as_text;
+
+        if ($text !~ /カウンタ/)  {return 0;}
+        if ($text !~ /Lv(\d+)！/) {return 0;}
+        my $lv = $1;
+
+        if ($node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
+        $nickname = $1;
+
+        $text =~ s/！//;
+        $text =~ s/\s//g;
+
+        my $chain_num = 0;
+
+        # カード名の解析
+        my $effect_name = $text;
+
+        my $card_id = 0;
+        if ($text =~ /(.+)Lv(\d+)/) {
+            my $effect = $1;
+            my $lv     = $2;
+            $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+            $card     = {"name"=>$effect, "id"=>$card_id, "chain"=>$chain_num};
+        }
+        my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
+        $trigger_node = $$tmp_node[0];
+
+    } elsif (scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
+        my $left_text = $node->left->as_text;
+        if ($left_text !~ /(.+\(Pn\d+\))/) {return 0;}
+        $nickname = $1;
+
+        my $tmp_node = &GetNode::GetNode_Tag("font", \$node->right);
+        $trigger_node = $$tmp_node[0];
+
+        $card    = {"name"=>"反撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["反撃", 0, 0, 0, 0, 0]), "chain"=>0};
+
+    } else {
+        return 0;
+    }
+
+    $self->ReadCounterDlNode($turn, $node, $nickname, $card, $trigger_node);
+
+    return 1;
+}
+
+#-----------------------------------#
+#    アタッカ発動時にカード情報を上書き
+#------------------------------------
+#    引数｜対象ノード
+#          発動者愛称
+#          カード情報
+#          バフデバフ情報
+#          発動ノード
+#-----------------------------------#
+sub GetAttaccaData{
+    my $self         = shift;
+    my $node         = shift;
+    my $nickname     = shift;
+    my $card         = shift;
+    my $buffers      = shift;
+    my $trigger_node = shift;
+
+    if ($$$card{"name"} ne "通常攻撃") {return;}
+
+    my $font_nodes = "";
+    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
+
+    if (!scalar(@$font_nodes)) { return 0;}
+
+    my $text = $$font_nodes[0]->as_text;
+
+    if ($text !~ /アタッカ/)  {return 0;}
+    if ($text !~ /Lv(\d+)！/) {return 0;}
+    my $lv = $1;
+
+    if ($node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
+    $$nickname = $1;
+
+    $text =~ s/！//;
+    $text =~ s/\s//g;
+
+    my $chain_num = 0;
+
+    # カード名の解析
+    my $effect_name = $text;
+
+    my $card_id = 0;
+    if ($text =~ /(.+)Lv(\d+)/) {
+        my $effect = $1;
+        my $lv     = $2;
+        $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+        $$card     = {"name"=>$effect, "id"=>$card_id, "chain"=>$chain_num};
+    }
+
+    my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
+    $$trigger_node = $$tmp_node[0];
+
+    return 1;
+}
+#-----------------------------------#
 #    ダメージ・回復取得
 #------------------------------------
-#    引数｜発動ノード
+#    引数｜ターン数
+#          対象ノード
 #          発動者愛称
 #          カード情報
 #          バフデバフ情報
@@ -297,8 +457,8 @@ sub ReadTurnDlNode{
 #-----------------------------------#
 sub GetDamageData{
     my $self         = shift;
-    my $node         = shift;
     my $turn         = shift;
+    my $node         = shift;
     my $nickname     = shift;
     my $card         = shift;
     my $buffers      = shift;
@@ -354,6 +514,8 @@ sub GetDamageData{
                         $self->{NicknameToEno}{$target_nickname}, $self->{NicknameToPno}{$target_nickname}, 0,
                         $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
             $self->{ActId} = $self->{ActId} + 1;
+
+            return 1;
         }
     }
 }
@@ -369,7 +531,7 @@ sub GetPreDamageData{
     my $node         = shift;
     my $buffers      = shift;
 
-    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge|Counter/) {
+    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge/) {
         my $attack_node = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
         my $block_node  = &GetNode::GetNode_Tag_Attr("font", "color", "#009966", \$node);
 
@@ -377,150 +539,13 @@ sub GetPreDamageData{
         if    (scalar(@$attack_node)) { $text = $$attack_node[0]->as_text}
         elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
 
-        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge|^Counter)/) {
+        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge)/) {
             $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
         }
         return 1;
     } else {
         return 0;
     }
-}
-
-#-----------------------------------#
-#    クリティカル等値初期化
-#------------------------------------
-#    引数｜バフデバフ情報
-#-----------------------------------#
-sub ResetPreDamages{
-    my $self         = shift;
-    my $buffers      = shift;
-
-    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
-    }
-}
-
-#-----------------------------------#
-#    状態異常値初期化
-#------------------------------------
-#    引数｜バフデバフ情報
-#-----------------------------------#
-sub ResetAbnormals{
-    my $self         = shift;
-    my $buffers      = shift;
-
-    my @texts = ("毒","麻","封","乱","魅");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
-    }
-}
-#-----------------------------------#
-#    ダメージ・回復取得
-#------------------------------------
-#    引数｜Pno
-#          対象Pno
-#          データノード
-#-----------------------------------#
-sub GetDamageData_old{
-    my $self        = shift;
-    my $p_no        = shift; 
-    my $target_p_no = shift; 
-    my $nodes       = shift; 
-
-    foreach my $node (@$nodes) {
-        my $e_no = -1;
-        my $text = $node->as_text;
-        my $start_node = "";
-
-        
-        my $card_id = 0;
-        my $chain_num = 0;
-
-        my $dd_node = $node->parent;
-
-        $dd_node = $dd_node->right;
-
-        my ($is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb) = (0, 0, 0, 0, 0);
-        # 効果の解析
-        while($dd_node) {
-            my ($target_e_no, $act_type, $element, $damage) = (0, 0, 0, 0);
-
-            my $dd_text = $dd_node->as_text;
-
-            if ($dd_text =~ /のダメージ|回復♪/) {
-                if ($dd_text =~ /により/) {
-                    $dd_node = $dd_node->right;
-                    next;
-                }
-
-                my $font_node_player = &GetNode::GetNode_Tag_Color_NoSize("font", "#6633ff", \$dd_node);
-                my $font_node_enemy  = &GetNode::GetNode_Tag_Color_NoSize("font", "#996600", \$dd_node);
-                my $target_node = "";
-
-                if    (scalar(@$font_node_player)) { $target_node = $$font_node_player[0];}
-                elsif (scalar(@$font_node_enemy))  { $target_node = $$font_node_enemy[0]; }
-
-                if (!$target_node) {
-                    $dd_node = $dd_node->right;
-                    next;
-                }
-
-                if ($target_node->attr("color") ne $start_node->attr("color")) { # カウンタなどの反撃処理を除外
-                    $dd_node = $dd_node->right;
-                    next;
-                }
-
-                my $target_text = $target_node->as_text;
-
-                if ($target_text =~ /(.+\(Pn\d+\))/) {
-                    $text = $1;
-                    $target_e_no = $self->{NicknameToEno}{$1};
-                
-                    my $damage_node = &GetNode::GetNode_Tag("font", \$target_node);
-
-                    if ($$damage_node[1] =~ /HASH/) {
-                        $damage = $$damage_node[1]->as_text;
-                    }
-
-                    if ($damage =~ /^\d+$/) {
-
-                        if    ($target_text =~ /FPに\d+のダメージ！/) { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FPダメージ")}
-                        elsif ($target_text =~ /LPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("LP回復")}
-                        elsif ($target_text =~ /FPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FP回復")}
-                        else                                          { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ")}
-
-                        $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId}, $e_no, $p_no, "", 0, $card_id, $chain_num, $target_e_no, $target_p_no, 0, $act_type, $element, $damage, $is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb)));
-                        $self->{ActId} = $self->{ActId} + 1;
-                        ($is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb) = (0, 0, 0, 0, 0);
-                    }
-                }
-
-            }
-            elsif ($dd_text =~ /Weak|Critical|Clean|Vanish|Absorb/) {
-                my $attack_node = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$dd_node);
-                my $block_node  = &GetNode::GetNode_Tag_Attr("font", "color", "#009966", \$dd_node);
-
-                my $text = "";
-                if    (scalar(@$attack_node)) { $text = $$attack_node[0]->as_text}
-                elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
-
-                if    ($text =~ /^WeakPoint/) { $is_weak     = 1}
-                elsif ($text =~ /^Critical/)  { $is_critical = 1}
-                elsif ($text =~ /^Clean/)     { $is_clean    = 1}
-                elsif ($text =~ /^Vanish/)    { $is_vanish   = 1}
-                elsif ($text =~ /^Absorb/)    { $is_absorb   = 1}
-
-            }
-            elsif ($dd_node->tag eq "dt")     { last; }
-            elsif ($dd_text =~ /が後に続く/ ) { last; }
-            elsif ($dd_text =~ /「|\(Pn/)     { }
-
-            $dd_node = $dd_node->right;
-
-        }
-    }
-    return;
 }
 
 #-----------------------------------#
@@ -543,8 +568,8 @@ sub GetTriggerData{
     my $text = $node->as_text;
 
     if ($text !~ /Action|が後に続く|が発動|が先導する/) {return 0;}
+    
     if ($text !~ /(.+\(Pn\d+\))/) {return 0;}
-
     $$nickname = $1;
 
     $$card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
@@ -583,7 +608,6 @@ sub GetCardData{
 
     if (!scalar(@$font_nodes)) { return 0;}
 
-
     my $text = $$font_nodes[0]->as_text;
 
     if ($text !~ /Lv(\d+)！/) {return 0;}
@@ -609,6 +633,78 @@ sub GetCardData{
     }
 
     return 1;
+}
+
+#-----------------------------------#
+#    クリティカル等値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetPreDamageData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
+    foreach my $text (@texts) {
+        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    }
+}
+
+#-----------------------------------#
+#    状態異常値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetAbnormalData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @texts = ("毒","麻","封","乱","魅");
+    foreach my $text (@texts) {
+        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    }
+}
+
+#-----------------------------------#
+#    強化フィールド取得
+#------------------------------------
+#    引数｜発動ノード
+#          バフデバフ情報
+#-----------------------------------#
+sub GetFieldData{
+    my $self         = shift;
+    my $node         = shift;
+    my $buffers      = shift;
+
+    if ($node->as_text =~ /属性威力が強化/) {
+        my $field_node = &GetNode::GetNode_Tag("font", \$node);
+
+        my $text = "";
+        if (scalar(@$field_node)) { $text = $$field_node[0]->as_text}
+
+        if ($text =~ /(.+)Lv(\d+)/) {
+            $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>$2, "number"=>1};
+        }
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+#-----------------------------------#
+#    強化フィールド初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetFieldData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    foreach my $key (keys %$$buffers) {
+        if ($key =~ /強化フィールド/) {
+            delete($$$buffers{$key});
+        }
+    }
 }
 
 #-----------------------------------#
