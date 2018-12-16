@@ -39,8 +39,9 @@ sub Init{
     
     #初期化
     $self->{Count} = {};
-    $self->{Datas}{DamageRate} = StoreData->new();
-    $self->{Datas}{Damage}     = StoreData->new();
+    $self->{Datas}{DamageRate}   = StoreData->new();
+    $self->{Datas}{Damage}       = StoreData->new();
+    $self->{Datas}{DamageBuffer} = StoreData->new();
 
     my $header_list = "";
     $header_list = [
@@ -63,11 +64,23 @@ sub Init{
                 "is_vanish",
                 "is_absorb",
     ];
-
     $self->{Datas}{Damage}->Init($header_list);
     
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "battle_page",
+                "act_id",
+                "e_no",
+                "buffer_id",
+                "lv",
+                "value",
+    ];
+    $self->{Datas}{DamageBuffer}->Init($header_list);
+    
     #出力ファイル設定
-    $self->{Datas}{Damage}->SetOutputName     ( "./output/battle/damage_"       . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Damage}->SetOutputName       ( "./output/battle/damage_"        . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{DamageBuffer}->SetOutputName ( "./output/battle/damage_buffer_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
     return;
 }
@@ -80,12 +93,13 @@ sub Init{
 sub GetData{
     my $self = shift;
     my $battle_page = shift;
-    my $font_player_nodes = shift; 
-    my $font_enemy_nodes  = shift; 
+    my $div_heading_nodes = shift; 
     my $link_nodes        = shift; 
     my $table_345_nodes   = shift; 
     
-    $self->{NicknameToEno} = {};
+    $self->{NicknameToEno}  = {};
+    $self->{NicknameToPno}  = {};
+    $self->{NicknameToLine} = {};
     $self->{Pno} = {};
     $self->{ActId} = 0;
 
@@ -95,8 +109,7 @@ sub GetData{
     # 愛称とEnoの紐付け処理
     $self->LinkingNicknameToEno($link_nodes, $table_345_nodes);
 
-    $self->GetDamageData($self->{Pno}{Player}, $self->{Pno}{Enemy},  $font_player_nodes);
-    $self->GetDamageData($self->{Pno}{Enemy},  $self->{Pno}{Player}, $font_enemy_nodes);
+    $self->ReadHeadingData($div_heading_nodes);
     
     return;
 }
@@ -145,6 +158,7 @@ sub LinkingNicknameToEno{
         $p_no = $1;
         
         $self->{NicknameToEno}{$nickname} = shift(@exist_e_no_list);
+        $self->{NicknameToPno}{$nickname} = $p_no;
     }
     $self->{Pno}{Player} = $p_no;
 
@@ -157,6 +171,7 @@ sub LinkingNicknameToEno{
         $p_no = $1;
         
         $self->{NicknameToEno}{$nickname} = shift(@exist_e_no_list);
+        $self->{NicknameToPno}{$nickname} = $p_no;
     }
     $self->{Pno}{Enemy} = $p_no;
 
@@ -164,12 +179,246 @@ sub LinkingNicknameToEno{
 }
 
 #-----------------------------------#
-#    成功率データ取得
+#    ダメージ・回復取得
 #------------------------------------
 #    引数｜Pno
-#           データノード
+#          対象Pno
+#          データノード
+#-----------------------------------#
+sub ReadHeadingData{
+    my $self  = shift;
+    my $nodes = shift; 
+
+    foreach my $node (@$nodes) {
+        if ($node->as_text =~ /Turn (\d+)/) {
+            my $turn = $1;
+            my @right_nodes = $node->right;
+            foreach my $right_node (@right_nodes) {
+                if ($right_node =~ /HASH/ && $right_node->tag eq "div" && $right_node->attr("class") eq "heading") {last;}
+
+                if ($right_node =~ /HASH/ && $right_node->tag eq "center") {
+                    $self->ReadLineData($right_node);
+
+                } elsif ($right_node =~ /HASH/ && $right_node->tag eq "dl") {
+                    $self->ReadTurnDlNode($turn, $right_node);
+                }
+            }
+        }
+    }
+}
+
+#-----------------------------------#
+#    戦闘内容取得
+#------------------------------------
+#    引数｜参戦キャラ一覧ノード
+#-----------------------------------#
+sub ReadLineData{
+    my $self     = shift;
+    my $center_node = shift;
+
+    my %lines = ("前"=>0,"中"=>1,"後"=>2);
+    my $nodes = &GetNode::GetNode_Tag("td", \$center_node);
+
+    foreach my $node (@$nodes) {
+        if ($node->as_text =~ /^(.+?)：(.+?\(Pn\d+\))/) {
+            $self->{NicknameToLine}{$2} = $lines{$1};
+           
+        }
+    }
+}
+
+#-----------------------------------#
+#    戦闘内容取得
+#------------------------------------
+#    引数｜ターン
+#          戦闘内容ノード
+#-----------------------------------#
+sub ReadTurnDlNode{
+    my $self     = shift;
+    my $turn     = shift; 
+    my $dl_node = shift;
+
+    my @nodes = $dl_node->content_list;
+
+    my $nickname = "";
+    my $trigger_node = "";
+    my $buffers = {};
+    my $card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
+
+    $self->ResetAbnormals(\$buffers);
+    $self->ResetPreDamages(\$buffers);
+
+    foreach my $node (@nodes) {
+        if ($node =~ /HASH/ && $node->tag eq "dl") {
+            # 表示上のBUGで戦闘内容が入れ子になった時、再帰的に実行し、現在の深さにあるその後の要素は解析しない
+            $self->ReadTurnDlNode($turn, $node);
+            last;
+        }
+
+        if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
+            $self->ResetAbnormals(\$buffers);
+            $self->ResetPreDamages(\$buffers);
+            #print $node->as_text." | $nickname,".$self->{NicknameToEno}{$nickname}."\n";
+            #foreach my $name (keys %$buffers) {
+            #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
+            #}
+            #print $$card{"name"}.",".$$card{"id"}.",".$$card{"chain"}."\n";
+        }
+
+        if ($self->GetCardData($node, \$card)) {
+            #print $$card{"name"}.",".$$card{"id"}.",".$$card{"chain"}."\n";
+        }
+
+        if ($node->as_text =~ /により/) {next;}
+        
+        if ($self->GetDamageData($node, $turn, $nickname, $card, $buffers, $trigger_node)) {
+            $self->ResetPreDamages(\$buffers);
+        }
+
+        if ($self->GetPreDamageData($node, \$buffers)) {
+            #foreach my $name (keys %$buffers) {
+            #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
+            #}
+        }
+    }
+}
+
+#-----------------------------------#
+#    ダメージ・回復取得
+#------------------------------------
+#    引数｜発動ノード
+#          発動者愛称
+#          カード情報
+#          バフデバフ情報
+#          発動ノード
 #-----------------------------------#
 sub GetDamageData{
+    my $self         = shift;
+    my $node         = shift;
+    my $turn         = shift;
+    my $nickname     = shift;
+    my $card         = shift;
+    my $buffers      = shift;
+    my $trigger_node = shift;
+   
+    if ($$card{"name"} eq "通常攻撃") {return 0;}
+    
+    my ($act_type, $element, $damage) = (0, 0, 0);
+
+    my $text = $node->as_text;
+
+    if ($text !~ /のダメージ|回復♪/) {return 0;}
+
+    my $font_node_player = &GetNode::GetNode_Tag_Color_NoSize("font", "#6633ff", \$node);
+    my $font_node_enemy  = &GetNode::GetNode_Tag_Color_NoSize("font", "#996600", \$node);
+    my $target_node = "";
+
+    if    (scalar(@$font_node_player)) { $target_node = $$font_node_player[0];}
+    elsif (scalar(@$font_node_enemy))  { $target_node = $$font_node_enemy[0]; }
+
+    if (!$target_node) {return 0;}
+
+    if ($target_node->attr("color") ne $trigger_node->attr("color")) { # カウンタなどの反撃処理を除外
+        return 0;
+    }
+
+    my $target_text = $target_node->as_text;
+
+    if ($target_text =~ /(.+\(Pn\d+\))/) {
+        my $target_nickname = $1;
+    
+        my $damage_node = &GetNode::GetNode_Tag("font", \$target_node);
+
+        if ($$damage_node[1] =~ /HASH/) {
+            $damage = $$damage_node[1]->as_text;
+        }
+
+        if ($damage =~ /^\d+$/) {
+
+            if    ($target_text =~ /FPに\d+のダメージ！/) { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FPダメージ")}
+            elsif ($target_text =~ /LPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("LP回復")}
+            elsif ($target_text =~ /FPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FP回復")}
+            else                                          { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ")}
+
+            #$self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
+            #            $self->{NicknameToEno}{$nickname}, $self->{NicknameToPno}{$nickname}, $turn, 0, $$card{"id"}, $$card{"chain"},
+            #            $self->{NicknameToEno}{$target_nickname}, $self->{NicknameToPno}{$target_nickname}, 0,
+            #            $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
+
+            $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
+                        $self->{NicknameToEno}{$nickname}, $self->{NicknameToPno}{$nickname}, $$card{"id"}, $$card{"chain"},
+                        $self->{NicknameToEno}{$target_nickname}, $self->{NicknameToPno}{$target_nickname},
+                        $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
+            $self->{ActId} = $self->{ActId} + 1;
+        }
+    }
+}
+
+#-----------------------------------#
+#    クリティカル等取得
+#------------------------------------
+#    引数｜発動ノード
+#          バフデバフ情報
+#-----------------------------------#
+sub GetPreDamageData{
+    my $self         = shift;
+    my $node         = shift;
+    my $buffers      = shift;
+
+    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge|Counter/) {
+        my $attack_node = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
+        my $block_node  = &GetNode::GetNode_Tag_Attr("font", "color", "#009966", \$node);
+
+        my $text = "";
+        if    (scalar(@$attack_node)) { $text = $$attack_node[0]->as_text}
+        elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
+
+        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge|^Counter)/) {
+            $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
+        }
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+#-----------------------------------#
+#    クリティカル等値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetPreDamages{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
+    foreach my $text (@texts) {
+        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    }
+}
+
+#-----------------------------------#
+#    状態異常値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetAbnormals{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @texts = ("毒","麻","封","乱","魅");
+    foreach my $text (@texts) {
+        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    }
+}
+#-----------------------------------#
+#    ダメージ・回復取得
+#------------------------------------
+#    引数｜Pno
+#          対象Pno
+#          データノード
+#-----------------------------------#
+sub GetDamageData_old{
     my $self        = shift;
     my $p_no        = shift; 
     my $target_p_no = shift; 
@@ -180,65 +429,16 @@ sub GetDamageData{
         my $text = $node->as_text;
         my $start_node = "";
 
-        if ($text !~ /！/) {next;}
-        if ($text !~ /Lv(\d+)/) {next;}
-        my $lv = $1;
-
-        { # カード効果のノードから前方に遡ってEnoを取得
-            my $text = "";
-            my $dd_node = $node->parent;
-
-            if ($dd_node->tag ne "dd") {$dd_node = $dd_node->parent;}
-            if ($dd_node->tag ne "dd") {next;}
-
-            while ($dd_node) {
-                my $dd_text = $dd_node->as_text;
-                if ($dd_text !~ /Action|が後に続く|が発動|が先導する/ ) { # もしもENoを取得できず行動の頭のメッセージまで辿り着いたら除外
-                    $dd_node = $dd_node->left;
-                    next;
-                }
-
-                if ($dd_text =~ /(.+\(Pn\d+\))/) {
-                    $text = $1;
-                    $e_no = $self->{NicknameToEno}{$1};
-                    my $tmp_node = &GetNode::GetNode_Tag("font", \$dd_node);
-                    $start_node = $$tmp_node[0];
-                    last;
-                }
-
-                if ($dd_node->tag eq "dt") {last;}
-                $dd_node = $dd_node->left;
-            }
-        }
-
-        $text =~ s/！//;
-        $text =~ s/\s//g;
-
-        my $chain_num = 0;
-        if ($text =~ s/Chain(\d+)：//) {
-            $chain_num = $1;
-        }
-
-        # カード名の解析
-        my $chain_effect_name = $text . "：" . sprintf("%03d", $chain_num);
-        my $effect_name = $text;
-
+        
         my $card_id = 0;
-        if ($text =~ /(.+)Lv(\d+)/) {
-            my $effect = $1;
-            my $lv     = $2;
-            $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
-        }
+        my $chain_num = 0;
 
         my $dd_node = $node->parent;
-        
-        if ($dd_node->tag ne "dd") {$dd_node = $dd_node->parent;}
-        if ($dd_node->tag ne "dd") {next;}
 
         $dd_node = $dd_node->right;
 
         my ($is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb) = (0, 0, 0, 0, 0);
-        # 対象カードの解析
+        # 効果の解析
         while($dd_node) {
             my ($target_e_no, $act_type, $element, $damage) = (0, 0, 0, 0);
 
@@ -286,7 +486,7 @@ sub GetDamageData{
                         elsif ($target_text =~ /FPが\d+回復/)         { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("FP回復")}
                         else                                          { $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ")}
 
-                        $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId}, $e_no, $p_no, $card_id, $chain_num, $target_e_no, $target_p_no, $act_type, $element, $damage, $is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb)));
+                        $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId}, $e_no, $p_no, "", 0, $card_id, $chain_num, $target_e_no, $target_p_no, 0, $act_type, $element, $damage, $is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb)));
                         $self->{ActId} = $self->{ActId} + 1;
                         ($is_weak, $is_critical, $is_clean, $is_vanish, $is_absorb) = (0, 0, 0, 0, 0);
                     }
@@ -317,6 +517,94 @@ sub GetDamageData{
         }
     }
     return;
+}
+
+#-----------------------------------#
+#    発動者取得
+#------------------------------------
+#    引数｜発動ノード
+#          発動者愛称
+#          カード情報
+#          バフデバフ情報
+#          発動ノード
+#-----------------------------------#
+sub GetTriggerData{
+    my $self         = shift;
+    my $node         = shift;
+    my $nickname     = shift;
+    my $card         = shift;
+    my $buffers      = shift;
+    my $trigger_node = shift;
+    
+    my $text = $node->as_text;
+
+    if ($text !~ /Action|が後に続く|が発動|が先導する/) {return 0;}
+    if ($text !~ /(.+\(Pn\d+\))/) {return 0;}
+
+    $$nickname = $1;
+
+    $$card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
+    $$buffers = {};
+
+    my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
+    $$trigger_node = $$tmp_node[0];
+
+    if (my @buffer_texts = $text =~ /【(.+?)】/g) {
+        foreach my $buffer_text (@buffer_texts) {
+            if ($buffer_text =~ /(.+)Lv(\d+)（(\d+)）/) {
+                $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>$2, "number"=>$3};
+            }
+        }
+    }
+
+    return 1;
+}
+
+#-----------------------------------#
+#    カード情報取得
+#------------------------------------
+#    引数｜発動ノード
+#          カード情報
+#-----------------------------------#
+sub GetCardData{
+    my $self = shift;
+    my $node = shift;
+    my $card = shift;
+    
+    my $font_nodes = "";
+    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#009999", \$node);
+    if (!scalar(@$font_nodes)) {
+        $font_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#666600", \$node);
+    }
+
+    if (!scalar(@$font_nodes)) { return 0;}
+
+
+    my $text = $$font_nodes[0]->as_text;
+
+    if ($text !~ /Lv(\d+)！/) {return 0;}
+    my $lv = $1;
+
+    $text =~ s/！//;
+    $text =~ s/\s//g;
+
+    my $chain_num = 0;
+    if ($text =~ s/Chain(\d+)：//) {
+        $chain_num = $1;
+    }
+
+    # カード名の解析
+    my $effect_name = $text;
+
+    my $card_id = 0;
+    if ($text =~ /(.+)Lv(\d+)/) {
+        my $effect = $1;
+        my $lv     = $2;
+        $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+        $$card     = {"name"=>$effect_name, "id"=>$card_id, "chain"=>$chain_num};
+    }
+
+    return 1;
 }
 
 #-----------------------------------#
