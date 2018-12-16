@@ -304,8 +304,6 @@ sub GetDamageData{
     my $buffers      = shift;
     my $trigger_node = shift;
    
-    if ($$card{"name"} eq "通常攻撃") {return 0;}
-    
     my ($act_type, $element, $damage) = (0, 0, 0);
 
     my $text = $node->as_text;
