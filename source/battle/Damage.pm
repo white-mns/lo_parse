@@ -50,13 +50,15 @@ sub Init{
                 "battle_page",
                 "act_id",
                 "e_no",
-                "party",
                 "turn",
+                "party",
+                "party_num",
                 "line",
                 "card_id",
                 "chain",
                 "target_e_no",
                 "target_party",
+                "target_party_num",
                 "target_line",
                 "act_type",
                 "element",
@@ -510,8 +512,8 @@ sub GetDamageData{
             }
 
             $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
-                        $self->{NicknameToEno}{$nickname}, $self->{NicknameToPno}{$nickname}, $turn, 0, $$card{"id"}, $$card{"chain"},
-                        $self->{NicknameToEno}{$target_nickname}, $self->{NicknameToPno}{$target_nickname}, 0,
+                        $self->{NicknameToEno}{$nickname}, $turn, $self->{NicknameToPno}{$nickname}, 5, 0, $$card{"id"}, $$card{"chain"},
+                        $self->{NicknameToEno}{$target_nickname}, $self->{NicknameToPno}{$target_nickname}, 5, 0,
                         $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
             $self->{ActId} = $self->{ActId} + 1;
 
