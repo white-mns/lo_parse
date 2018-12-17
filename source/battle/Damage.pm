@@ -302,6 +302,7 @@ sub ReadTurnDlNode{
 
     my $nickname = "";
     my $trigger_node = "";
+    my $element = 0;
     my $buffers = {};
     my $card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
 
@@ -322,6 +323,8 @@ sub ReadTurnDlNode{
         if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetAbnormalData(\$buffers);
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetElementData(\$element);
+            $self->ResetFieldData(\$buffers);
             #print $node->as_text." | $nickname,".$self->{NicknameToEno}{$nickname}."\n";
             #foreach my $name (keys %$buffers) {
             #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
@@ -333,68 +336,16 @@ sub ReadTurnDlNode{
         $self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node);
         $self->GetCounterData($turn, $node);
         $self->GetPreDamageData($node, \$buffers);
+        $self->GetElementData($node, \$element);
         $self->GetDesorptionData($node);
         $self->GetLineCloseData($node);
         
-        if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node)) {
+        if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
         }
     }
-}
-
-#-----------------------------------#
-#    隊列が詰められた情報を取得
-#------------------------------------
-#    引数｜対象ノード
-#-----------------------------------#
-sub GetLineCloseData{
-    my $self         = shift;
-    my $node         = shift;
-
-    if ($node->as_text !~ /隊列が詰められた！/) {return 0;}
-
-    my $i_nodes = "";
-    $i_nodes = &GetNode::GetNode_Tag("i", \$node);
-
-    if (!scalar(@$i_nodes)) { return 0;}
-
-    if ($$i_nodes[0]->as_text =~ /(.+PT)/) {
-        my $p_no = $self->{PartyNameToPno}{$1};
-
-        foreach my $nickname (keys %{$self->{NicknameToPno}}) {
-            if ($p_no == $self->{NicknameToPno}{$nickname}) {
-                $self->{NicknameToLine}{$nickname} -= 1;
-            }
-        }
-
-        return 1;
-    }
-
-    return 0;
-}
-
-#-----------------------------------#
-#    離脱情報を取得しPT人数を減算
-#------------------------------------
-#    引数｜対象ノード
-#-----------------------------------#
-sub GetDesorptionData{
-    my $self         = shift;
-    my $node         = shift;
-
-    my $font_nodes = "";
-    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
-
-    if (!scalar(@$font_nodes)) { return 0;}
-
-    if ($$font_nodes[0]->as_text =~ /\(Pn(\d+)\) は離脱/) {
-        $self->{PartyNum}{$1} -= 1;
-
-        return 1;
-    }
-
-    return 0;
 }
 
 #-----------------------------------#
@@ -415,6 +366,7 @@ sub ReadCounterDlNode{
     my $trigger_node = shift;
 
     my $buffers = {};
+    my $element = 0;
 
     my @nodes = $counter_node->right;
 
@@ -426,12 +378,14 @@ sub ReadCounterDlNode{
             last;
         }
         
+        $self->GetFieldData($node, \$buffers);
+
         if ($node->as_text =~ /により/) {next;}
 
+        $self->GetElementData($node, \$element);
         $self->GetPreDamageData($node, \$buffers);
 
-        if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node)) {
-            $self->ResetPreDamageData(\$buffers);
+        if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
             last;
         }
 
@@ -456,8 +410,9 @@ sub GetDamageData{
     my $card         = shift;
     my $buffers      = shift;
     my $trigger_node = shift;
+    my $element      = shift;
    
-    my ($act_type, $element, $damage) = (0, 0, 0);
+    my ($act_type, $damage) = (0, 0);
 
     my $text = $node->as_text;
 
@@ -758,6 +713,99 @@ sub GetAttaccaData{
     return 1;
 }
 
+#-----------------------------------#
+#    隊列が詰められた情報を取得
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetLineCloseData{
+    my $self         = shift;
+    my $node         = shift;
+
+    if ($node->as_text !~ /隊列が詰められた！/) {return 0;}
+
+    my $i_nodes = "";
+    $i_nodes = &GetNode::GetNode_Tag("i", \$node);
+
+    if (!scalar(@$i_nodes)) { return 0;}
+
+    if ($$i_nodes[0]->as_text =~ /(.+PT)/) {
+        my $p_no = $self->{PartyNameToPno}{$1};
+
+        foreach my $nickname (keys %{$self->{NicknameToPno}}) {
+            if ($p_no == $self->{NicknameToPno}{$nickname}) {
+                $self->{NicknameToLine}{$nickname} -= 1;
+            }
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
+
+#-----------------------------------#
+#    離脱情報を取得しPT人数を減算
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetDesorptionData{
+    my $self         = shift;
+    my $node         = shift;
+
+    my $font_nodes = "";
+    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
+
+    if (!scalar(@$font_nodes)) { return 0;}
+
+    if ($$font_nodes[0]->as_text =~ /\(Pn(\d+)\) は離脱/) {
+        $self->{PartyNum}{$1} -= 1;
+
+        return 1;
+    }
+
+    return 0;
+}
+
+#-----------------------------------#
+#    攻撃属性情報を取得
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetElementData{
+    my $self    = shift;
+    my $node    = shift;
+    my $element = shift;
+
+    if ($node->as_text !~ /属性攻撃！/) {return 0;}
+
+    my $i_nodes = "";
+    $i_nodes = &GetNode::GetNode_Tag("i", \$node);
+
+    if (!scalar(@$i_nodes)) { return 0;}
+
+    if ($$i_nodes[0]->as_text =~ /(.{4,6})属性攻撃！/) {
+        $$element = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
+
+        return 1;
+    }
+
+    return 0;
+}
+
+#-----------------------------------#
+#    攻撃属性情報を初期化
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub ResetElementData{
+    my $self    = shift;
+    my $element = shift;
+
+    $$element = 0;
+
+    return 0;
+}
 #-----------------------------------#
 #    クリティカル等値初期化
 #------------------------------------
