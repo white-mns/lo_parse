@@ -321,7 +321,6 @@ sub ReadTurnDlNode{
         if ($node->as_text =~ /により/) {next;}
 
         if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
-            $self->ResetAbnormalData(\$buffers);
             $self->ResetPreDamageData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
@@ -464,6 +463,10 @@ sub GetDamageData{
                         $self->{NicknameToEno}{$nickname}, $turn, $p_no, $self->{PartyNum}{$p_no}, $self->{NicknameToLine}{$nickname}, $$card{"id"}, $$card{"chain"},
                         $self->{NicknameToEno}{$target_nickname}, $target_p_no, $self->{PartyNum}{$target_p_no}, $self->{NicknameToLine}{$target_nickname},
                         $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
+            foreach my $key (keys %$buffers) {
+                $self->{Datas}{DamageBuffer}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
+                            $self->{NicknameToEno}{$nickname}, $$buffers{$key}{"id"}, $$buffers{$key}{"lv"}, $$buffers{$key}{"number"})));
+            }
             $self->{ActId} = $self->{ActId} + 1;
 
             return 1;
@@ -529,6 +532,7 @@ sub GetTriggerData{
 
     $$card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
     $$buffers = {};
+    $self->ResetAbnormalData(\$$buffers);
 
     my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
     $$trigger_node = $$tmp_node[0];

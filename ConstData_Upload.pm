@@ -54,6 +54,7 @@ use warnings;
         use constant EXE_BATTLE_MEDDLING_SUCCESS_RATE  => 1;
         use constant EXE_BATTLE_MEDDLING_TARGET        => 1;
         use constant EXE_BATTLE_DAMAGE                 => 1;
+        use constant EXE_BATTLE_DAMAGE_BUFFER          => 1;
     use constant EXE_NEW                     => 1;
         use constant EXE_NEW_GETCARD                   => 1;
         use constant EXE_NEW_CARD_USE                  => 1;

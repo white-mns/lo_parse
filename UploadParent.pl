@@ -210,6 +210,10 @@ sub Main {
             $upload->DeleteSameResult('damages', $result_no, $generate_no);
             $upload->Upload("./output/battle/damage_" . $result_no . "_" . $generate_no . ".csv", 'damages');
         }
+        if (ConstData::EXE_BATTLE_DAMAGE_BUFFER) {
+            $upload->DeleteSameResult('damage_buffers', $result_no, $generate_no);
+            $upload->Upload("./output/battle/damage_buffer_" . $result_no . "_" . $generate_no . ".csv", 'damage_buffers');
+        }
     }
 
     print "result_no:$result_no,generate_no:$generate_no\n";
