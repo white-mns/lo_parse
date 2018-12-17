@@ -130,12 +130,14 @@ sub ParsePage{
     my $font_player_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#009999", \$tree);
     my $font_enemy_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#666600", \$tree);
     my $link_nodes        = &GetNode::GetNode_Tag("a", \$tree);
-    my $table_345_nodes   = &GetNode::GetNode_Tag_Attr("table", "width", "345", \$tree);
+    my $table_345_nodes   = &GetNode::GetNode_Tag_Attr("table", "width", "345",     \$tree);
+    my $table_698_nodes   = &GetNode::GetNode_Tag_Attr("table", "width", "698",     \$tree);
+    my $div_heading_nodes = &GetNode::GetNode_Tag_Attr("div",   "class", "heading", \$tree);
 
     # データリスト取得
     if (exists($self->{DataHandlers}{CardUse}))             {$self->{DataHandlers}{CardUse}->GetData            ($result_page, $font_player_nodes, $font_enemy_nodes, $link_nodes, $table_345_nodes)};
     if (exists($self->{DataHandlers}{MeddlingSuccessRate})) {$self->{DataHandlers}{MeddlingSuccessRate}->GetData($result_page, $font_player_nodes, $font_enemy_nodes, $link_nodes, $table_345_nodes)};
-    if (exists($self->{DataHandlers}{Damage}))              {$self->{DataHandlers}{Damage}->GetData             ($result_page, $font_player_nodes, $font_enemy_nodes, $link_nodes, $table_345_nodes)};
+    if (exists($self->{DataHandlers}{Damage}))              {$self->{DataHandlers}{Damage}->GetData             ($result_page, $div_heading_nodes, $link_nodes, $table_345_nodes, $table_698_nodes)};
 
     $tree = $tree->delete;
 }
