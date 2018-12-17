@@ -542,7 +542,11 @@ sub GetPreDamageData{
         elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
 
         if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge)/) {
-            $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
+            if (exists($$$buffers{$1})) {
+                $$$buffers{$1}{"number"} += 1;
+            } else {
+                $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
+            }
         }
         return 1;
     } else {
