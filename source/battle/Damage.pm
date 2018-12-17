@@ -260,6 +260,8 @@ sub ReadTurnDlNode{
             last;
         }
         
+        $self->GetFieldData($node, \$buffers);
+        
         if ($node->as_text =~ /により/) {next;}
 
         if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
@@ -275,7 +277,6 @@ sub ReadTurnDlNode{
         $self->GetCardData($node, \$card);
         $self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node);
         $self->GetCounterData($turn, $node);
-        $self->GetFieldData($node, \$buffers);
         $self->GetPreDamageData($node, \$buffers);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node)) {
@@ -690,6 +691,16 @@ sub GetFieldData{
 
         if ($text =~ /(.+)Lv(\d+)/) {
             $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>$2, "number"=>1};
+        }
+        return 1;
+    } elsif ($node->as_text =~ /属性攻撃を強制変換/) {
+        my $field_node = &GetNode::GetNode_Tag("i", \$node);
+
+        my $text = "";
+        if (scalar(@$field_node)) { $text = $$field_node[0]->as_text}
+
+        if ($text =~ /(.+)により属性攻撃を強制変換/) {
+            $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
         }
         return 1;
     } else {
