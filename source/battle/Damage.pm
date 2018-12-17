@@ -101,11 +101,14 @@ sub GetData{
     my $div_heading_nodes = shift; 
     my $link_nodes        = shift; 
     my $table_345_nodes   = shift; 
+    my $table_698_nodes   = shift; 
     
     $self->{NicknameToEno}  = {};
     $self->{NicknameToPno}  = {};
     $self->{NicknameToLine} = {};
+    $self->{PartyNameToPno}  = {};
     $self->{Pno} = {};
+    $self->{PartyNum} = {};
     $self->{ActId} = 0;
 
     $self->{BattlePage} = $battle_page;
@@ -113,12 +116,53 @@ sub GetData{
     
     # 愛称とEnoの紐付け処理
     $self->LinkingNicknameToEno($link_nodes, $table_345_nodes);
+    $self->LinkingPartyNameToPno($table_345_nodes, $table_698_nodes);
 
     $self->ReadHeadingData($div_heading_nodes);
     
     return;
 }
 
+#-----------------------------------#
+#    パー低迷-Pno紐付け
+#------------------------------------
+#    引数｜テーブルノード
+#-----------------------------------#
+sub LinkingPartyNameToPno{
+    my $self  = shift;
+    my $table_345_nodes = shift;
+    my $table_698_nodes = shift;
+
+    my $player_party_name_node = &GetNode::GetNode_Tag_Attr("td", "align", "left",  \$$table_698_nodes[0]);
+    my $enemy_party_name_node  = &GetNode::GetNode_Tag_Attr("td", "align", "right", \$$table_698_nodes[0]);
+    my $player_party_name_i_node = &GetNode::GetNode_Tag("i",  \$$player_party_name_node[0]);
+    my $enemy_party_name_i_node  = &GetNode::GetNode_Tag("i",  \$$enemy_party_name_node[0]);
+    my $player_party_name = $$player_party_name_i_node[0]->as_text;
+    my $enemy_party_name  = $$enemy_party_name_i_node[0]->as_text;
+
+    my $player_nicknames = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$$table_345_nodes[0]);
+    my $enemy_nicknames  = &GetNode::GetNode_Tag_Attr("font", "color", "#996600", \$$table_345_nodes[1]);
+
+    # ターン毎キャラリストテーブルにある愛称に、取得した戦闘参加者Enoを順番に割り当てていく
+    my $p_no = 0;
+    foreach my $nickname_node (@$player_nicknames) {
+        if ($nickname_node->as_text =~ /\(Pn(\d+)\)/) {
+            $p_no = $1;
+        }
+    }
+    $self->{PartyNameToPno}{$player_party_name} = $p_no;
+
+    $p_no = 0;
+    foreach my $nickname_node (@$enemy_nicknames) {
+        if ($nickname_node->as_text =~ /\(Pn(\d+)\)/) {
+            $p_no = $1;
+        }
+        
+    }
+    $self->{PartyNameToPno}{$enemy_party_name} = $p_no;
+
+    return;
+}
 #-----------------------------------#
 #    愛称-Eno紐付け
 #------------------------------------
@@ -202,7 +246,7 @@ sub ReadHeadingData{
                 if ($right_node =~ /HASH/ && $right_node->tag eq "div" && $right_node->attr("class") eq "heading") {last;}
 
                 if ($right_node =~ /HASH/ && $right_node->tag eq "center") {
-                    $self->ReadLineData($right_node);
+                    $self->ReadTableNode($right_node);
 
                 } elsif ($right_node =~ /HASH/ && $right_node->tag eq "dl") {
                     $self->ReadTurnDlNode($turn, $right_node);
@@ -217,16 +261,27 @@ sub ReadHeadingData{
 #------------------------------------
 #    引数｜参戦キャラ一覧ノード
 #-----------------------------------#
-sub ReadLineData{
+sub ReadTableNode{
     my $self     = shift;
     my $center_node = shift;
+
+    $self->{PartyNum} = {};
 
     my %lines = ("前"=>0,"中"=>1,"後"=>2);
     my $nodes = &GetNode::GetNode_Tag("td", \$center_node);
 
     foreach my $node (@$nodes) {
-        if ($node->as_text =~ /^(.+?)：(.+?\(Pn\d+\))/) {
+        my $in_table_nodes = &GetNode::GetNode_Tag("table", \$node);
+        if (scalar(@$in_table_nodes)) {next;} #参戦キャラ一覧テーブルは入れ子構造になっており、親テーブルのtdの場合は処理をしない
+
+        if ($node->as_text =~ /^(.+?)：(.+?\(Pn(\d+)\))/) {
             $self->{NicknameToLine}{$2} = $lines{$1};
+
+            if (!exists($self->{PartyNum}{$3})) {
+                $self->{PartyNum}{$3}  = 1;
+            } else {
+                $self->{PartyNum}{$3} += 1;
+            }
            
         }
     }
@@ -278,12 +333,68 @@ sub ReadTurnDlNode{
         $self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node);
         $self->GetCounterData($turn, $node);
         $self->GetPreDamageData($node, \$buffers);
+        $self->GetDesorptionData($node);
+        $self->GetLineCloseData($node);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
             $self->ResetFieldData(\$buffers);
         }
     }
+}
+
+#-----------------------------------#
+#    隊列が詰められた情報を取得
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetLineCloseData{
+    my $self         = shift;
+    my $node         = shift;
+
+    if ($node->as_text !~ /隊列が詰められた！/) {return 0;}
+
+    my $i_nodes = "";
+    $i_nodes = &GetNode::GetNode_Tag("i", \$node);
+
+    if (!scalar(@$i_nodes)) { return 0;}
+
+    if ($$i_nodes[0]->as_text =~ /(.+PT)/) {
+        my $p_no = $self->{PartyNameToPno}{$1};
+
+        foreach my $nickname (keys %{$self->{NicknameToPno}}) {
+            if ($p_no == $self->{NicknameToPno}{$nickname}) {
+                $self->{NicknameToLine}{$nickname} -= 1;
+            }
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
+
+#-----------------------------------#
+#    離脱情報を取得しPT人数を減算
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetDesorptionData{
+    my $self         = shift;
+    my $node         = shift;
+
+    my $font_nodes = "";
+    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
+
+    if (!scalar(@$font_nodes)) { return 0;}
+
+    if ($$font_nodes[0]->as_text =~ /\(Pn(\d+)\) は離脱/) {
+        $self->{PartyNum}{$1} -= 1;
+
+        return 1;
+    }
+
+    return 0;
 }
 
 #-----------------------------------#
@@ -326,128 +437,7 @@ sub ReadCounterDlNode{
 
     }
 }
-#-----------------------------------#
-#    反撃、カウンタ発動時にカード情報を上書き
-#------------------------------------
-#    引数｜ターン数
-#          対象ノード
-#-----------------------------------#
-sub GetCounterData{
-    my $self         = shift;
-    my $turn         = shift;
-    my $node         = shift;
 
-    my $nickname     = "";
-    my $card         = {};
-    my $trigger_node = "";
-
-    my $lv = 0;
-
-    my $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
-    my $counter_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
-
-    if (scalar(@$font_nodes)) {
-
-        my $text = $$font_nodes[0]->as_text;
-
-        if ($text !~ /カウンタ/)  {return 0;}
-        if ($text !~ /Lv(\d+)！/) {return 0;}
-        my $lv = $1;
-
-        if ($node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
-        $nickname = $1;
-
-        $text =~ s/！//;
-        $text =~ s/\s//g;
-
-        my $chain_num = 0;
-
-        # カード名の解析
-        my $effect_name = $text;
-
-        my $card_id = 0;
-        if ($text =~ /(.+)Lv(\d+)/) {
-            my $effect = $1;
-            my $lv     = $2;
-            $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
-            $card     = {"name"=>$effect, "id"=>$card_id, "chain"=>$chain_num};
-        }
-        my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
-        $trigger_node = $$tmp_node[0];
-
-    } elsif (scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
-        my $left_text = $node->left->as_text;
-        if ($left_text !~ /(.+\(Pn\d+\))/) {return 0;}
-        $nickname = $1;
-
-        my $tmp_node = &GetNode::GetNode_Tag("font", \$node->right);
-        $trigger_node = $$tmp_node[0];
-
-        $card    = {"name"=>"反撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["反撃", 0, 0, 0, 0, 0]), "chain"=>0};
-
-    } else {
-        return 0;
-    }
-
-    $self->ReadCounterDlNode($turn, $node, $nickname, $card, $trigger_node);
-
-    return 1;
-}
-
-#-----------------------------------#
-#    アタッカ発動時にカード情報を上書き
-#------------------------------------
-#    引数｜対象ノード
-#          発動者愛称
-#          カード情報
-#          バフデバフ情報
-#          発動ノード
-#-----------------------------------#
-sub GetAttaccaData{
-    my $self         = shift;
-    my $node         = shift;
-    my $nickname     = shift;
-    my $card         = shift;
-    my $buffers      = shift;
-    my $trigger_node = shift;
-
-    if ($$$card{"name"} ne "通常攻撃") {return;}
-
-    my $font_nodes = "";
-    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
-
-    if (!scalar(@$font_nodes)) { return 0;}
-
-    my $text = $$font_nodes[0]->as_text;
-
-    if ($text !~ /アタッカ/)  {return 0;}
-    if ($text !~ /Lv(\d+)！/) {return 0;}
-    my $lv = $1;
-
-    if ($node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
-    $$nickname = $1;
-
-    $text =~ s/！//;
-    $text =~ s/\s//g;
-
-    my $chain_num = 0;
-
-    # カード名の解析
-    my $effect_name = $text;
-
-    my $card_id = 0;
-    if ($text =~ /(.+)Lv(\d+)/) {
-        my $effect = $1;
-        my $lv     = $2;
-        $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
-        $$card     = {"name"=>$effect, "id"=>$card_id, "chain"=>$chain_num};
-    }
-
-    my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
-    $$trigger_node = $$tmp_node[0];
-
-    return 1;
-}
 #-----------------------------------#
 #    ダメージ・回復取得
 #------------------------------------
@@ -512,9 +502,12 @@ sub GetDamageData{
                 }
             }
 
+            my $p_no = $self->{NicknameToPno}{$nickname};
+            my $target_p_no = $self->{NicknameToPno}{$target_nickname};
+
             $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
-                        $self->{NicknameToEno}{$nickname}, $turn, $self->{NicknameToPno}{$nickname}, 5, 0, $$card{"id"}, $$card{"chain"},
-                        $self->{NicknameToEno}{$target_nickname}, $self->{NicknameToPno}{$target_nickname}, 5, 0,
+                        $self->{NicknameToEno}{$nickname}, $turn, $p_no, $self->{PartyNum}{$p_no}, $self->{NicknameToLine}{$nickname}, $$card{"id"}, $$card{"chain"},
+                        $self->{NicknameToEno}{$target_nickname}, $target_p_no, $self->{PartyNum}{$target_p_no}, $self->{NicknameToLine}{$target_nickname},
                         $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
             $self->{ActId} = $self->{ActId} + 1;
 
@@ -638,6 +631,129 @@ sub GetCardData{
         $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
         $$card     = {"name"=>$effect_name, "id"=>$card_id, "chain"=>$chain_num};
     }
+
+    return 1;
+}
+
+#-----------------------------------#
+#    反撃、カウンタ発動時にカード情報を上書き
+#------------------------------------
+#    引数｜ターン数
+#          対象ノード
+#-----------------------------------#
+sub GetCounterData{
+    my $self         = shift;
+    my $turn         = shift;
+    my $node         = shift;
+
+    my $nickname     = "";
+    my $card         = {};
+    my $trigger_node = "";
+
+    my $lv = 0;
+
+    my $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
+    my $counter_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
+
+    if (scalar(@$font_nodes)) {
+
+        my $text = $$font_nodes[0]->as_text;
+
+        if ($text !~ /カウンタ/)  {return 0;}
+        if ($text !~ /Lv(\d+)！/) {return 0;}
+        my $lv = $1;
+
+        if ($node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
+        $nickname = $1;
+
+        $text =~ s/！//;
+        $text =~ s/\s//g;
+
+        my $chain_num = 0;
+
+        # カード名の解析
+        my $effect_name = $text;
+
+        my $card_id = 0;
+        if ($text =~ /(.+)Lv(\d+)/) {
+            my $effect = $1;
+            my $lv     = $2;
+            $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+            $card     = {"name"=>$effect, "id"=>$card_id, "chain"=>$chain_num};
+        }
+        my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
+        $trigger_node = $$tmp_node[0];
+
+    } elsif (scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
+        my $left_text = $node->left->as_text;
+        if ($left_text !~ /(.+\(Pn\d+\))/) {return 0;}
+        $nickname = $1;
+
+        my $tmp_node = &GetNode::GetNode_Tag("font", \$node->right);
+        $trigger_node = $$tmp_node[0];
+
+        $card    = {"name"=>"反撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["反撃", 0, 0, 0, 0, 0]), "chain"=>0};
+
+    } else {
+        return 0;
+    }
+
+    $self->ReadCounterDlNode($turn, $node, $nickname, $card, $trigger_node);
+
+    return 1;
+}
+
+#-----------------------------------#
+#    アタッカ発動時にカード情報を上書き
+#------------------------------------
+#    引数｜対象ノード
+#          発動者愛称
+#          カード情報
+#          バフデバフ情報
+#          発動ノード
+#-----------------------------------#
+sub GetAttaccaData{
+    my $self         = shift;
+    my $node         = shift;
+    my $nickname     = shift;
+    my $card         = shift;
+    my $buffers      = shift;
+    my $trigger_node = shift;
+
+    if ($$$card{"name"} ne "通常攻撃") {return;}
+
+    my $font_nodes = "";
+    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
+
+    if (!scalar(@$font_nodes)) { return 0;}
+
+    my $text = $$font_nodes[0]->as_text;
+
+    if ($text !~ /アタッカ/)  {return 0;}
+    if ($text !~ /Lv(\d+)！/) {return 0;}
+    my $lv = $1;
+
+    if ($node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
+    $$nickname = $1;
+
+    $text =~ s/！//;
+    $text =~ s/\s//g;
+
+    my $chain_num = 0;
+
+    # カード名の解析
+    my $effect_name = $text;
+
+    my $card_id = 0;
+    if ($text =~ /(.+)Lv(\d+)/) {
+        my $effect = $1;
+        my $lv     = $2;
+        $card_id   = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+        $$card     = {"name"=>$effect, "id"=>$card_id, "chain"=>$chain_num};
+    }
+
+    my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
+    $$trigger_node = $$tmp_node[0];
 
     return 1;
 }
