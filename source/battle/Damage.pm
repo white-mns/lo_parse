@@ -855,7 +855,7 @@ sub GetFieldData{
     my $node         = shift;
     my $buffers      = shift;
 
-    if ($node->as_text =~ /属性威力が強化/) {
+    if ($node->as_text =~ /属性威力が強化|まったり効いてくる…。/) {
         my $field_node = &GetNode::GetNode_Tag("font", \$node);
 
         my $text = "";
