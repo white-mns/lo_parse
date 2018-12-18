@@ -332,7 +332,6 @@ sub ReadTurnDlNode{
         }
 
         $self->GetCardData($node, \$card);
-        $self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node);
         $self->GetCounterData($turn, $node);
         $self->GetPreDamageData($node, \$buffers);
         $self->GetElementData($node, \$element);
@@ -340,6 +339,11 @@ sub ReadTurnDlNode{
         $self->GetLineCloseData($node);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
+            $self->ResetPreDamageData(\$buffers);
+            $self->ResetElementData(\$element);
+            $self->ResetFieldData(\$buffers);
+        }
+        if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
@@ -886,7 +890,7 @@ sub ResetFieldData{
     my $buffers      = shift;
 
     foreach my $key (keys %$$buffers) {
-        if ($key =~ /強化フィールド/) {
+        if ($key =~ /フィールド/) {
             delete($$$buffers{$key});
         }
     }
