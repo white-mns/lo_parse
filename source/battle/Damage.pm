@@ -683,7 +683,7 @@ sub GetAttaccaData{
     my $buffers      = shift;
     my $trigger_node = shift;
 
-    if ($$$card{"name"} ne "通常攻撃") {return;}
+    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return;}
 
     my $font_nodes = "";
     $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
