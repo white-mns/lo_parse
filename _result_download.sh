@@ -39,7 +39,7 @@ for ((E_NO=1;E_NO <= 400;E_NO++)) {
             break
         fi
 
-        wget -O ./data/utf/result${RESULT_NO}/result_com/result_com${E_NO}.html http://ykamiya.ciao.jp/result/result_chara/result_com${E_NO}.html
+        wget -O ./data/utf/result${RESULT_NO}/result_com/result_com${E_NO}.html http://ykamiya.ciao.jp/result/result_com/result_com${E_NO}.html
 
         sleep 2
 

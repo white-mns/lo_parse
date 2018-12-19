@@ -332,7 +332,6 @@ sub ReadTurnDlNode{
         }
 
         $self->GetCardData($node, \$card);
-        $self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node);
         $self->GetCounterData($turn, $node);
         $self->GetPreDamageData($node, \$buffers);
         $self->GetElementData($node, \$element);
@@ -340,6 +339,11 @@ sub ReadTurnDlNode{
         $self->GetLineCloseData($node);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
+            $self->ResetPreDamageData(\$buffers);
+            $self->ResetElementData(\$element);
+            $self->ResetFieldData(\$buffers);
+        }
+        if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
@@ -679,7 +683,7 @@ sub GetAttaccaData{
     my $buffers      = shift;
     my $trigger_node = shift;
 
-    if ($$$card{"name"} ne "通常攻撃") {return;}
+    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return;}
 
     my $font_nodes = "";
     $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
@@ -851,7 +855,7 @@ sub GetFieldData{
     my $node         = shift;
     my $buffers      = shift;
 
-    if ($node->as_text =~ /属性威力が強化/) {
+    if ($node->as_text =~ /属性威力が強化|まったり効いてくる…。/) {
         my $field_node = &GetNode::GetNode_Tag("font", \$node);
 
         my $text = "";
@@ -886,7 +890,7 @@ sub ResetFieldData{
     my $buffers      = shift;
 
     foreach my $key (keys %$$buffers) {
-        if ($key =~ /強化フィールド/) {
+        if ($key =~ /フィールド/) {
             delete($$$buffers{$key});
         }
     }
