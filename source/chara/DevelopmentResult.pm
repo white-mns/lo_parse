@@ -156,7 +156,7 @@ sub GetDevelopmentResult{
                 } elsif ($right_node->attr("color") eq "#6633ff") {
                     return  1;
 
-                } elsif ($right_node->as_text =~ /勝負は決まらなかった・・・/) {
+                } elsif ($right_node->attr("color") eq "#ff3333") {
                     return  0;
 
                 }
