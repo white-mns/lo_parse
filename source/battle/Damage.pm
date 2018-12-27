@@ -124,7 +124,7 @@ sub GetData{
 }
 
 #-----------------------------------#
-#    パー低迷-Pno紐付け
+#    パーティ名-Pno紐付け
 #------------------------------------
 #    引数｜テーブルノード
 #-----------------------------------#
@@ -317,11 +317,13 @@ sub ReadTurnDlNode{
         }
         
         $self->GetFieldData($node, \$buffers);
+        $self->GetChainPowerData($node, \$buffers);
         
         if ($node->as_text =~ /により/) {next;}
 
         if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
             #print $node->as_text." | $nickname,".$self->{NicknameToEno}{$nickname}."\n";
@@ -340,11 +342,13 @@ sub ReadTurnDlNode{
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
         }
         if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
         }
@@ -802,45 +806,28 @@ sub GetElementData{
 }
 
 #-----------------------------------#
-#    攻撃属性情報を初期化
+#    鎖力強化率取得
 #------------------------------------
-#    引数｜対象ノード
+#    引数｜発動ノード
+#          バフデバフ情報
 #-----------------------------------#
-sub ResetElementData{
-    my $self    = shift;
-    my $element = shift;
-
-    $$element = 0;
-
-    return 0;
-}
-#-----------------------------------#
-#    クリティカル等値初期化
-#------------------------------------
-#    引数｜バフデバフ情報
-#-----------------------------------#
-sub ResetPreDamageData{
+sub GetChainPowerData{
     my $self         = shift;
+    my $node         = shift;
     my $buffers      = shift;
 
-    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
-    }
-}
+    if ($node->as_text =~ /鎖力によりChain効果が/) {
+        my $chain_node = &GetNode::GetNode_Tag("font", \$node);
 
-#-----------------------------------#
-#    状態異常値初期化
-#------------------------------------
-#    引数｜バフデバフ情報
-#-----------------------------------#
-sub ResetAbnormalData{
-    my $self         = shift;
-    my $buffers      = shift;
+        my $text = "";
+        if (scalar(@$chain_node)) { $text = $$chain_node[0]->as_text}
 
-    my @texts = ("毒","麻","封","乱","魅");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+        if ($text =~ /鎖力によりChain効果が(\d+)％強化！/) {
+            $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId("鎖力"), "lv"=>0, "number"=>$1};
+        }
+        return 1;
+    } else {
+        return 0;
     }
 }
 
@@ -877,6 +864,67 @@ sub GetFieldData{
         return 1;
     } else {
         return 0;
+    }
+}
+
+#-----------------------------------#
+#    攻撃属性情報を初期化
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub ResetElementData{
+    my $self    = shift;
+    my $element = shift;
+
+    $$element = 0;
+
+    return 0;
+}
+
+#-----------------------------------#
+#    クリティカル等値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetPreDamageData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
+    foreach my $text (@texts) {
+        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    }
+}
+
+#-----------------------------------#
+#    状態異常値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetAbnormalData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @texts = ("毒","麻","封","乱","魅");
+    foreach my $text (@texts) {
+        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    }
+}
+
+
+#-----------------------------------#
+#    鎖力強化初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetChainPowerData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    foreach my $key (keys %$$buffers) {
+        if ($key =~ /鎖力/) {
+            delete($$$buffers{$key});
+        }
     }
 }
 
