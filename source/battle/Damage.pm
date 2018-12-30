@@ -326,6 +326,7 @@ sub ReadTurnDlNode{
             $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
             #print $node->as_text." | $nickname,".$self->{NicknameToEno}{$nickname}."\n";
             #foreach my $name (keys %$buffers) {
             #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
@@ -345,12 +346,14 @@ sub ReadTurnDlNode{
             $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
         }
         if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
             $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
         }
     }
 }
@@ -463,6 +466,9 @@ sub GetDamageData{
                     $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ");
                 }
             }
+            if ($$card{"name"} =~ /侵食|吸魔/) {
+                $self->GetFPDamageType($node, \$buffers);
+            }
 
             my $p_no = $self->{NicknameToPno}{$nickname};
             my $target_p_no = $self->{NicknameToPno}{$target_nickname};
@@ -479,6 +485,57 @@ sub GetDamageData{
 
             return 1;
         }
+    }
+}
+
+#-----------------------------------#
+#    FPダメージ種別取得
+#------------------------------------
+#    引数｜発動ノード
+#          バフデバフ情報
+#-----------------------------------#
+sub GetFPDamageType{
+    my $self         = shift;
+    my $node         = shift;
+    my $buffers      = shift;
+
+    if ($node->as_text =~ /FPに(\d+)のダメージ！/) {
+        my $fp_damage = $1;
+        my $type = "";
+
+        if ($node->right->as_text !~ /LPに\d+のダメージ！/){
+            $type = "完全FP";
+
+        } else {
+            if ($fp_damage == 0) { return 0;}
+            $type = "混合LPFP";
+        }
+
+        if (exists($$$buffers{$type})) {
+            $$$buffers{$type}{"number"} = 1;
+
+        } else {
+            $$$buffers{$type} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($type), "lv"=>0, "number"=>1};
+        }
+        
+        return 1;
+
+    } elsif ($node->as_text =~ /LPに\d+のダメージ！/) {
+        if ($node->left->as_text =~ /FPに(\d+)のダメージ！/){
+            my $type = "";
+            $type = ($1 == 0) ? "完全LP" : "混合LPFP";
+
+            if (exists($$$buffers{$type})) {
+                $$$buffers{$type}{"number"} = 1;
+
+            } else {
+                $$$buffers{$type} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($type), "lv"=>0, "number"=>1};
+            }
+        }
+        return 1;
+
+    } else {
+        return 0;
     }
 }
 
@@ -504,6 +561,7 @@ sub GetPreDamageData{
         if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge)/) {
             if (exists($$$buffers{$1})) {
                 $$$buffers{$1}{"number"} += 1;
+
             } else {
                 $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
             }
@@ -943,6 +1001,23 @@ sub ResetFieldData{
         }
     }
 }
+
+#-----------------------------------#
+#    FPダメージ種別初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetFPDamageType{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    foreach my $key (keys %$$buffers) {
+        if ($key =~ /完全FP|完全LP|混合LPFP/) {
+            delete($$$buffers{$key});
+        }
+    }
+}
+
 
 #-----------------------------------#
 #    出力
