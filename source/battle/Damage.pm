@@ -342,11 +342,13 @@ sub ReadTurnDlNode{
         $self->GetLineCloseData($node);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
-            $self->ResetPreDamageData(\$buffers);
-            $self->ResetChainPowerData(\$buffers);
-            $self->ResetElementData(\$element);
-            $self->ResetFieldData(\$buffers);
             $self->ResetFPDamageType(\$buffers);
+            if (!($$card{"name"} =~ /侵食|吸魔/ && $node->as_text =~ /FPに\d+のダメージ！/ && $node->right->as_text =~ /LPに\d+のダメージ！/)) {
+                $self->ResetPreDamageData(\$buffers);
+                $self->ResetChainPowerData(\$buffers);
+                $self->ResetElementData(\$element);
+                $self->ResetFieldData(\$buffers);
+            }
         }
         if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
