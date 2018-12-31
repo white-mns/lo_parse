@@ -478,7 +478,7 @@ sub GetDamageData{
             $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
                         $self->{NicknameToEno}{$nickname}, $turn, $p_no, $self->{PartyNum}{$p_no}, $self->{NicknameToLine}{$nickname}, $$card{"id"}, $$card{"chain"},
                         $self->{NicknameToEno}{$target_nickname}, $target_p_no, $self->{PartyNum}{$target_p_no}, $self->{NicknameToLine}{$target_nickname},
-                        $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
+                        $act_type, $element, $damage, -1, -1, -1, -1, -1)));
             foreach my $key (keys %$buffers) {
                 $self->{Datas}{DamageBuffer}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
                             $self->{NicknameToEno}{$nickname}, $$buffers{$key}{"id"}, $$buffers{$key}{"lv"}, $$buffers{$key}{"number"})));
@@ -950,9 +950,9 @@ sub ResetPreDamageData{
     my $self         = shift;
     my $buffers      = shift;
 
-    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    my @keys = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge");
+    foreach my $key (@keys) {
+        delete($$$buffers{$key});
     }
 }
 
@@ -965,9 +965,9 @@ sub ResetAbnormalData{
     my $self         = shift;
     my $buffers      = shift;
 
-    my @texts = ("毒","麻","封","乱","魅");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+    my @keys = ("毒","麻","封","乱","魅");
+    foreach my $key (@keys) {
+        delete($$$buffers{$key});
     }
 }
 
