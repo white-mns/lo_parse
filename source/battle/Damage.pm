@@ -124,7 +124,7 @@ sub GetData{
 }
 
 #-----------------------------------#
-#    パー低迷-Pno紐付け
+#    パーティ名-Pno紐付け
 #------------------------------------
 #    引数｜テーブルノード
 #-----------------------------------#
@@ -317,13 +317,16 @@ sub ReadTurnDlNode{
         }
         
         $self->GetFieldData($node, \$buffers);
+        $self->GetChainPowerData($node, \$buffers);
         
         if ($node->as_text =~ /により/) {next;}
 
         if ($self->GetTriggerData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
             #print $node->as_text." | $nickname,".$self->{NicknameToEno}{$nickname}."\n";
             #foreach my $name (keys %$buffers) {
             #    print $name.",".$$buffers{$name}{"id"}.",".$$buffers{$name}{"lv"}.",".$$buffers{$name}{"number"}."\n";
@@ -339,14 +342,20 @@ sub ReadTurnDlNode{
         $self->GetLineCloseData($node);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
-            $self->ResetPreDamageData(\$buffers);
-            $self->ResetElementData(\$element);
-            $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
+            if (!($$card{"name"} =~ /侵食|吸魔/ && $node->as_text =~ /FPに\d+のダメージ！/ && $node->right->as_text =~ /LPに\d+のダメージ！/)) {
+                $self->ResetPreDamageData(\$buffers);
+                $self->ResetChainPowerData(\$buffers);
+                $self->ResetElementData(\$element);
+                $self->ResetFieldData(\$buffers);
+            }
         }
         if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
             $self->ResetElementData(\$element);
             $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
         }
     }
 }
@@ -459,6 +468,9 @@ sub GetDamageData{
                     $act_type = $self->{CommonDatas}{ProperName}->GetOrAddId("ダメージ");
                 }
             }
+            if ($$card{"name"} =~ /侵食|吸魔/) {
+                $self->GetFPDamageType($node, \$buffers);
+            }
 
             my $p_no = $self->{NicknameToPno}{$nickname};
             my $target_p_no = $self->{NicknameToPno}{$target_nickname};
@@ -466,7 +478,7 @@ sub GetDamageData{
             $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
                         $self->{NicknameToEno}{$nickname}, $turn, $p_no, $self->{PartyNum}{$p_no}, $self->{NicknameToLine}{$nickname}, $$card{"id"}, $$card{"chain"},
                         $self->{NicknameToEno}{$target_nickname}, $target_p_no, $self->{PartyNum}{$target_p_no}, $self->{NicknameToLine}{$target_nickname},
-                        $act_type, $element, $damage, $$buffers{"WeakPoint"}{"number"}, $$buffers{"Critical"}{"number"}, $$buffers{"Clean Hit"}{"number"}, $$buffers{"Vanish"}{"number"}, $$buffers{"Absorb"}{"number"})));
+                        $act_type, $element, $damage, -1, -1, -1, -1, -1)));
             foreach my $key (keys %$buffers) {
                 $self->{Datas}{DamageBuffer}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
                             $self->{NicknameToEno}{$nickname}, $$buffers{$key}{"id"}, $$buffers{$key}{"lv"}, $$buffers{$key}{"number"})));
@@ -475,6 +487,57 @@ sub GetDamageData{
 
             return 1;
         }
+    }
+}
+
+#-----------------------------------#
+#    FPダメージ種別取得
+#------------------------------------
+#    引数｜発動ノード
+#          バフデバフ情報
+#-----------------------------------#
+sub GetFPDamageType{
+    my $self         = shift;
+    my $node         = shift;
+    my $buffers      = shift;
+
+    if ($node->as_text =~ /FPに(\d+)のダメージ！/) {
+        my $fp_damage = $1;
+        my $type = "";
+
+        if ($node->right->as_text !~ /LPに\d+のダメージ！/){
+            $type = "完全FP";
+
+        } else {
+            if ($fp_damage == 0) { return 0;}
+            $type = "混合LPFP";
+        }
+
+        if (exists($$$buffers{$type})) {
+            $$$buffers{$type}{"number"} = 1;
+
+        } else {
+            $$$buffers{$type} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($type), "lv"=>0, "number"=>1};
+        }
+        
+        return 1;
+
+    } elsif ($node->as_text =~ /LPに\d+のダメージ！/) {
+        if ($node->left->as_text =~ /FPに(\d+)のダメージ！/){
+            my $type = "";
+            $type = ($1 == 0) ? "完全LP" : "混合LPFP";
+
+            if (exists($$$buffers{$type})) {
+                $$$buffers{$type}{"number"} = 1;
+
+            } else {
+                $$$buffers{$type} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($type), "lv"=>0, "number"=>1};
+            }
+        }
+        return 1;
+
+    } else {
+        return 0;
     }
 }
 
@@ -500,6 +563,7 @@ sub GetPreDamageData{
         if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge)/) {
             if (exists($$$buffers{$1})) {
                 $$$buffers{$1}{"number"} += 1;
+
             } else {
                 $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
             }
@@ -802,45 +866,28 @@ sub GetElementData{
 }
 
 #-----------------------------------#
-#    攻撃属性情報を初期化
+#    鎖力強化率取得
 #------------------------------------
-#    引数｜対象ノード
+#    引数｜発動ノード
+#          バフデバフ情報
 #-----------------------------------#
-sub ResetElementData{
-    my $self    = shift;
-    my $element = shift;
-
-    $$element = 0;
-
-    return 0;
-}
-#-----------------------------------#
-#    クリティカル等値初期化
-#------------------------------------
-#    引数｜バフデバフ情報
-#-----------------------------------#
-sub ResetPreDamageData{
+sub GetChainPowerData{
     my $self         = shift;
+    my $node         = shift;
     my $buffers      = shift;
 
-    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
-    }
-}
+    if ($node->as_text =~ /鎖力によりChain効果が/) {
+        my $chain_node = &GetNode::GetNode_Tag("font", \$node);
 
-#-----------------------------------#
-#    状態異常値初期化
-#------------------------------------
-#    引数｜バフデバフ情報
-#-----------------------------------#
-sub ResetAbnormalData{
-    my $self         = shift;
-    my $buffers      = shift;
+        my $text = "";
+        if (scalar(@$chain_node)) { $text = $$chain_node[0]->as_text}
 
-    my @texts = ("毒","麻","封","乱","魅");
-    foreach my $text (@texts) {
-        $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
+        if ($text =~ /鎖力によりChain効果が(\d+)％強化！/) {
+            $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId("鎖力"), "lv"=>0, "number"=>$1};
+        }
+        return 1;
+    } else {
+        return 0;
     }
 }
 
@@ -881,6 +928,67 @@ sub GetFieldData{
 }
 
 #-----------------------------------#
+#    攻撃属性情報を初期化
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub ResetElementData{
+    my $self    = shift;
+    my $element = shift;
+
+    $$element = 0;
+
+    return 0;
+}
+
+#-----------------------------------#
+#    クリティカル等値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetPreDamageData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @keys = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge");
+    foreach my $key (@keys) {
+        delete($$$buffers{$key});
+    }
+}
+
+#-----------------------------------#
+#    状態異常値初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetAbnormalData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    my @keys = ("毒","麻","封","乱","魅");
+    foreach my $key (@keys) {
+        delete($$$buffers{$key});
+    }
+}
+
+
+#-----------------------------------#
+#    鎖力強化初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetChainPowerData{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    foreach my $key (keys %$$buffers) {
+        if ($key =~ /鎖力/) {
+            delete($$$buffers{$key});
+        }
+    }
+}
+
+#-----------------------------------#
 #    強化フィールド初期化
 #------------------------------------
 #    引数｜バフデバフ情報
@@ -895,6 +1003,23 @@ sub ResetFieldData{
         }
     }
 }
+
+#-----------------------------------#
+#    FPダメージ種別初期化
+#------------------------------------
+#    引数｜バフデバフ情報
+#-----------------------------------#
+sub ResetFPDamageType{
+    my $self         = shift;
+    my $buffers      = shift;
+
+    foreach my $key (keys %$$buffers) {
+        if ($key =~ /完全FP|完全LP|混合LPFP/) {
+            delete($$$buffers{$key});
+        }
+    }
+}
+
 
 #-----------------------------------#
 #    出力
