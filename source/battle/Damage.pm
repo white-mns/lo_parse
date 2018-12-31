@@ -950,7 +950,7 @@ sub ResetPreDamageData{
     my $self         = shift;
     my $buffers      = shift;
 
-    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb");
+    my @texts = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge");
     foreach my $text (@texts) {
         $$$buffers{$text} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($text), "lv"=>0, "number"=>0};
     }
