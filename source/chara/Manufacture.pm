@@ -129,7 +129,7 @@ sub GetManufactureData{
                     $item_name = $node->as_text;
                 }
 
-                if ($node =~ /を作製完了。（\+Ino\d+ (.+)\/(.+)Lv(\d+)\/効力(\d+)\/精度(\d+)/) {
+                if ($node =~ /を作製完了。（(?:\+Ino\d+ )*(.+)\/(.+)Lv(\d+)\/効力(\d+)\/精度(\d+)/) {
                     $kind      = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
                     $effect    = $self->{CommonDatas}{ProperName}->GetOrAddId($2);
                     $effect_lv = $3+0;
