@@ -171,7 +171,7 @@ result_no	generate_no	e_no	invation_col	invation_lv	return_col	return_lv
 11	0	216		-1	L	4
 11	0	217	T	10	T	10
 11	0	218	N	5	N	5
-11	0	219		-1	J	8
+11	0	219	J	8	J	8
 11	0	220	L	10	L	10
 11	0	221	M	11	M	11
 11	0	222	C	9	C	9
