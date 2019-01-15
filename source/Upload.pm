@@ -209,9 +209,15 @@ sub DBConnect {
         dsn      => DbSetting::DSN,
         user     => DbSetting::USER,
         password => DbSetting::PASS,
-        option   => {mysql_enable_utf8 => 1,
-                     mysql_read_default_file => "/etc/my.cnf",
-                     mysql_read_default_group => "libmysqlclient"},
+        option   => {mysql_read_default_file => "/etc/my.cnf",
+                     mysql_read_default_group => "libmysqlclient",
+                     Callbacks => {
+                         connected => sub {
+                             $_[0]->do('SET NAMES utf8mb4');
+                             return;
+                         },
+                    },
+        },
     ) or die "cannot connect to MySQL: $self->{DBI}::errstr";
     
     return;
