@@ -139,33 +139,33 @@ sub ReadLastNewData(){
 sub GetData{
     my $self = shift;
     my $battle_page = shift;
-    my $font_player_nodes = shift; 
-    my $font_enemy_nodes  = shift; 
+    my $div_heading_nodes = shift; 
     my $link_nodes        = shift; 
     my $table_345_nodes   = shift; 
     
     $self->{NicknameToEno} = {};
+    $self->{NicknameToPno}  = {};
     $self->{Pno} = {};
-    $self->{UseCard} = {};
-    $self->{UseCard}{"-ALL"} = {};
+    $self->{MaxChain} = {};
 
     $self->{BattlePage} = $battle_page;
     $self->{BattlePage} =~ s/-/ VS /;
-    
+
     # 愛称とEnoの紐付け処理
     $self->LinkingNicknameToEno($link_nodes, $table_345_nodes);
 
-    $self->GetCardUseData($self->{Pno}{Player}, $font_player_nodes);
-    $self->GetCardUseData($self->{Pno}{Enemy}, $font_enemy_nodes);
-    
-    # 試合全体の使用カードを結合してデータに追加
-    my $use_cards = "";
-    foreach my $skill (keys(%{$self->{UseCard}{"-ALL"}})){
-        $use_cards = $use_cards eq "" ? $skill : $use_cards . ",$skill";
+    # カード使用結果の初期化
+    $self->{UseCard} = {};
+    $self->{UseCard}{"User"} = {};
+    $self->{UseCard}{"-ALL"} = {};
+    $self->{UseCard}{"PT"} = {};
+    foreach my $e_no (values(%{$self->{NicknameToEno}})){
+        $self->{UseCard}{$e_no} = {};
     }
-    my @card_use_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, 0, $use_cards);
-    $self->{Datas}{CardUsePage}->AddData(join(ConstData::SPLIT, @card_use_data));
 
+    $self->ReadHeadingData($div_heading_nodes);
+
+    $self->TotalingCardData();
     return;
 }
 
@@ -213,8 +213,10 @@ sub LinkingNicknameToEno{
         $p_no = $1;
         
         $self->{NicknameToEno}{$nickname} = shift(@exist_e_no_list);
+        $self->{NicknameToPno}{$nickname} = $p_no;
     }
     $self->{Pno}{Player} = $p_no;
+    $self->{MaxChain}{$p_no} = 0;
 
     foreach my $nickname_node (@$enemy_nicknames) {
         my $nickname_text = $nickname_node->as_text;
@@ -225,19 +227,244 @@ sub LinkingNicknameToEno{
         $p_no = $1;
         
         $self->{NicknameToEno}{$nickname} = shift(@exist_e_no_list);
+        $self->{NicknameToPno}{$nickname} = $p_no;
     }
     $self->{Pno}{Enemy} = $p_no;
+    $self->{MaxChain}{$p_no} = 0;
 
     return;
 }
 
 #-----------------------------------#
-#    カード使用データ取得
+#    ターン数取得
+#    　ターン数ノードを元に発動結果取得関数を実行する
+#------------------------------------
+#    引数｜Pno
+#          対象Pno
+#          データノード
+#-----------------------------------#
+sub ReadHeadingData{
+    my $self  = shift;
+    my $nodes = shift;
+
+    foreach my $node (@$nodes) {
+        if ($node->as_text =~ /Turn (\d+)/) {
+            my $turn = $1;
+            my @right_nodes = $node->right;
+
+            foreach my $right_node (@right_nodes) {
+                if ($right_node =~ /HASH/ && $right_node->tag eq "div" && $right_node->attr("class") eq "heading") {last;}
+
+                if ($right_node =~ /HASH/ && $right_node->tag eq "dl") {
+                    $self->ReadTurnDlNode($turn, $right_node);
+                }
+            }
+        }
+
+        if ($node->as_text =~ /Turn Encount/) {
+            my $turn = 0;
+            my @right_nodes = $node->right;
+
+            foreach my $right_node (@right_nodes) {
+                if ($right_node =~ /HASH/) {
+                    my @right_child_nodes = $right_node->content_list;
+
+                    foreach my $right_child_node (@right_child_nodes) {
+                        if ($right_child_node =~ /HASH/ && $right_child_node->tag eq "dt") {
+                            my @right_child_child_nodes = $right_child_node->content_list;
+
+                            foreach my $right_child_child_node (@right_child_child_nodes) {
+                                if ($right_child_child_node =~ /HASH/ && $right_child_child_node->tag eq "div" && $right_child_child_node->attr("class") eq "heading") {last;}
+
+                                if ($right_child_child_node =~ /HASH/ && $right_child_child_node->tag eq "dl") {
+                                    $self->ReadTurnDlNode($turn, $right_child_child_node);
+                                    last;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#-----------------------------------#
+#    戦闘内容取得
+#------------------------------------
+#    引数｜ターン
+#          戦闘内容ノード
+#-----------------------------------#
+sub ReadTurnDlNode{
+    my $self     = shift;
+    my $turn     = shift; 
+    my $dl_node  = shift;
+
+    my @nodes = $dl_node->content_list;
+
+    my $nickname = "";
+    my $trigger_node = "";
+
+    foreach my $node (@nodes) {
+        if ($node =~ /HASH/ && $node->tag eq "dl") {
+            # 表示上のBUGで戦闘内容が入れ子になった時、再帰的に実行し、現在の深さにあるその後の要素は解析しない
+            $self->ReadTurnDlNode($turn, $node);
+            last;
+        }
+        
+        if ($node->as_text =~ /により/) {next;}
+
+        $self->GetTriggerData($node, \$nickname, \$trigger_node);
+
+        $self->GetCardUseData($node, \$nickname);
+    }
+}
+
+#-----------------------------------#
+#    発動者取得
+#------------------------------------
+#    引数｜発動ノード
+#          発動者愛称
+#          カード情報
+#          バフデバフ情報
+#          発動ノード
+#-----------------------------------#
+sub GetTriggerData{
+    my $self         = shift;
+    my $node         = shift;
+    my $nickname     = shift;
+    my $trigger_node = shift;
+    
+    my $text = $node->as_text;
+
+    if ($text !~ /Action|が後に続く|が発動|が先導する/) {return 0;}
+    
+    if ($text !~ /(.+\(Pn\d+\))/) {return 0;}
+    $$nickname = $1;
+
+    my $tmp_node = &GetNode::GetNode_Tag("font", \$node);
+    $$trigger_node = $$tmp_node[0];
+
+    return 1;
+}
+#-----------------------------------#
+#    カード情報取得
+#------------------------------------
+#    引数｜発動ノード
+#          カード情報
+#-----------------------------------#
+sub GetCardUseData{
+    my $self      = shift;
+    my $node      = shift;
+    my $nickname  = shift;
+    
+    if ($$nickname eq "") {return;}
+
+    my $font_nodes = "";
+    $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#009999", \$node);
+    if (!scalar(@$font_nodes)) {
+        $font_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#666600", \$node);
+    }
+
+    if (!scalar(@$font_nodes)) { return 0;}
+
+    my $card_text = $$font_nodes[0]->as_text;
+
+    if ($card_text !~ /Lv(\d+)/) {return 0;}
+    my $lv = $1;
+    
+    my $p_no = $self->{NicknameToPno}{$$nickname};
+    my $e_no = $self->{NicknameToEno}{$$nickname};
+    
+    my $success = -1;
+    my $control = -1;
+
+    if($card_text =~ /！/){
+        $success = 1;
+
+    }else{
+        my $text = $node->as_text;
+        if ($text !~ /制御に失敗！\(発動率：(\d+)％\)/) {return 0;}
+        $success = 0;
+        $control = $1;
+    }
+
+    if($card_text =~ /Chain(\d+)：/){
+        $self->{MaxChain}{$p_no} = ($self->{MaxChain}{$p_no} < $1) ? $1 : $self->{MaxChain}{$p_no};
+    }
+
+    $card_text =~ s/Chain(\d+)：//;
+    $card_text =~ s/！//;
+    $card_text =~ s/\s//g;
+
+    # カード名の解析
+    my $effect_name = $card_text;
+
+    my $card_use = [$e_no, $lv, $success, $control];
+    $self->{UseCard}{"User"}{$p_no}{$e_no}{$card_text} = $card_use;
+
+    if($success == 0){return 0;}
+
+    $self->{UseCard}{"-ALL"}{$card_text} = 1;
+    $self->{UseCard}{"PT"}{$p_no}{$card_text}  = 1;
+
+    return 1;
+}
+
+#-----------------------------------#
+#    一試合分のカード使用データを集計
+#------------------------------------
+#    引数｜
+#-----------------------------------#
+sub TotalingCardData{
+    my $self = shift;
+
+    # PT別にカード使用者をデータに追加
+    foreach my $p_no (keys(%{$self->{UseCard}{"User"}})){
+
+        foreach my $e_no (values(%{$self->{NicknameToEno}})){
+            foreach my $effect (keys(%{$self->{UseCard}{"User"}{$p_no}{$e_no}})){
+                my $data = $self->{UseCard}{"User"}{$p_no}{$e_no}{$effect};
+                $effect =~ s/Lv\d+//;
+                my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $$data[1], 0, 0, 0]);
+                my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $p_no, $card_id, $$data[2], $$data[3]);
+                $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
+
+                $self->RecordNewCardUseData($card_id);
+            }
+        }
+    }
+    
+    # 各PTの使用カードを結合してデータに追加
+    foreach my $p_no (keys(%{$self->{UseCard}{"PT"}})){
+        my $use_cards = "";
+        foreach my $skill (keys(%{$self->{UseCard}{"PT"}{$p_no}})){
+            $use_cards = $use_cards eq "" ? $skill : $use_cards . ",$skill";
+        }
+        my @card_use_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $p_no, $use_cards);
+        $self->{Datas}{CardUsePage}->AddData(join(ConstData::SPLIT, @card_use_data));
+
+        my @max_chain_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $p_no, $self->{MaxChain}{$p_no});
+        $self->{Datas}{MaxChain}->AddData(join(ConstData::SPLIT, @max_chain_data));
+    }
+ 
+    # 試合全体の使用カードを結合してデータに追加
+    my $use_cards = "";
+    foreach my $skill (keys(%{$self->{UseCard}{"-ALL"}})){
+        $use_cards = $use_cards eq "" ? $skill : $use_cards . ",$skill";
+    }
+    my @card_use_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, 0, $use_cards);
+    $self->{Datas}{CardUsePage}->AddData(join(ConstData::SPLIT, @card_use_data));
+
+    return;
+}
+#-----------------------------------#
+#    カード使用データ取得（旧）
 #------------------------------------
 #    引数｜Pno
 #           データノード
 #-----------------------------------#
-sub GetCardUseData{
+sub GetCardUseData_old{
     my $self      = shift;
     my $p_no      = shift; 
     my $nodes     = shift; 
