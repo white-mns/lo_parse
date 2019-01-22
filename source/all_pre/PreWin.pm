@@ -38,7 +38,8 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     #初期化
-    $self->{Datas}{Data}  = StoreData->new();
+    $self->{Datas}{Result}   = StoreData->new();
+    $self->{Datas}{WinCount} = StoreData->new();
     my $header_list = "";
    
     $header_list = [
@@ -51,10 +52,10 @@ sub Init{
                 "all",
     ];
 
-    $self->{Datas}{Data}->Init($header_list);
-    
+    $self->{Datas}{Result}->Init($header_list);
+
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/all_pre/pre_win_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Result}->SetOutputName  ( "./output/all_pre/pre_win_"       . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     return;
 }
 
@@ -67,16 +68,17 @@ sub GetData{
     my $self    = shift;
     my $table_ma_node = shift;
 
-    $self->GetPreWinData($table_ma_node);
+    $self->GetPreData($table_ma_node);
     
     return;
 }
+
 #-----------------------------------#
 #    模擬戦勝数データ取得
 #------------------------------------
 #    引数｜模擬戦一覧ノード
 #-----------------------------------#
-sub GetPreWinData{
+sub GetPreData{
     my $self  = shift;
     my $table_in_node = shift;
     
@@ -86,27 +88,41 @@ sub GetPreWinData{
  
     #tdの抜出
     foreach my $tr_node (@$tr_nodes){
-        my ($e_no, $win, $draw, $lose, $all) = (0, 0, 0, 0, 0);
-        my $td_nodes = &GetNode::GetNode_Tag("td",\$tr_node);
-        my $link_nodes = &GetNode::GetNode_Tag("a",\$$td_nodes[1]);
-
-        if ($$td_nodes[0]->as_text =~ /(\d)\/(\d)\/(\d)/) {
-            $win  = $1;
-            $draw = $2;
-            $all  = $3;
-            $lose = 3 - $win - $draw;
-        }
-
-        if ($$link_nodes[0]->attr("href") =~ /result_Eno(\d+).html/) {
-            $e_no = $1;
-        }
- 
-        $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $e_no, $win, $draw, $lose, $all)));
+        $self->GetPreResultData($tr_node);
     }
 
     return;
 }
 
+#-----------------------------------#
+#    模擬戦勝数取得
+#------------------------------------
+#    引数｜模擬戦一覧ノード
+#-----------------------------------#
+sub GetPreResultData{
+    my $self  = shift;
+    my $tr_node = shift;
+    
+    #tdの抜出
+    my ($e_no, $win, $draw, $lose, $all) = (0, 0, 0, 0, 0);
+    my $td_nodes = &GetNode::GetNode_Tag("td",\$tr_node);
+    my $link_nodes = &GetNode::GetNode_Tag("a",\$$td_nodes[1]);
+
+    if ($$td_nodes[0]->as_text =~ /(\d)\/(\d)\/(\d)/) {
+        $win  = $1;
+        $draw = $2;
+        $all  = $3;
+        $lose = 3 - $win - $draw;
+    }
+
+    if ($$link_nodes[0]->attr("href") =~ /result_Eno(\d+).html/) {
+        $e_no = $1;
+    }
+ 
+    $self->{Datas}{Result}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $e_no, $win, $draw, $lose, $all)));
+
+    return;
+}
 #-----------------------------------#
 #    出力
 #------------------------------------
