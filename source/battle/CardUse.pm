@@ -60,6 +60,7 @@ sub Init{
                 "result_no",
                 "generate_no",
                 "battle_page",
+                "turn",
                 "e_no",
                 "party",
                 "card_id",
@@ -316,7 +317,7 @@ sub ReadTurnDlNode{
 
         $self->GetTriggerData($node, \$nickname, \$trigger_node);
 
-        $self->GetCardUseData($node, \$nickname);
+        $self->GetCardUseData($turn, $node, \$nickname);
     }
 }
 
@@ -355,6 +356,7 @@ sub GetTriggerData{
 #-----------------------------------#
 sub GetCardUseData{
     my $self      = shift;
+    my $turn      = shift;
     my $node      = shift;
     my $nickname  = shift;
     
@@ -400,7 +402,7 @@ sub GetCardUseData{
     # カード名の解析
     my $effect_name = $card_text;
 
-    my $card_use = [$e_no, $lv, $success, $control];
+    my $card_use = [$turn, $e_no, $success, $control];
     $self->{UseCard}{"User"}{$p_no}{$e_no}{$card_text} = $card_use;
 
     if($success == 0){return 0;}
@@ -425,9 +427,10 @@ sub TotalingCardData{
         foreach my $e_no (values(%{$self->{NicknameToEno}})){
             foreach my $effect (keys(%{$self->{UseCard}{"User"}{$p_no}{$e_no}})){
                 my $data = $self->{UseCard}{"User"}{$p_no}{$e_no}{$effect};
-                $effect =~ s/Lv\d+//;
-                my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $$data[1], 0, 0, 0]);
-                my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $p_no, $card_id, $$data[2], $$data[3]);
+                $effect =~ s/Lv(\d+)//;
+                my $lv = $1;
+                my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+                my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $$data[1], $p_no, $card_id, $$data[2], $$data[3]);
                 $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
 
                 $self->RecordNewCardUseData($card_id);
