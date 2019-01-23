@@ -170,6 +170,10 @@ sub Main {
             $upload->DeleteSameResult('pre_wins', $result_no, $generate_no);
             $upload->Upload("./output/all_pre/pre_win_" . $result_no . "_" . $generate_no . ".csv", 'pre_wins');
         }
+        if (ConstData::EXE_ALLPRE_TOTAL_PARTY_NUM) {
+            $upload->DeleteSameResult('pre_total_party_nums', $result_no, $generate_no);
+            $upload->Upload("./output/all_pre/total_party_num_" . $result_no . "_" . $generate_no . ".csv", 'pre_total_party_nums');
+        }
     }
     if (ConstData::EXE_NEW) {
         if (ConstData::EXE_NEW_GETCARD) {

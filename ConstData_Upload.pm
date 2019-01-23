@@ -47,6 +47,7 @@ use warnings;
         use constant EXE_CHARA_DICE                    => 1;
     use constant EXE_ALLPRE                  => 1;
         use constant EXE_ALLPRE_PRE_WIN                => 1;
+        use constant EXE_ALLPRE_TOTAL_PARTY_NUM        => 1;
     use constant EXE_BATTLE                  => 1;
         use constant EXE_BATTLE_CARD_USE_PAGE          => 1;
         use constant EXE_BATTLE_CARD_USER              => 1;

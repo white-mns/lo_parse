@@ -52,7 +52,7 @@ sub Execute{
     my $result_no   = $ARGV[0];
     my $generate_no = $ARGV[1];
 
-    print "read files...\n";
+    print "check download files...\n";
 
     my $start = 1;
     my $end   = 0;
