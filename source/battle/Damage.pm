@@ -447,7 +447,7 @@ sub GetDamageData{
     if (!$target_node) {return 0;}
 
     if ($target_node->attr("color") ne $trigger_node->attr("color")) { # カウンタなどの反撃処理を除外
-        return 0;
+        return 1;
     }
 
     my $target_text = $target_node->as_text;
