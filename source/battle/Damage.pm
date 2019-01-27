@@ -552,7 +552,7 @@ sub GetPreDamageData{
     my $node         = shift;
     my $buffers      = shift;
 
-    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge/) {
+    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge|Time Penalty|To the Fallen/) {
         my $attack_node = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
         my $block_node  = &GetNode::GetNode_Tag_Attr("font", "color", "#009966", \$node);
 
@@ -560,7 +560,7 @@ sub GetPreDamageData{
         if    (scalar(@$attack_node)) { $text = $$attack_node[0]->as_text}
         elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
 
-        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge)/) {
+        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge|^Time Penalty|^To the Fallen)/) {
             if (exists($$$buffers{$1})) {
                 $$$buffers{$1}{"number"} += 1;
 
@@ -950,7 +950,7 @@ sub ResetPreDamageData{
     my $self         = shift;
     my $buffers      = shift;
 
-    my @keys = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge");
+    my @keys = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge","Time Penalty","To the Fallen");
     foreach my $key (@keys) {
         delete($$$buffers{$key});
     }
