@@ -350,6 +350,13 @@ sub ReadTurnDlNode{
                 $self->ResetFieldData(\$buffers);
             }
         }
+        if ($self->GetBlockData($node)) {
+            $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
+            $self->ResetElementData(\$element);
+            $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
+        }
         if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
             $self->ResetChainPowerData(\$buffers);
@@ -812,6 +819,20 @@ sub GetLineCloseData{
 
         return 1;
     }
+
+    return 0;
+}
+
+#-----------------------------------#
+#    無効化された攻撃を取得
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetBlockData{
+    my $self         = shift;
+    my $node         = shift;
+
+    if ($node->as_text =~ /攻撃を無効化（.+壁：残強度\d+）/) {return 1;}
 
     return 0;
 }
