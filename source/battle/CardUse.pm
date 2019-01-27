@@ -157,7 +157,6 @@ sub GetData{
 
     # カード使用結果の初期化
     $self->{UseCard} = {};
-    $self->{UseCard}{"User"} = {};
     $self->{UseCard}{"-ALL"} = {};
     $self->{UseCard}{"PT"} = {};
     foreach my $e_no (values(%{$self->{NicknameToEno}})){
@@ -399,11 +398,12 @@ sub GetCardUseData{
     $card_text =~ s/！//;
     $card_text =~ s/\s//g;
 
-    # カード名の解析
-    my $effect_name = $card_text;
-
-    my $card_use = [$turn, $e_no, $success, $control];
-    $self->{UseCard}{"User"}{$p_no}{$e_no}{$card_text} = $card_use;
+    # カード使用者をデータに追加
+    my $effect = $card_text;
+    $effect =~ s/Lv(\d+)//;
+    my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+    $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $turn, $e_no, $p_no, $card_id, $success, $control)));
+    $self->RecordNewCardUseData($card_id);
 
     if($success == 0){return 0;}
 
@@ -420,24 +420,7 @@ sub GetCardUseData{
 #-----------------------------------#
 sub TotalingCardData{
     my $self = shift;
-
-    # PT別にカード使用者をデータに追加
-    foreach my $p_no (keys(%{$self->{UseCard}{"User"}})){
-
-        foreach my $e_no (values(%{$self->{NicknameToEno}})){
-            foreach my $effect (keys(%{$self->{UseCard}{"User"}{$p_no}{$e_no}})){
-                my $data = $self->{UseCard}{"User"}{$p_no}{$e_no}{$effect};
-                $effect =~ s/Lv(\d+)//;
-                my $lv = $1;
-                my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
-                my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $$data[1], $p_no, $card_id, $$data[2], $$data[3]);
-                $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
-
-                $self->RecordNewCardUseData($card_id);
-            }
-        }
-    }
-    
+   
     # 各PTの使用カードを結合してデータに追加
     foreach my $p_no (keys(%{$self->{UseCard}{"PT"}})){
         my $use_cards = "";
