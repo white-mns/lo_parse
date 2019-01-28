@@ -7964,7 +7964,6 @@ result_no	generate_no	battle_page	act_id	e_no	buffer_id	lv	value
 2	0	206 VS 327	38	327	549	1	1
 2	0	206 VS 327	38	327	561	1	1
 2	0	206 VS 327	38	327	545	1	1
-2	0	206 VS 327	40	44	539	0	1
 2	0	206 VS 327	48	339	538	0	1
 2	0	206 VS 327	52	296	539	0	1
 2	0	206 VS 327	59	320	539	0	1
@@ -16916,7 +16915,6 @@ result_no	generate_no	battle_page	act_id	e_no	buffer_id	lv	value
 2	0	61 VS 233	146	100	538	0	1
 2	0	61 VS 233	149	58	539	0	1
 2	0	61 VS 233	153	61	539	0	1
-2	0	61 VS 266	1	16	539	0	1
 2	0	61 VS 266	2	219	539	0	1
 2	0	61 VS 266	4	61	538	0	1
 2	0	61 VS 266	14	61	539	0	1
