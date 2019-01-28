@@ -349,6 +349,16 @@ sub ReadTurnDlNode{
                 $self->ResetElementData(\$element);
                 $self->ResetFieldData(\$buffers);
             }
+            if ($$card{"name"} =~ /アタッカ/ || $$card{"name"} eq "") {
+                $card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
+            }
+        }
+        if ($self->GetBlockData($node)) {
+            $self->ResetPreDamageData(\$buffers);
+            $self->ResetChainPowerData(\$buffers);
+            $self->ResetElementData(\$element);
+            $self->ResetFieldData(\$buffers);
+            $self->ResetFPDamageType(\$buffers);
         }
         if ($self->GetAttaccaData($node, \$nickname, \$card, \$buffers, \$trigger_node)) {
             $self->ResetPreDamageData(\$buffers);
@@ -440,8 +450,10 @@ sub GetDamageData{
     if (!$target_node) {return 0;}
 
     if ($target_node->attr("color") ne $trigger_node->attr("color")) { # カウンタなどの反撃処理を除外
-        return 0;
+        return 1;
     }
+
+    if ($$card{"name"} eq "") {return 1;} # 通常攻撃時、味方への攻撃のカウンタ・ブースタなどを除外
 
     my $target_text = $target_node->as_text;
 
@@ -552,7 +564,7 @@ sub GetPreDamageData{
     my $node         = shift;
     my $buffers      = shift;
 
-    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge/) {
+    if ($node->as_text =~ /Weak|Critical|Clean Hit|Vanish|Absorb|Revenge|Time Penalty|To the Fallen/) {
         my $attack_node = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
         my $block_node  = &GetNode::GetNode_Tag_Attr("font", "color", "#009966", \$node);
 
@@ -560,7 +572,7 @@ sub GetPreDamageData{
         if    (scalar(@$attack_node)) { $text = $$attack_node[0]->as_text}
         elsif (scalar(@$block_node))  { $text = $$block_node[0]->as_text}
 
-        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge)/) {
+        if ($text =~ /(^WeakPoint|^Critical|^Clean Hit|^Vanish|^Absorb|^Revenge|^Time Penalty|^To the Fallen)/) {
             if (exists($$$buffers{$1})) {
                 $$$buffers{$1}{"number"} += 1;
 
@@ -747,7 +759,7 @@ sub GetAttaccaData{
     my $buffers      = shift;
     my $trigger_node = shift;
 
-    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return;}
+    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return 0;}
 
     my $font_nodes = "";
     $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
@@ -755,6 +767,11 @@ sub GetAttaccaData{
     if (!scalar(@$font_nodes)) { return 0;}
 
     my $text = $$font_nodes[0]->as_text;
+
+    if ($text =~ /カウンタ|ブースタ/)  {
+        $$$card{"name"} = "";
+        return 0;
+    }
 
     if ($text !~ /アタッカ/)  {return 0;}
     if ($text !~ /Lv(\d+)！/) {return 0;}
@@ -812,6 +829,20 @@ sub GetLineCloseData{
 
         return 1;
     }
+
+    return 0;
+}
+
+#-----------------------------------#
+#    無効化された攻撃を取得
+#------------------------------------
+#    引数｜対象ノード
+#-----------------------------------#
+sub GetBlockData{
+    my $self         = shift;
+    my $node         = shift;
+
+    if ($node->as_text =~ /攻撃を無効化（.+壁：残強度\d+）/) {return 1;}
 
     return 0;
 }
@@ -950,7 +981,7 @@ sub ResetPreDamageData{
     my $self         = shift;
     my $buffers      = shift;
 
-    my @keys = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge");
+    my @keys = ("WeakPoint","Critical","Clean Hit","Vanish","Absorb","Revenge","Time Penalty","To the Fallen");
     foreach my $key (@keys) {
         delete($$$buffers{$key});
     }

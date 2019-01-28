@@ -157,7 +157,6 @@ sub GetData{
 
     # カード使用結果の初期化
     $self->{UseCard} = {};
-    $self->{UseCard}{"User"} = {};
     $self->{UseCard}{"-ALL"} = {};
     $self->{UseCard}{"PT"} = {};
     foreach my $e_no (values(%{$self->{NicknameToEno}})){
@@ -399,11 +398,12 @@ sub GetCardUseData{
     $card_text =~ s/！//;
     $card_text =~ s/\s//g;
 
-    # カード名の解析
-    my $effect_name = $card_text;
-
-    my $card_use = [$turn, $e_no, $success, $control];
-    $self->{UseCard}{"User"}{$p_no}{$e_no}{$card_text} = $card_use;
+    # カード使用者をデータに追加
+    my $effect = $card_text;
+    $effect =~ s/Lv(\d+)//;
+    my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
+    $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $turn, $e_no, $p_no, $card_id, $success, $control)));
+    $self->RecordNewCardUseData($card_id);
 
     if($success == 0){return 0;}
 
@@ -420,24 +420,7 @@ sub GetCardUseData{
 #-----------------------------------#
 sub TotalingCardData{
     my $self = shift;
-
-    # PT別にカード使用者をデータに追加
-    foreach my $p_no (keys(%{$self->{UseCard}{"User"}})){
-
-        foreach my $e_no (values(%{$self->{NicknameToEno}})){
-            foreach my $effect (keys(%{$self->{UseCard}{"User"}{$p_no}{$e_no}})){
-                my $data = $self->{UseCard}{"User"}{$p_no}{$e_no}{$effect};
-                $effect =~ s/Lv(\d+)//;
-                my $lv = $1;
-                my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $lv, 0, 0, 0]);
-                my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $$data[1], $p_no, $card_id, $$data[2], $$data[3]);
-                $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
-
-                $self->RecordNewCardUseData($card_id);
-            }
-        }
-    }
-    
+   
     # 各PTの使用カードを結合してデータに追加
     foreach my $p_no (keys(%{$self->{UseCard}{"PT"}})){
         my $use_cards = "";
@@ -459,106 +442,6 @@ sub TotalingCardData{
     my @card_use_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, 0, $use_cards);
     $self->{Datas}{CardUsePage}->AddData(join(ConstData::SPLIT, @card_use_data));
 
-    return;
-}
-#-----------------------------------#
-#    カード使用データ取得（旧）
-#------------------------------------
-#    引数｜Pno
-#           データノード
-#-----------------------------------#
-sub GetCardUseData_old{
-    my $self      = shift;
-    my $p_no      = shift; 
-    my $nodes     = shift; 
-
-    my $max_chain = 0;
-    my $e_no      = -1;
-
-    # カード使用結果の初期化
-    $self->{UseCard}{"PT"} = {};
-    foreach my $e_no (values(%{$self->{NicknameToEno}})){
-        $self->{UseCard}{$e_no} = {};
-    }
-
-    # カード使用結果の探索
-    foreach my $node (@$nodes){
-        
-        my $text = $node->as_text;
-
-        if($text !~ /Lv(\d+)/){next;}
-
-        my $lv = $1;
-        my $success = -1;
-        my $control = -1;
-
-        if($text =~ /！/){
-            $success = 1;
-
-        }else{
-            my $parent_text = $node->parent->as_text;
-            if ($parent_text !~ /制御に失敗！\(発動率：(\d+)％\)/) {next;}
-            $success = 0;
-            $control = $1;
-        }
-
-        if($text =~ /Chain(\d+)：/){
-            $max_chain = $max_chain < $1 ? $1 : $max_chain;
-        }
-
-        $text =~ s/Chain(\d+)：//;
-        $text =~ s/！//;
-        $text =~ s/\s//g;
-        my $skill_name = $text;
-
-        my $dd_node = $node->parent;
-        if($dd_node->tag ne "dd"){$dd_node = $dd_node->parent;}
-        if($dd_node->tag ne "dd"){next;}
-        while($dd_node){
-            my $dd_text = $dd_node->as_text;
-            if($dd_text !~ /Action|が後に続く|が発動|が先導する/ ){
-                $dd_node = $dd_node->left;
-                next;
-            }
-
-            if($dd_text =~ /(.+\(Pn\d+\))/){
-                my $user = $self->{NicknameToEno}{$1};
-                my $card_use = [$user, $lv, $success, $control];
-                $self->{UseCard}{$user}{$text} = $card_use;
-                last;
-            }
-
-            if($dd_node->tag eq "dt"){last;}
-            $dd_node = $dd_node->left;
-        }
-        if($success == 0){next;}
-        $self->{UseCard}{"-ALL"}{$text} = 1;
-        $self->{UseCard}{"PT"}{$text}  = 1;
-    }
-
-    foreach my $e_no (values(%{$self->{NicknameToEno}})){
-        foreach my $effect (keys(%{$self->{UseCard}{$e_no}})){
-            my $data = $self->{UseCard}{$e_no}{$effect};
-            $effect =~ s/Lv\d+//;
-            my $card_id = $self->{CommonDatas}{CardData}->GetOrAddId(0, [$effect, 0, $$data[1], 0, 0, 0]);
-            my @card_user_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $$data[0], $p_no, $card_id, $$data[2], $$data[3]);
-            $self->{Datas}{CardUser}->AddData(join(ConstData::SPLIT, @card_user_data));
-
-            $self->RecordNewCardUseData($card_id);
-        }
-    }
-    
-    # PTの使用カードを結合してデータに追加
-    my $use_cards = "";
-    foreach my $skill (keys(%{$self->{UseCard}{"PT"}})){
-        $use_cards = $use_cards eq "" ? $skill : $use_cards . ",$skill";
-    }
-
-    my @card_use_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $p_no, $use_cards);
-    $self->{Datas}{CardUsePage}->AddData(join(ConstData::SPLIT, @card_use_data));
-
-    my @max_chain_data = ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $p_no, $max_chain);
-    $self->{Datas}{MaxChain}->AddData(join(ConstData::SPLIT, @max_chain_data));
     return;
 }
 
