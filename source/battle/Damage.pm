@@ -349,6 +349,9 @@ sub ReadTurnDlNode{
                 $self->ResetElementData(\$element);
                 $self->ResetFieldData(\$buffers);
             }
+            if ($$card{"name"} =~ /アタッカ/ || $$card{"name"} eq "") {
+                $card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
+            }
         }
         if ($self->GetBlockData($node)) {
             $self->ResetPreDamageData(\$buffers);
@@ -449,6 +452,8 @@ sub GetDamageData{
     if ($target_node->attr("color") ne $trigger_node->attr("color")) { # カウンタなどの反撃処理を除外
         return 1;
     }
+
+    if ($$card{"name"} eq "") {return 1;} # 通常攻撃時、味方への攻撃のカウンタ・ブースタなどを除外
 
     my $target_text = $target_node->as_text;
 
@@ -754,7 +759,7 @@ sub GetAttaccaData{
     my $buffers      = shift;
     my $trigger_node = shift;
 
-    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return;}
+    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return 0;}
 
     my $font_nodes = "";
     $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
@@ -762,6 +767,11 @@ sub GetAttaccaData{
     if (!scalar(@$font_nodes)) { return 0;}
 
     my $text = $$font_nodes[0]->as_text;
+
+    if ($text =~ /カウンタ|ブースタ/)  {
+        $$$card{"name"} = "";
+        return 0;
+    }
 
     if ($text !~ /アタッカ/)  {return 0;}
     if ($text !~ /Lv(\d+)！/) {return 0;}
