@@ -33,6 +33,7 @@ name	e_no	icon_url
  ごーるでんにゃべつ	222	no_icon.jpg
  ごーるでんにゃべつ	222	/img/no.jpg
  ごーるでんにゃべつ	222	old_i15.png
+ ちこちゃん	62	=aikonn.png
  てるてるぼうず	324	no_icon.jpg
  てるてるぼうず	324	/img/no.jpg
  とらぎぷちゃん	39	ma-icon.png
@@ -58,6 +59,7 @@ name	e_no	icon_url
  やどりぎひめ	98	/img/no.jpg
  やどりぎひめ	47	no_icon.jpg
  やどりぎひめ	47	81224-5.png
+ やどりぎひめ	47	90118-3.png
  るーく	295	54CAA75.png
  わこ	27	e=aikon.png
  わこちゃん	129	=konnko.png
@@ -76,6 +78,7 @@ name	e_no	icon_url
  アマリア	45	maria00.png
  アラン	108	le=lo09.png
  アリス	354	no_icon.jpg
+ アリーシア	83	rishia1.png
  アルザーン	209	ne_face.png
  アルシェ	58	LAicon6.png
  アルテナ	90	con_2_1.png
@@ -118,6 +121,7 @@ name	e_no	icon_url
  オズ	364	/img/no.jpg
  オルジェ	101	=orge_1.png
  オルランド	88	yst/ori.png
+ カイ	75	no_icon.jpg
  カウミノル	94	=lasod0.png
  カグラ	379	no_icon.jpg
  カグラ	379	swyQQjoido9
@@ -230,6 +234,7 @@ name	e_no	icon_url
  ダリダ	287	ida_i02.png
  ダリダ	287	ida_i04.png
  チェノー	7	o_st_01.png
+ チェノー	7	st_3_01.png
  チーロ	383	no_icon.jpg
  チーロ	383	blank60.gif
  ツァラン	119	/icon01.png
@@ -456,6 +461,7 @@ name	e_no	icon_url
  旅人	169	no_icon.jpg
  旅人	169	pri/105.png
  月夜	75	kiya_i1.png
+ 月猫	85	eko_kao.png
  木葉	102	e=konha.png
  枯草	374	no_icon.jpg
  枯草	374	/img/no.jpg
@@ -490,6 +496,7 @@ name	e_no	icon_url
  聖女	362	mell024.png
  聖女	362	mell029.png
  聖女	362	mell035.png
+ 聖女	362	Mell013.png
  花の妖精	375	wZOnLPv.png
  花の妖精	375	wJ0q6Pg.png
  苗	183	no_icon.jpg
@@ -549,6 +556,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 【浄天烈地の灼陽】 ラー	128	no_icon.jpg
 【浄天烈地の灼陽】 ラー	128	/img/no.jpg
 【浄天烈地の灼陽】 ラー	128	ikikari.png
+あの日の砂浜 デカパイ少佐	31	LOAicon.png
 あんこう！あんこう！ ナマズくん	167	mazukun.png
 うさみるく るーく	295	54CAA75.png
 うさみるく ルーク	295	samilk2.png
@@ -574,6 +582,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ただ1人の犠牲 聖女	362	mell024.png
 ただ1人の犠牲 聖女	362	mell029.png
 ただ1人の犠牲 聖女	362	mell035.png
+ただ1人の犠牲 聖女	362	Mell013.png
 たまごサンドんまい フィル	56	le=fil1.png
 だいたい寝ている ドルミーレ	321	muriic1.png
 つややかなねこ 野良猫	356	_icon01.png
@@ -656,6 +665,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ロックンローラー フラック	182	no_icon.jpg
 ロボット兼居候兼探索者 NAS	97	Ic_0001.png
 一尾95円 サンマ	330	OA/wada.png
+一般・学生 ちこちゃん	62	=aikonn.png
 一触即発 大根	331	g/uni01.png
 三重の『二』 ワーティファナ	81	CD7446F.png
 不思議な死霊術師 ダリダ	287	ida_i02.png
@@ -697,6 +707,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 多用途鑑賞群体（廃棄） 虫ちゃん	284	=mushi1.png
 夢の向こう側からやってきた猫と使い魔 ラムネ	341	/ksi022.png
 天使もどき グリフ	86	kaiwa60.png
+天翼の賢者 アリーシア	83	rishia1.png
 失敗作 魔砲剣士	126	e=Clear.png
 奔放ノーブル フェル	279	ht_icon.png
 奔放ノーブル フェル	279	t2_icon.png
@@ -716,6 +727,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 小さなマイペース鍛冶屋 メイカ	34	meika01.png
 少佐 ネルケ	288	Oicon00.png
 屍人喰らいの女子高生 祀里	105	asuo/i1.png
+崩れ行く黒土 チェノー	7	st_3_01.png
 巡回神父 ヨハン	135	e=J.T.G.png
 希望を創り、食らう者 カルヴォス	176	_tuujou.png
 帰宅部部長 アレル	224	b8080a3.png
@@ -723,6 +735,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 幸せな獣 ミハク	187	mihaku1.png
 幻蝶 シンセミア	320	illa/01.png
 庭園の主 やどりぎひめ	47	81224-5.png
+庭園の主 やどりぎひめ	47	90118-3.png
 廃棄処分 アルマ	22	e=icon5.png
 形造る影 『ホム』	60	omicon1.png
 彷徨人 スレイン	2	oA_i001.png
@@ -884,6 +897,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 進捗確認システム シメキリ	255	/img/no.jpg
 逸れ桃娘 蜜桃	130	le=ic02.png
 遍歴騎士と悪魔 グロウス	329	yIcon01.png
+重騎士 カイ	75	no_icon.jpg
 野蛮人 アンバー	165	o2_75sq.png
 金貸し ゴギョウ	46	con/001.png
 錬金術師 フィクスト	262	fixtte1.png
