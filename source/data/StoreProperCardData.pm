@@ -95,8 +95,9 @@ sub GetOrAddId{
     my $self      = shift;
     my $is_update = shift;
     my $data      = shift;
-    my $name = $$data[0].$$data[2];
 
+    $$data[0] =~ s/\*//g;
+    my $name = $$data[0].$$data[2];
     
     if(!$self->{Datas}{NameMapping}->CheckHaveData($name)){
         # 新しい固有名詞を記録
