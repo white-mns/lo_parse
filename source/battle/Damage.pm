@@ -340,7 +340,7 @@ sub ReadTurnDlNode{
         $self->GetElementData($node, \$element);
         $self->GetDesorptionData($node);
         $self->GetLineCloseData($node);
-        #$self->CheckFriendlyCounter($node, \$card);
+        $self->CheckFriendlyCounter($node, \$card);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
             $self->ResetFPDamageType(\$buffers);
@@ -766,12 +766,20 @@ sub CheckFriendlyCounter{
         my $left_node  = $node->left;
         my $right_node = $node->right;
 
+        while (1) { # 反撃セリフが設定されていると正しく同士討ち判定ができないため、ダメージ表記まで遡る
+            if($left_node->as_text =~ /(.+\(Pn\d+\))/) { last;}
+
+            $left_node = $left_node->left;
+        }
+
         my $left_font_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$left_node);
         my $right_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$right_node);
 
         if ((scalar(@$left_font_nodes) && scalar(@$right_font_nodes)) || (!scalar(@$left_font_nodes) && !scalar(@$right_font_nodes)))  {
             print "!!!!!!\n";
+            print $self->{BattlePage}."\n";
             print $left_node->as_text."\n";
+            print $node->as_text."\n";
             print "!!!!!!\n";
             $$$card{"lastName"} = $$$card{"name"};
             $$$card{"name"} = "";
