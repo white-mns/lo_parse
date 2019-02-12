@@ -57,7 +57,7 @@ Vol.1更新なら
 
 ## DB設定
 `source/DbSetting.pm`にサーバーの設定を記述します。  
-DBのテーブルは[Railsアプリ側](https://github.com/white-mns/zero_rails)で`rake db:migrate`して作成しています。
+DBのテーブルは[Railsアプリ側](https://github.com/white-mns/lo_rails)で`rake db:migrate`して作成しています。
 
 ## 中間ファイル
 DBにアップロードしない場合、固有名詞を数字で置き換えている箇所があるため、csvファイルを読むのは難しいと思います。
