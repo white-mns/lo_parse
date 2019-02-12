@@ -340,6 +340,7 @@ sub ReadTurnDlNode{
         $self->GetElementData($node, \$element);
         $self->GetDesorptionData($node);
         $self->GetLineCloseData($node);
+        #$self->CheckFriendlyCounter($node, \$card);
         
         if ($self->GetDamageData($turn, $node, $nickname, $card, $buffers, $trigger_node, $element)) {
             $self->ResetFPDamageType(\$buffers);
@@ -349,8 +350,12 @@ sub ReadTurnDlNode{
                 $self->ResetElementData(\$element);
                 $self->ResetFieldData(\$buffers);
             }
-            if ($$card{"name"} =~ /アタッカ/ || $$card{"name"} eq "") {
+            if ($$card{"name"} =~ /アタッカ/) {
                 $card    = {"name"=>"通常攻撃", "id"=>$self->{CommonDatas}{CardData}->GetOrAddId(0, ["通常攻撃", 0, 0, 0, 0, 0]), "chain"=>0};
+            }
+
+            if ($$card{"name"} eq "") {
+                $$card{"name"} = $$card{"lastName"};
             }
         }
         if ($self->GetBlockData($node)) {
@@ -741,6 +746,40 @@ sub GetCounterData{
 
     return 1;
 }
+#-----------------------------------#
+#    味方からの反撃発動時に次の攻撃を無視するように
+#------------------------------------
+#    引数｜対象ノード
+#          カード情報
+#-----------------------------------#
+sub CheckFriendlyCounter{
+    my $self         = shift;
+    my $node         = shift;
+    my $card         = shift;
+
+    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return 0;}
+    
+    my $counter_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
+
+    if (scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
+        # Coutner!! 発動時、味方による攻撃なら直後のダメージを無視する
+        my $left_node  = $node->left;
+        my $right_node = $node->right;
+
+        my $left_font_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$left_node);
+        my $right_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$right_node);
+
+        if ((scalar(@$left_font_nodes) && scalar(@$right_font_nodes)) || (!scalar(@$left_font_nodes) && !scalar(@$right_font_nodes)))  {
+            print "!!!!!!\n";
+            print $left_node->as_text."\n";
+            print "!!!!!!\n";
+            $$$card{"lastName"} = $$$card{"name"};
+            $$$card{"name"} = "";
+        }
+    }
+
+    return 1;
+}
 
 #-----------------------------------#
 #    アタッカ発動時にカード情報を上書き
@@ -769,6 +808,7 @@ sub GetAttaccaData{
     my $text = $$font_nodes[0]->as_text;
 
     if ($text =~ /カウンタ|ブースタ/)  {
+        $$$card{"lastName"} = $$$card{"name"};
         $$$card{"name"} = "";
         return 0;
     }
