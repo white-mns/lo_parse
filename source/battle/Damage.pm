@@ -729,8 +729,15 @@ sub GetCounterData{
         $trigger_node = $$tmp_node[0];
 
     } elsif (scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
-        my $left_text = $node->left->as_text;
-        if ($left_text !~ /(.+\(Pn\d+\))/) {return 0;}
+        my $left_node = $node->left;
+
+        while (1) { # 反撃セリフが設定されていると正しく判定ができないため、ダメージ表記まで遡る
+            if($left_node->as_text =~ /(.+\(Pn\d+\))/) { last;}
+
+            $left_node = $left_node->left;
+        }
+
+        if ($left_node->as_text !~ /(.+\(Pn\d+\))/) {return 0;}
         $nickname = $1;
 
         my $tmp_node = &GetNode::GetNode_Tag("font", \$node->right);
@@ -776,11 +783,6 @@ sub CheckFriendlyCounter{
         my $right_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$right_node);
 
         if ((scalar(@$left_font_nodes) && scalar(@$right_font_nodes)) || (!scalar(@$left_font_nodes) && !scalar(@$right_font_nodes)))  {
-            print "!!!!!!\n";
-            print $self->{BattlePage}."\n";
-            print $left_node->as_text."\n";
-            print $node->as_text."\n";
-            print "!!!!!!\n";
             $$$card{"lastName"} = $$$card{"name"};
             $$$card{"name"} = "";
         }
