@@ -766,28 +766,33 @@ sub CheckFriendlyCounter{
 
     if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return 0;}
     
+    my $supply_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
     my $counter_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#ff3333", \$node);
 
-    if (scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
-        # Coutner!! 発動時、味方による攻撃なら直後のダメージを無視する
-        my $left_node  = $node->left;
-        my $right_node = $node->right;
-
-        while (1) { # 反撃セリフが設定されていると正しく同士討ち判定ができないため、ダメージ表記まで遡る
-            if($left_node->as_text =~ /(.+\(Pn\d+\))/) { last;}
-
-            $left_node = $left_node->left;
-        }
-
-        my $left_font_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$left_node);
-        my $right_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$right_node);
-
-        if ((scalar(@$left_font_nodes) && scalar(@$right_font_nodes)) || (!scalar(@$left_font_nodes) && !scalar(@$right_font_nodes)))  {
-            $$$card{"lastName"} = $$$card{"name"};
-            $$$card{"name"} = "";
-        }
+    if (     scalar(@$counter_font_nodes) && $$counter_font_nodes[0]->as_text eq "Counter！！") {
+    } elsif (scalar(@$supply_font_nodes)  && $$supply_font_nodes[0]->as_text  =~ /カウンタ|ブースタ/) {
+    } else {
+        return 0;
     }
 
+    # Coutner!!、カウンタ、ブースタ発動時、同士討ちでの発動直後のダメージを無視する
+    # （文字色判定で敵の攻撃・回復は除外していて、同士討ちではその判定が効かないため）
+    my $left_node  = $node->left;
+    my $right_node = $node->right;
+
+    while (1) { # 反撃セリフが設定されていると正しく同士討ち判定ができないため、ダメージ表記まで遡る
+        if($left_node->as_text =~ /(.+\(Pn\d+\))/) { last;}
+
+        $left_node = $left_node->left;
+    }
+
+    my $left_font_nodes  = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$left_node);
+    my $right_font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#6633ff", \$right_node);
+
+    if ((scalar(@$left_font_nodes) && scalar(@$right_font_nodes)) || (!scalar(@$left_font_nodes) && !scalar(@$right_font_nodes)))  {
+        $$$card{"lastName"} = $$$card{"name"};
+        $$$card{"name"} = "";
+    }
     return 1;
 }
 
@@ -808,7 +813,7 @@ sub GetAttaccaData{
     my $buffers      = shift;
     my $trigger_node = shift;
 
-    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} !~ /アタッカ/) {return 0;}
+    if ($$$card{"name"} ne "通常攻撃" && $$$card{"name"} ne "" && $$$card{"name"} !~ /アタッカ/) {return 0;}
 
     my $font_nodes = "";
     $font_nodes = &GetNode::GetNode_Tag_Attr("font", "color", "#00cccc", \$node);
