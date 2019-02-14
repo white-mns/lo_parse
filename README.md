@@ -11,7 +11,7 @@ LastOrder#Aデータ小屋は[LastOrder#A 〜最終注文#A〜](http://ykamiya.c
 以下の環境での動作を確認しています  
   
 OS:CentOS release 6.5 (Final)  
-DB:MySQL 5.5
+DB:MySQL 8.0.13
 Perl:5.10.1  
 
 ## 必要なもの
@@ -57,7 +57,7 @@ Vol.1更新なら
 
 ## DB設定
 `source/DbSetting.pm`にサーバーの設定を記述します。  
-DBのテーブルは[Railsアプリ側](https://github.com/white-mns/zero_rails)で`rake db:migrate`して作成しています。
+DBのテーブルは[Railsアプリ側](https://github.com/white-mns/lo_rails)で`rake db:migrate`して作成しています。
 
 ## 中間ファイル
 DBにアップロードしない場合、固有名詞を数字で置き換えている箇所があるため、csvファイルを読むのは難しいと思います。
