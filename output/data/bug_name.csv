@@ -20,6 +20,7 @@ name	e_no	icon_url
  おやゆぴ	304	no_icon.jpg
  お金の神様	327	okane1i.png
  お金の神様	327	okane0i.png
+ かぐや	25	no_icon.jpg
  かすかちゃん	191	oujou01.png
  かな	137	QAAqW8I.png
  かにのかとる	27	no_icon.jpg
@@ -36,6 +37,7 @@ name	e_no	icon_url
  ごーるでんにゃべつ	222	/img/no.jpg
  ごーるでんにゃべつ	222	old_i15.png
  すいか	62	&type=a.png
+ すいか	62	file=a2.png
  ちこちゃん	62	=aikonn.png
  てるてるぼうず	324	no_icon.jpg
  てるてるぼうず	324	/img/no.jpg
@@ -70,6 +72,7 @@ name	e_no	icon_url
  わたげ	115	tage002.png
  わたし	147	A005906.png
  アウエーレ	278	/ele_i1.png
+ アウエーレ	278	a4d4356.png
  アウラ	9	e=aura2.png
  アウロラ	70	o1_75sq.png
  アカリ	272	ari_ip0.png
@@ -161,6 +164,7 @@ name	e_no	icon_url
  ケートゥ	36	o4_75sq.png
  ゲオルグ	339	/GICON1.png
  コガミ＆テール	68	i_omega.png
+ コガレ	19	size_mode=5
  ココット	98	no_icon.jpg
  コモン	6	no_icon.jpg
  コモン	6	ic/ico0.png
@@ -175,6 +179,7 @@ name	e_no	icon_url
  サンク	353	/img/no.jpg
  サンドレ	24	aso_002.png
  サンマ	330	OA/wada.png
+ サート	59	w/sert1.jpg
  ザク	82	no_icon.jpg
  ザナ	3	a_icon3.png
  シェリィ	270	erry-iA.jpg
@@ -424,6 +429,7 @@ name	e_no	icon_url
  ローデヴェイク	372	le=uma2.png
  ワーティファナ	81	CD7446F.png
  ワーティファナ	81	9C9B69C.png
+ ワーティファナ	81	1EF95AD.png
  ヴァンス	218	no_icon.jpg
  ヴェルカナン	367	no_icon.jpg
  ヴェルカナン	367	/img/no.jpg
@@ -464,6 +470,7 @@ name	e_no	icon_url
  山茶花	358	no_icon.jpg
  弥々子	186	no_icon.jpg
  彗星	99	inet/i1.png
+ 彗星	99	et/i1_b.png
  手品師	344	_Q_Icon.png
  旅人	169	no_icon.jpg
  旅人	169	pri/105.png
@@ -473,6 +480,7 @@ name	e_no	icon_url
  枯草	374	no_icon.jpg
  枯草	374	/img/no.jpg
  桐味噌塗	92	no_icon.jpg
+ 桐味噌塗	92	bebr/00.png
  榊原	233	kki/1-2.png
  榊原	233	1836d0b.png
  歩行爆弾	266	��ジジジ
@@ -496,6 +504,7 @@ name	e_no	icon_url
  空っぽ	89	e=kara1.png
  空っぽ	89	e=kara0.png
  緋色の狐	256	fiicon5.jpg
+ 緋色の狐	256	38fox-i.jpg
  美月	348	tensi_i.png
  美月	348	_normal.png
  羽水	123	=laa_i0.png
@@ -535,6 +544,7 @@ name	e_no	icon_url
 - 土偶	161	/img/no.jpg
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	ile=685.png
 ArcanaKnights No.XIX ヒグルマ	78	aiyou01.png
+ArcanaKnights No.XVIII 千尋	190	con1_60.png
 ArcanaKnights No.|| シュレー	79	hreyIC1.png
 ArcanaKnights No.Ⅴ クラヴィス	100	youkou3.png
 High Roller ラズン	254	no_icon.jpg
@@ -560,6 +570,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 『大参謀』と『干渉者』 大参謀	194	9_gyaku.png
 『大参謀』と『干渉者』 監視者	194	9_gyaku.png
 『氷雪の』 アウラ	9	e=aura2.png
+【IX-i】“哲学者” ヤマツ	202	uicon02.png
 【日蝕】 ラフリフ	121	no_icon.jpg
 【浄天烈地の灼陽】 ラー	128	no_icon.jpg
 【浄天烈地の灼陽】 ラー	128	/img/no.jpg
@@ -595,6 +606,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 たまごサンドんまい フィル	56	le=fil1.png
 だいたい寝ている ドルミーレ	321	muriic1.png
 つややかなねこ 野良猫	356	_icon01.png
+ないしょだ サート	59	w/sert1.jpg
 なかまがなついてくれない タビビト	26	aaacon1.png
 ながれぼしのたびびと ミリウ	103	ot_face.gif
 なんでも屋 羽水	123	=laa_i0.png
@@ -607,6 +619,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 アイドル！ ヒナ	210	&file=1.png
 アグロノミスト チーロ	383	no_icon.jpg
 アグロノミスト チーロ	383	blank60.gif
+アルカナナイツ ⅩⅢ 『死神』 聖女	362	Mell013.png
 アルカナナイツ アンノウン	5	no_icon.jpg
 アルカナナイツ アンノウン	5	/img/no.jpg
 アルカナナイツ ダナン	286	aS1Swzs.png
@@ -616,6 +629,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 アルカナナイツiii『女帝』 ヴェルカナン	367	/img/no.jpg
 アルカナナイツ『審判』 アルメリリ	61	npani01.png
 アルカナナイツ『月』 ティア	91	tukii01.png
+アルカナナイツ【正義】 名捨て人	95	Battle1.png
 アルカナナイツ【皇帝】 リクラーチェ	178	no_icon.jpg
 アルカナナイツ【皇帝】 リクラーチェ	178	�ン000.png
 アルカナナイツの《悪魔》 ブルース	197	��ますよ
@@ -667,6 +681,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ヤルカナレギオン『夢』 『夢』	55	_cwsi00.png
 ヤルカナレギオン『愛人』 ワーティファナ	81	CD7446F.png
 ヤルカナレギオン『愛人』 ワーティファナ	81	9C9B69C.png
+ヤルカナレギオン『愛人』 ワーティファナ	81	1EF95AD.png
 ユアハニー ガオール	359	NLYGc2J.png
 ライブラリアン 緋色の狐	256	fiicon5.jpg
 ラジオを背負った猫 ラジオを背負った猫	305	no_icon.jpg
@@ -703,6 +718,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 出前一丁 リベラ	215	-ribe01.jpg
 剣の聖女 サフィニア	280	inia_07.png
 剣客系宿屋兼食堂兼酒場店主 レゼルト	77	ture014.jpg
+動きます すいか	62	file=a2.png
 医療用傷病者運搬トラウマギプス とらぎぷちゃん	39	ma-icon.png
 博愛主義の探究者 エアリス	80	o_icon1.png
 博愛主義の探究者 エアリス	80	2_0_1_1.png
@@ -847,6 +863,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 白紙 カルミナ	234	_Icon00.png
 白羊楽士 ベルベル・ラム	296	no_icon.jpg
 白羊楽士 ベルベル・ラム	296	/img/no.jpg
+白群研究所所属研究員兼被検体 コガレ	19	size_mode=5
 盗賊 グラッド	216	cAIEqlQ.png
 盗賊 ディー	349	no_icon.jpg
 看板娘 七味	258	emblem1.png
@@ -942,6 +959,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 黄昏の手品師 クーリエ	344	rm_0000.png
 黄昏の手品師 黄昏の手品師	344	rm_0000.png
 黒剣姫 エリストリア	334	4u/icon.jpg
+（じしょう） 女神	250	p/ver04.png
 ＊魔術師 灰原	93	no_icon.jpg
 ＊魔術師 灰原	93	ihara60.png
 ？？ ケテル	73	le=3001.png
