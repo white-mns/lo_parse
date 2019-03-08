@@ -43,6 +43,8 @@ sub Main {
 
     $upload->DBConnect();
     
+    $upload->DeleteSameResult("uploaded_checks", $result_no, $generate_no);
+
     if (ConstData::EXE_DATA) {
         if (ConstData::EXE_DATA_PROPER_NAME) {
             $upload->DeleteAll('proper_names');
@@ -219,6 +221,7 @@ sub Main {
             $upload->Upload("./output/battle/damage_buffer_" . $result_no . "_" . $generate_no . ".csv", 'damage_buffers');
         }
     }
+        $upload->Upload("./output/etc/uploaded_check_" . $result_no . "_" . $generate_no . ".csv", 'uploaded_checks');
 
     print "result_no:$result_no,generate_no:$generate_no\n";
     return;
