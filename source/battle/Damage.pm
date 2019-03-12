@@ -998,13 +998,13 @@ sub GetFieldData{
             $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>$2, "number"=>1};
         }
         return 1;
-    } elsif ($node->as_text =~ /属性攻撃を強制変換/) {
+    } elsif ($node->as_text =~ /属性攻撃を(強制|擬似)変換/) {
         my $field_node = &GetNode::GetNode_Tag("i", \$node);
 
         my $text = "";
         if (scalar(@$field_node)) { $text = $$field_node[0]->as_text}
 
-        if ($text =~ /(.+)により属性攻撃を強制変換/) {
+        if ($text =~ /(.+)により.+の属性攻撃を(強制|擬似)変換/) {
             $$$buffers{$1} = {"id"=>$self->{CommonDatas}{ProperName}->GetOrAddId($1), "lv"=>0, "number"=>1};
         }
         return 1;
