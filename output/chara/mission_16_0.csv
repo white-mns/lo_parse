@@ -60,7 +60,7 @@ result_no	generate_no	e_no	mission_id	mission_type	status	col	lv
 16	0	14	2	0	0	Q	8
 16	0	14	3	0	0	E	30
 16	0	14	4	0	0	L	12
-16	0	14	6	0	-99		-1
+16	0	14	6	0	1		-1
 16	0	15	1	0	1		-1
 16	0	15	3	0	0	？	30
 16	0	15	5	0	0	J	12
@@ -116,7 +116,7 @@ result_no	generate_no	e_no	mission_id	mission_type	status	col	lv
 16	0	32	1	0	1		-1
 16	0	32	2	0	1		-1
 16	0	32	3	0	0	？	30
-16	0	32	6	0	-99		-1
+16	0	32	6	0	1		-1
 16	0	34	1	0	1		-1
 16	0	34	3	0	0	D	30
 16	0	34	6	0	0	？	16
@@ -129,7 +129,7 @@ result_no	generate_no	e_no	mission_id	mission_type	status	col	lv
 16	0	36	2	0	1		-1
 16	0	36	3	0	0	？	30
 16	0	36	5	0	1		-1
-16	0	36	6	0	-99		-1
+16	0	36	6	0	1		-1
 16	0	37	1	0	1		-1
 16	0	37	2	0	1		-1
 16	0	37	3	0	0	？	30
@@ -636,7 +636,7 @@ result_no	generate_no	e_no	mission_id	mission_type	status	col	lv
 16	0	254	2	0	1		-1
 16	0	254	3	0	0	A	30
 16	0	254	5	0	0	S	12
-16	0	254	6	0	-99		-1
+16	0	254	6	0	1		-1
 16	0	255	1	0	1		-1
 16	0	255	2	0	1		-1
 16	0	255	3	0	0	S	30
