@@ -107,6 +107,7 @@ sub GetFacilityUseData{
                         $facility_effect = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
                         $facility_lv     = $2;
                         $facility_name   = $3;
+                        $facility_name   =~ s/\s//g;
                     }
                 }
 
@@ -130,7 +131,7 @@ sub GetFacilityUseData{
                     $recovery_lv = $facility_lv;
                 }
 
-                if ($node =~ /（\+Ino\d+/ || $node =~ /が足りなかった。/) {
+                if ($node =~ /（\+Ino\d+/ || $node =~ /が足りなかった。/ || $node =~ /能力訓練を行った。その成果は…？/) {
                     $self->{Datas}{FacilityUse}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $facility_name, $facility_effect, $facility_lv, $facility_e_no, $usage, $cost, $success, $number, $recovery_lv) ));
                     $number += 1;
                 }
