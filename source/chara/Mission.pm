@@ -111,8 +111,8 @@ sub GetMissionData{
             $lv  = $2;
         }
 
-        $status = ($tr_text =~ /☆ Clear ☆/) ?  1 : $status;
-        $status = ($tr_text =~ /… Lost …/)  ? -1 : $status;
+        $status = ($tr_text =~ /Clear/) ?  1 : $status;
+        $status = ($tr_text =~ /Lost/)  ? -1 : $status;
 
         $self->{Datas}{Data}->AddData( join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $mission_id, $type, $status, $col, $lv)) );
 
