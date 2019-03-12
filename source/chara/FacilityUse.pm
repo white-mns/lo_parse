@@ -107,7 +107,7 @@ sub GetFacilityUseData{
                         $facility_effect = $self->{CommonDatas}{ProperName}->GetOrAddId($1);
                         $facility_lv     = $2;
                         $facility_name   = $3;
-                        $facility_name   =~ s/\s//g;
+                        $facility_name   =~ s/^\s//;
                     }
                 }
 
