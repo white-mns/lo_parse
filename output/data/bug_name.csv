@@ -8,6 +8,7 @@ name	e_no	icon_url
  　　　	87	no_icon.jpg
  『ホム』	60	omicon1.png
  『世界』	20	ile=685.png
+ 『世界』	20	le=1051.png
  『夢』	55	ela_i00.png
  『夢』	55	_cwsi00.png
  『硝子の葉脈』	54	no_icon.jpg
@@ -57,6 +58,7 @@ name	e_no	icon_url
  ぼや	48	e=VY_02.png
  まりあ	42	cnRiTfJ.jpg
  まりあ	42	wCCTque.jpg
+ まりあ(同行時は前回設定を推奨)	42	wCCTque.jpg
  みしゅりん	316	no_icon.jpg
  みしゅりん	316	/img/no.jpg
  みみ	83	no_icon.jpg
@@ -90,6 +92,7 @@ name	e_no	icon_url
  アルシェ	58	LAicon6.png
  アルテナ	90	con_2_1.png
  アルマ	22	e=icon5.png
+ アルマ	22	&file=1.png
  アルメリリ	61	npani01.png
  アルル	252	a_al1_0.jpg
  アルレット	40	270719e.png
@@ -146,6 +149,7 @@ name	e_no	icon_url
  カンちゃん	361	ile=kan.png
  ガオール	359	NLYGc2J.png
  ガモリ	76	_icon01.png
+ キトナフ	75	no_icon.jpg
  クォート	64	ote_i01.png
  クマダ	303	umada60.png
  クマダ	303	umada01.png
@@ -166,10 +170,12 @@ name	e_no	icon_url
  ケス	159	/img/no.jpg
  ケテル	73	le=3001.png
  ケートゥ	36	o4_75sq.png
+ ケートゥ	36	h/cond1.png
  ゲオルグ	339	/GICON1.png
  コガミ＆テール	68	i_omega.png
  コガレ	19	size_mode=5
  コガレ	19	efault2.png
+ コガレ	19	ttledef.png
  ココット	98	no_icon.jpg
  コモン	6	no_icon.jpg
  コモン	6	ic/ico0.png
@@ -250,6 +256,7 @@ name	e_no	icon_url
  ダリダ	287	ida_i04.png
  チェノー	7	o_st_01.png
  チェノー	7	st_3_01.png
+ チェノー	7	st_4_01.png
  チーロ	383	no_icon.jpg
  チーロ	383	blank60.gif
  ツァラン	119	/icon01.png
@@ -372,6 +379,7 @@ name	e_no	icon_url
  ユーグ	220	_new_01.png
  ユーミ	107	/yuumi1.png
  ヨシノ	185	hino_02.png
+ ヨシノ	185	_icon02.png
  ヨハン	135	e=J.T.G.png
  ライム	125	=iconL1.png
  ライモニアーノ	92	2544310.png
@@ -424,11 +432,13 @@ name	e_no	icon_url
  レイゼ	387	no_icon.jpg
  レイナ	310	86c182a.png
  レガート	76	no_icon.jpg
+ レガート	76	tke/rgf.png
  レジーナ	74	4_ic000.png
  レゼルト	77	ture014.jpg
  レナ	168	e=LENA1.png
  レーチェ	385	no_icon.jpg
  ロカム	189	=rokamu.png
+ ロカム	189	��ころか
  ロズ	113	=loads1.png
  ロセ	180	00.png?dl=1
  ロセ	180	/rose00.png
@@ -552,7 +562,9 @@ name	e_no	icon_url
 (自称)メイド わこちゃん	129	=konnko.png
 - 土偶	161	no_icon.jpg
 - 土偶	161	/img/no.jpg
+362	362	Mell013.png
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	ile=685.png
+Arcana Knights ⅩⅩⅠ『世界』反転体 『世界』	20	le=1051.png
 ArcanaKnights No.XIX ヒグルマ	78	aiyou01.png
 ArcanaKnights No.XVIII 千尋	190	con1_60.png
 ArcanaKnights No.XVIII 千尋	190	hiro001.png
@@ -630,6 +642,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 アイドル！ ヒナ	210	&file=1.png
 アグロノミスト チーロ	383	no_icon.jpg
 アグロノミスト チーロ	383	blank60.gif
+アルカナナイツ ⅩⅢ 『死神』 	362	Mell013.png
 アルカナナイツ ⅩⅢ 『死神』 聖女	362	Mell013.png
 アルカナナイツ アンノウン	5	no_icon.jpg
 アルカナナイツ アンノウン	5	/img/no.jpg
@@ -702,6 +715,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ロックンローラー フラック	182	no_icon.jpg
 ロボット兼居候兼探索者 NAS	97	Ic_0001.png
 一尾95円 サンマ	330	OA/wada.png
+一玉108 Tip すいか	62	file=a2.png
 一般・学生 ちこちゃん	62	=aikonn.png
 一触即発 大根	331	g/uni01.png
 三重の『二』 ワーティファナ	81	CD7446F.png
@@ -778,6 +792,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 庭園の主 やどりぎひめ	47	81224-5.png
 庭園の主 やどりぎひめ	47	90118-3.png
 廃棄処分 アルマ	22	e=icon5.png
+廃棄処分 アルマ	22	&file=1.png
 強欲の大罪 アワリ	29	no_icon.jpg
 形造る影 『ホム』	60	omicon1.png
 彷徨人 スレイン	2	oA_i001.png
@@ -793,6 +808,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 悪霊刀鍛冶 グリフ	146	le=G7-C.jpg
 悲願華の魔女 まりあ	42	cnRiTfJ.jpg
 悲願華の魔女 まりあ	42	wCCTque.jpg
+悲願華の魔女 まりあ(同行時は前回設定を推奨)	42	wCCTque.jpg
 惑星統一国家スティヴァーレ教皇直属兵『アルカナナイツ』十六番”塔”の騎士 シナバー	226	no_icon.jpg
 惑星統一国家スティヴァーレ教皇直属兵『アルカナナイツ』十六番”塔”の騎士 シナバー	226	oke_ico.png
 成功だった失敗作 シッパイサク	152	hippai5.png
@@ -801,6 +817,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 撃ち貫く弾丸の ジョーカー	259	ker60-0.png
 擬態のスライム ライム	125	=iconL1.png
 攫い手 ヨシノ	185	hino_02.png
+攫い手 ヨシノ	185	_icon02.png
 放浪者 ベオーク	199	be/ber1.png
 教授 カグラ	379	no_icon.jpg
 料理人 レーチェ	385	no_icon.jpg
@@ -868,6 +885,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 無明探偵 九助	241	USUKE00.png
 焦げくさい黒土 チェノー	7	o_st_01.png
 熊の神獣 ロカム	189	=rokamu.png
+熊の神獣 ロカム	189	��ころか
 狭間に立つモノ 真音	35	=s_maoo.png
 猪突猛進の冒険者 ミーティ	195	alstats.png
 猫 ダナン	286	aS1Swzs.png
@@ -881,6 +899,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 白羊楽士 ベルベル・ラム	296	/img/no.jpg
 白群研究所所属研究員兼被検体 コガレ	19	size_mode=5
 白群研究所所属研究員兼被検体 コガレ	19	efault2.png
+白群研究所所属研究員兼被検体 コガレ	19	ttledef.png
 盗賊 グラッド	216	cAIEqlQ.png
 盗賊 ディー	349	no_icon.jpg
 看板娘 七味	258	emblem1.png
@@ -890,6 +909,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 神使 ほなみさん	322	1fd_500.jpg
 神使の友 テンジュウ	69	=ten003.png
 禍つ血脈 ケートゥ	36	o4_75sq.png
+禍つ血脈 ケートゥ	36	h/cond1.png
 空前絶後のマジパネェミルキーウェイギャラクシーイタ飯屋バイト マイドー・M・マッカ	193	��いし！
 第二書庫隊特殊調査班 ■▣■■☒■▮■	122	/icon00.png
 精霊魔導師見習い リーヴィア	300	K8ftWPv.gif
@@ -925,6 +945,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 街の自警団　/　騎士 レイア	302	eia_def.png
 街の自警団　/　騎士 レイア	302	_leia_1.png
 街の自警団　/　騎士 レイア	302	_2poyan.png
+見つめる黒土 チェノー	7	st_4_01.png
 見回す黒土 チェノー	7	o_st_01.png
 見習い魔法使い ルー	299	/2icon1.png
 見習い魔法使い ルー	299	2iconyu.png
@@ -954,6 +975,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 閃く発明人魚 夢見坂	166	no_icon.jpg
 閃く発明人魚 夢見坂	166	mizaka1.PNG
 閉ざされた屋敷のメイド ユーミ	107	/yuumi1.png
+開拓者 キトナフ	75	no_icon.jpg
 限界と束縛の統括者 ティーネ	200	no_icon.jpg
 限界と束縛の統括者 ティーネ	200	0115405.jpg
 隠者の帆船“No.8”の少女 アルレット	40	270719e.png
@@ -975,6 +997,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 魔女志望 ユエ	275	/img/no.jpg
 魔術師 アラン	108	le=lo09.png
 魔術師 レガート	76	no_icon.jpg
+魔術師 レガート	76	tke/rgf.png
 黄昏の手品師 クーリエ	344	rm_0000.png
 黄昏の手品師 黄昏の手品師	344	rm_0000.png
 黒剣姫 エリストリア	334	4u/icon.jpg
