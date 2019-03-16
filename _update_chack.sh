@@ -27,7 +27,7 @@ do
 
     if [ $IS_UPDATE -eq 0 ]; then
         echo "update!!"
-        ./execute.sh ${RESULT_NO} 0
+        ./execute.sh ${RESULT_NO} ${GENERATE_NO}
         exit
     fi
 
