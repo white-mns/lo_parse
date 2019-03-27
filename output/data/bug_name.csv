@@ -150,6 +150,7 @@ name	e_no	icon_url
  ガオール	359	NLYGc2J.png
  ガモリ	76	_icon01.png
  キトナフ	75	no_icon.jpg
+ キャド	12	ohuteki.png
  クォート	64	ote_i01.png
  クマダ	303	umada60.png
  クマダ	303	umada01.png
@@ -196,6 +197,7 @@ name	e_no	icon_url
  シェリィ	270	erry-iA.jpg
  シエラ	111	no_icon.jpg
  シセラ	18	68e3349.png
+ シセラ(連れ出しは前回設定で)	18	68e3349.png
  シッパイサク	152	hippai5.png
  シナバー	226	no_icon.jpg
  シナバー	226	oke_ico.png
@@ -359,9 +361,11 @@ name	e_no	icon_url
  ミナ	225	=mina01.png
  ミハク	187	mihaku1.png
  ミヤコ	127	iyakoI.png?
+ ミュラ	28	no_icon.jpg
  ミリウ	103	ot_face.gif
  ミーティ	195	alstats.png
  メイカ	34	meika01.png
+ メイカ	34	_IC2_01.png
  メイナード	260	mei60-2.png
  メグル	370	A/iconA.png
  メゴロオオザリガニ	245	e=robo1.png
@@ -374,6 +378,7 @@ name	e_no	icon_url
  ヤルダバオート	268	0736c8c.png
  ユエ	275	no_icon.jpg
  ユエ	275	/img/no.jpg
+ ユスティ	95	Battle1.png
  ユハル	149	LLwXyHL.png
  ユリウス	50	file=lu.png
  ユーグ	220	_new_01.png
@@ -395,6 +400,7 @@ name	e_no	icon_url
  ラニカ	138	ca_IC_1.png
  ラフリフ	121	no_icon.jpg
  ラムネ	341	/ksi022.png
+ ラムネ@Anotherなので前回設定推奨	341	/ksi022.png
  ランド	343	no_icon.jpg
  ランド	343	1847238.png
  ラヴァンダル	347	3302167.png
@@ -435,6 +441,8 @@ name	e_no	icon_url
  レガート	76	tke/rgf.png
  レジーナ	74	4_ic000.png
  レゼルト	77	ture014.jpg
+ レテ	54	nnaikon.png
+ レトン	15	gAArKXR.png
  レナ	168	e=LENA1.png
  レーチェ	385	no_icon.jpg
  ロカム	189	=rokamu.png
@@ -444,10 +452,12 @@ name	e_no	icon_url
  ロセ	180	/rose00.png
  ロゼ	365	5f_2_60.png
  ロディ	235	LOA_IC0.png
+ ロディ	235	percent.png
  ローデヴェイク	372	le=uma2.png
  ワーティファナ	81	CD7446F.png
  ワーティファナ	81	9C9B69C.png
  ワーティファナ	81	1EF95AD.png
+ ワーティファナ	81	5FB18DE.png
  ヴァンス	218	no_icon.jpg
  ヴェルカナン	367	no_icon.jpg
  ヴェルカナン	367	/img/no.jpg
@@ -496,6 +506,7 @@ name	e_no	icon_url
  旅人	169	pri/105.png
  月夜	75	kiya_i1.png
  月猫	85	eko_kao.png
+ 朔	25	no_icon.jpg
  木葉	102	e=konha.png
  枯草	374	no_icon.jpg
  枯草	374	/img/no.jpg
@@ -563,6 +574,7 @@ name	e_no	icon_url
 - 土偶	161	no_icon.jpg
 - 土偶	161	/img/no.jpg
 362	362	Mell013.png
+362	362	Mell027.png
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	ile=685.png
 Arcana Knights ⅩⅩⅠ『世界』反転体 『世界』	20	le=1051.png
 ArcanaKnights No.XIX ヒグルマ	78	aiyou01.png
@@ -632,6 +644,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ないしょだ サート	59	w/sert1.jpg
 なかまがなついてくれない タビビト	26	aaacon1.png
 ながれぼしのたびびと ミリウ	103	ot_face.gif
+なんちゃってアロマセラピスト ミュラ	28	no_icon.jpg
 なんでも屋 羽水	123	=laa_i0.png
 なんでも屋 羽水	123	��じだか
 なんでも屋 羽水	123	laa_c01.png
@@ -643,6 +656,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 アグロノミスト チーロ	383	no_icon.jpg
 アグロノミスト チーロ	383	blank60.gif
 アルカナナイツ ⅩⅢ 『死神』 	362	Mell013.png
+アルカナナイツ ⅩⅢ 『死神』 	362	Mell027.png
 アルカナナイツ ⅩⅢ 『死神』 聖女	362	Mell013.png
 アルカナナイツ アンノウン	5	no_icon.jpg
 アルカナナイツ アンノウン	5	/img/no.jpg
@@ -653,6 +667,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 アルカナナイツiii『女帝』 ヴェルカナン	367	/img/no.jpg
 アルカナナイツ『審判』 アルメリリ	61	npani01.png
 アルカナナイツ『月』 ティア	91	tukii01.png
+アルカナナイツ【正義】 ユスティ	95	Battle1.png
 アルカナナイツ【正義】 名捨て人	95	Battle1.png
 アルカナナイツ【皇帝】 リクラーチェ	178	no_icon.jpg
 アルカナナイツ【皇帝】 リクラーチェ	178	�ン000.png
@@ -706,6 +721,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ヤルカナレギオン『愛人』 ワーティファナ	81	CD7446F.png
 ヤルカナレギオン『愛人』 ワーティファナ	81	9C9B69C.png
 ヤルカナレギオン『愛人』 ワーティファナ	81	1EF95AD.png
+ヤルカナレギオン『愛人』　 ワーティファナ	81	5FB18DE.png
 ユアハニー ガオール	359	NLYGc2J.png
 ライブラリアン 緋色の狐	256	fiicon5.jpg
 ラジオを背負った猫 ラジオを背負った猫	305	no_icon.jpg
@@ -740,6 +756,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 元オカルト詐欺師 ノノ子	72	osagisi.png
 元人間・元騎士 ハインツ	333	inz_i01.png
 元騎士 ハインツ	333	inz_i10.png
+元騎士団小隊長 レトン	15	gAArKXR.png
 出前一丁 リベラ	215	-ribe01.jpg
 剣の聖女 サフィニア	280	inia_07.png
 剣士 サート	59	w/sert1.jpg
@@ -759,12 +776,14 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 多用途鑑賞群体（廃棄） 虫ちゃん	284	/mushi1.png
 多用途鑑賞群体（廃棄） 虫ちゃん	284	=mushi1.png
 夢の向こう側からやってきた猫と使い魔 ラムネ	341	/ksi022.png
+夢の向こう側からやってきた猫と使い魔 ラムネ@Anotherなので前回設定推奨	341	/ksi022.png
 天使もどき グリフ	86	kaiwa60.png
 天翼の賢者 アリーシア	83	rishia1.png
 失敗作 魔砲剣士	126	e=Clear.png
 奔放ノーブル フェル	279	ht_icon.png
 奔放ノーブル フェル	279	t2_icon.png
 女神（自称） 女神	250	p/ver04.png
+妖服屋の娘 レテ	54	nnaikon.png
 学生 ジーン	326	e_ico02.png
 学生 レジーナ	74	4_ic000.png
 宇宙冒険家（トラベラー） バル	313	no_icon.jpg
@@ -780,6 +799,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 宿屋の娘 ロゼ	365	5f_2_60.png
 小さき魔女 レイゼ	387	no_icon.jpg
 小さなマイペース鍛冶屋 メイカ	34	meika01.png
+小さなマイペース鍛冶屋 メイカ	34	_IC2_01.png
 少佐 ネルケ	288	Oicon00.png
 屍人喰らいの女子高生 祀里	105	asuo/i1.png
 崩れ行く黒土 チェノー	7	st_3_01.png
@@ -902,6 +922,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 白群研究所所属研究員兼被検体 コガレ	19	ttledef.png
 盗賊 グラッド	216	cAIEqlQ.png
 盗賊 ディー	349	no_icon.jpg
+目醒めぬ忌み星 ラーフ	32	icon/00.png
 看板娘 七味	258	emblem1.png
 看板娘 七味	258	=sitmi1.png
 知恵の樹の魔女 ネーバル	207	=neba00.png
@@ -914,6 +935,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 第二書庫隊特殊調査班 ■▣■■☒■▮■	122	/icon00.png
 精霊魔導師見習い リーヴィア	300	K8ftWPv.gif
 純潔の淫魔 インクォ	267	0EDCF8.jpeg
+継がれる憧憬 キャド	12	ohuteki.png
 緋桜の姫 アルテナ	90	con_2_1.png
 緋羽の巫姫 名も亡き者	124	icon000.png
 緋羽の神子姫 名も亡き者	124	icon000.png
