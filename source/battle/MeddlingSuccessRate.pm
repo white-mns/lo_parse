@@ -116,6 +116,8 @@ sub LinkingNicknameToEno{
     my $self  = shift;
     my $link_nodes      = shift; 
     my $table_345_nodes = shift;
+    
+    if (!$$table_345_nodes[0]) {return;}
 
     my @exist_e_no_list = ();
     my $i = 10000;
@@ -211,6 +213,7 @@ sub GetMeddlingSuccessRateData{
                 $dd_node = $dd_node->left;
             }
         }
+        if (!$e_no) { next;}
 
         $text =~ s/！//;
         $text =~ s/\s//g;

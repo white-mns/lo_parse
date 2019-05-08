@@ -180,6 +180,8 @@ sub LinkingNicknameToEno{
     my $link_nodes      = shift; 
     my $table_345_nodes = shift;
 
+    if (!$$table_345_nodes[0]) {return;}
+
     my @exist_e_no_list = ();
     my $i = 10000;
 
@@ -376,6 +378,7 @@ sub GetCardUseData{
     
     my $p_no = $self->{NicknameToPno}{$$nickname};
     my $e_no = $self->{NicknameToEno}{$$nickname};
+    if (!$p_no) { return 0;}
     
     my $success = -1;
     my $control = -1;

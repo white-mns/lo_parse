@@ -118,6 +118,10 @@ sub GetData{
     $self->LinkingNicknameToEno($link_nodes, $table_345_nodes);
     $self->LinkingPartyNameToPno($table_345_nodes, $table_698_nodes);
 
+
+    if (!$$table_345_nodes[0]) { return;} #Vol.21対応。1Turn以内に決着がついた場合、キャラクター情報が取得できないためデータ取得処理を行わない
+
+    $self->ReadTableNode($$table_345_nodes[0]->parent->parent); #Vol.21対応。Turn頭の参戦キャラ一覧が偶数ターンになったため、1ターン目のデータとして結果中最初に表示されるの参戦キャラデータを読み込む
     $self->ReadHeadingData($div_heading_nodes);
     
     return;
@@ -132,6 +136,7 @@ sub LinkingPartyNameToPno{
     my $self  = shift;
     my $table_345_nodes = shift;
     my $table_698_nodes = shift;
+    if (!$$table_345_nodes[0] || !$$table_698_nodes[0]) {return;}
 
     my $player_party_name_node = &GetNode::GetNode_Tag_Attr("td", "align", "left",  \$$table_698_nodes[0]);
     my $enemy_party_name_node  = &GetNode::GetNode_Tag_Attr("td", "align", "right", \$$table_698_nodes[0]);
@@ -173,6 +178,8 @@ sub LinkingNicknameToEno{
     my $self  = shift;
     my $link_nodes      = shift; 
     my $table_345_nodes = shift;
+
+    if (!$$table_345_nodes[0]) {return;}
 
     my @exist_e_no_list = ();
     my $i = 10000;
@@ -491,6 +498,8 @@ sub GetDamageData{
 
             my $p_no = $self->{NicknameToPno}{$nickname};
             my $target_p_no = $self->{NicknameToPno}{$target_nickname};
+
+            if (!$p_no || !$target_p_no) { return 0;}
 
             $self->{Datas}{Damage}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BattlePage}, $self->{ActId},
                         $self->{NicknameToEno}{$nickname}, $turn, $p_no, $self->{PartyNum}{$p_no}, $self->{NicknameToLine}{$nickname}, $$card{"id"}, $$card{"chain"},
