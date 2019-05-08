@@ -9,6 +9,7 @@ name	e_no	icon_url
  『ホム』	60	omicon1.png
  『世界』	20	ile=685.png
  『世界』	20	le=1051.png
+ 『世界』	20	123-131.png
  『夢』	55	ela_i00.png
  『夢』	55	_cwsi00.png
  『硝子の葉脈』	54	no_icon.jpg
@@ -239,6 +240,7 @@ name	e_no	icon_url
  ステラ	160	/str_09.png
  スバル	203	4031859.png
  スバル	203	0052505.png
+ スフィ	174	no_icon.jpg
  スプファー	373	no_icon.jpg
  スプファー	373	/img/no.jpg
  スペ	247	le=2200.png
@@ -274,6 +276,7 @@ name	e_no	icon_url
  ディグリー	62	d_Icon0.png
  ディボーチ	40	A/icon1.png
  ディボーチ	370	A/icon1.png
+ ディボーチ	370	icon101.png
  ディルソ	114	le=dls0.png
  ディヴァイナー	188	A/div_0.png
  ディー	349	no_icon.jpg
@@ -282,6 +285,7 @@ name	e_no	icon_url
  デイ	117	=DeiAi1.png
  デイ	117	5ABED1.jpeg
  デカパイ少佐	31	LOAicon.png
+ デコ	27	Deco002.png
  デッドエンダー	134	h/icon0.png
  デュザ	357	no_icon.jpg
  デラシネ	184	loa_a00.png
@@ -374,6 +378,7 @@ name	e_no	icon_url
  メゴロオオザリガニ	245	e=robo1.png
  モナカ	228	&file=1.png
  モニ	43	no_icon.png
+ モニ	43	728_ha1.png
  モリオン	206	i3/MO01.png
  モーク	21	ce_Main.png
  ヤトア様	53	yatoa02.png
@@ -431,6 +436,7 @@ name	e_no	icon_url
  ルナナ	25	no_icon.jpg
  ルブル	290	no_icon.jpg
  ルブル	290	/img/no.jpg
+ ルルフ	33	OA33-01.gif
  ルー	299	/2icon1.png
  ルー	299	2iconyu.png
  ルーク	295	samilk2.png
@@ -478,6 +484,7 @@ name	e_no	icon_url
  俺	240	on_lo01.png
  傘男	213	cPBv7XY.png
  傘男	213	cXXTRvX.png
+ 傘男	213	DiM2wok.png
  千尋	190	=cdicon.png
  千尋	190	con1_60.png
  千尋	190	hiro001.png
@@ -552,6 +559,7 @@ name	e_no	icon_url
  聖女	362	mell029.png
  聖女	362	mell035.png
  聖女	362	Mell013.png
+ 自称おじさん	29	no_icon.jpg
  花の妖精	375	wZOnLPv.png
  花の妖精	375	wJ0q6Pg.png
  苗	183	no_icon.jpg
@@ -583,6 +591,7 @@ name	e_no	icon_url
 362	362	Mell013.png
 362	362	Mell027.png
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	ile=685.png
+Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	123-131.png
 Arcana Knights ⅩⅩⅠ『世界』反転体 『世界』	20	le=1051.png
 ArcanaKnights No.XIX ヒグルマ	78	aiyou01.png
 ArcanaKnights No.XVIII 千尋	190	con1_60.png
@@ -641,6 +650,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 しがない錬金術師 フィクスト	262	fixtte1.png
 しがない錬金術師 フィクスト	262	e=storm.png
 しろくろ ミリウ	103	ot_face.gif
+じいさん 自称おじさん	29	no_icon.jpg
 ただ1人の犠牲 聖女	362	mell024.png
 ただ1人の犠牲 聖女	362	mell029.png
 ただ1人の犠牲 聖女	362	mell035.png
@@ -720,6 +730,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 メゴロ精工SC04 メゴロオオザリガニ	245	e=robo1.png
 ヤルカナレギオンXXI-i　永劫 モニ	43	no_icon.png
 ヤルカナレギオン　永劫 モニ	43	no_icon.png
+ヤルカナレギオン　永劫 モニ	43	728_ha1.png
 ヤルカナレギオン「魂」 スォム	112	no_icon.jpg
 ヤルカナレギオン「魂」 スォム	112	/img/no.jpg
 ヤルカナレギオン「魂」 スォム	112	_con449.png
@@ -899,6 +910,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 楽園へ導く天使 エル	283	e=EL001.png
 横の者 代理ちゃん	104	1200930.png
 橋渡りのオルランド オルランド	88	yst/ori.png
+歪んだ博愛の成れ果て エアリス	80	2_0_1_1.png
 死の天使 エーテル	150	Ether-2.png
 死を想う男 ユリウス	50	file=lu.png
 殺人マシーン アーノルド	110	iller02.png
@@ -985,6 +997,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 見回す黒土 チェノー	7	o_st_01.png
 見習い魔法使い ルー	299	/2icon1.png
 見習い魔法使い ルー	299	2iconyu.png
+観光者 ルルフ	33	OA33-01.gif
 訓練兵 ウーリ	243	e=umai2.png
 訓練兵 ウーリ	243	e=urii4.png
 記録係 Gone Past	142	Pface01.png
@@ -1002,6 +1015,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 進捗確認システム シメキリ	255	/img/no.jpg
 逸れ桃娘 蜜桃	130	le=ic02.png
 遍歴騎士と悪魔 グロウス	329	yIcon01.png
+重欠陥機体 デコ	27	Deco002.png
 重騎士 カイ	75	no_icon.jpg
 野蛮人 アンバー	165	o2_75sq.png
 金貸し ゴギョウ	46	con/001.png
@@ -1032,6 +1046,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 魔女屋敷の乙女 トレイシー	131	_tcA_01.png
 魔女志望 ユエ	275	no_icon.jpg
 魔女志望 ユエ	275	/img/no.jpg
+魔王 ディボーチ	370	icon101.png
 魔術師 アラン	108	le=lo09.png
 魔術師 レガート	76	no_icon.jpg
 魔術師 レガート	76	tke/rgf.png
