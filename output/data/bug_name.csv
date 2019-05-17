@@ -129,6 +129,7 @@ name	e_no	icon_url
  エルタ	139	e=eruta.png
  エレナ	211	no_icon.jpg
  エレナ	211	/img/no.jpg
+ エンヴァー	60	lky_60A.png
  エーシ	244	=Aicon0.png
  エーテル	150	Ether-2.png
  オクス	377	le=ox01.png
@@ -353,6 +354,7 @@ name	e_no	icon_url
  ベルベル・ラム	296	no_icon.jpg
  ベルベル・ラム	296	/img/no.jpg
  ペルラ	175	le=Pe_1.png
+ ホムラ	9	no_icon.jpg
  ボウフラ	277	hura002.png
  マイドー・M・マッカ	193	��いし！
  マナブ	229	anabu01.png
@@ -367,6 +369,7 @@ name	e_no	icon_url
  ミナ	225	=mina01.png
  ミハク	187	mihaku1.png
  ミヤコ	127	iyakoI.png?
+ ミヤコ	16	yako_60.png
  ミュラ	28	no_icon.jpg
  ミュラ	28	onnomal.png
  ミリウ	103	ot_face.gif
@@ -376,6 +379,7 @@ name	e_no	icon_url
  メイナード	260	mei60-2.png
  メグル	370	A/iconA.png
  メゴロオオザリガニ	245	e=robo1.png
+ メリー	63	y_icon1.png
  モナカ	228	&file=1.png
  モニ	43	no_icon.png
  モニ	43	728_ha1.png
@@ -617,6 +621,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 《黄昏の射手》 月夜	75	kiya_i1.png
 「血」の ロズ	113	=loads1.png
 「血」のヤルカナ ロズ	113	=loads1.png
+『M.A.G.E』 エンヴァー	60	lky_60A.png
 『オールドガール』 渡辺さん	227	8/08/31.png
 『大参謀』と『干渉者』 大参謀	194	9_gyaku.png
 『大参謀』と『干渉者』 監視者	194	9_gyaku.png
@@ -919,6 +924,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 治し屋 リンド	49	/loai01.png
 泣きうさぎ モナカ	228	&file=1.png
 流星の魔銃士 ロセ	180	/rose00.png
+流離う機鋼の狼少年 ホムラ	9	no_icon.jpg
 深海に住まう隠者 アウロラ	70	o1_75sq.png
 深海の水竜姫 ミィリス	219	0802-00.png
 漂流者 シヲ	37	iwoicon.png
@@ -986,6 +992,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 虹掛山古墳レインボーランド名誉園長 虹掛山古墳	181	/img/no.jpg
 血の聖女/巡礼者 少女/巡礼者	109	con_x60.png
 行商人 カロテ	264	=aikon2.png
+行商人 ミヤコ	16	yako_60.png
 街の自警団/騎士 アレク	301	=areku2.png
 街の自警団/騎士 アレク	301	kunomal.png
 街の自警団/騎士 レイア	302	_2poyan.png
