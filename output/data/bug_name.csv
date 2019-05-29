@@ -250,6 +250,7 @@ name	e_no	icon_url
  ズィガード	17	&file=0.png
  セシリア	391	n_nomal.png
  セレン	150	no_icon.jpg
+ セレーネ	25	no_icon.jpg
  ゼロ	311	.jp/i0z.png
  ソゥ	126	no_icon.jpg
  ソーン	363	no_icon.jpg
@@ -264,6 +265,7 @@ name	e_no	icon_url
  チェノー	7	o_st_01.png
  チェノー	7	st_3_01.png
  チェノー	7	st_4_01.png
+ チェノー	7	st_5_01.png
  チーロ	383	no_icon.jpg
  チーロ	383	blank60.gif
  ツァラン	119	/icon01.png
@@ -372,6 +374,7 @@ name	e_no	icon_url
  ミヤコ	16	yako_60.png
  ミュラ	28	no_icon.jpg
  ミュラ	28	onnomal.png
+ ミュラ	28	nnonmal.png
  ミリウ	103	ot_face.gif
  ミーティ	195	alstats.png
  メイカ	34	meika01.png
@@ -668,6 +671,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ながれぼしのたびびと ミリウ	103	ot_face.gif
 なんちゃってアロマセラピスト ミュラ	28	no_icon.jpg
 なんちゃってアロマセラピスト ミュラ	28	onnomal.png
+なんちゃってアロマセラピスト ミュラ	28	nnonmal.png
 なんでも屋 羽水	123	=laa_i0.png
 なんでも屋 羽水	123	��じだか
 なんでも屋 羽水	123	laa_c01.png
@@ -757,6 +761,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 ロボット兼居候兼探索者 NAS	97	Ic_0001.png
 一尾95円 サンマ	330	OA/wada.png
 一玉108 Tip すいか	62	file=a2.png
+一玉1080 Tip すいか	62	file=a2.png
 一般・学生 ちこちゃん	62	=aikonn.png
 一触即発 大根	331	g/uni01.png
 三重の『二』 ワーティファナ	81	CD7446F.png
@@ -1059,6 +1064,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 魔術師 レガート	76	tke/rgf.png
 黄昏の手品師 クーリエ	344	rm_0000.png
 黄昏の手品師 黄昏の手品師	344	rm_0000.png
+黒い者 チェノー	7	st_5_01.png
 黒剣姫 エリストリア	334	4u/icon.jpg
 （じしょう） 女神	250	p/ver04.png
 ＊魔術師 灰原	93	no_icon.jpg
