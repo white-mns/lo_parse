@@ -403,7 +403,7 @@ result_no	generate_no	e_no	mission_id	mission_type	status	col	lv
 19	0	136	2	0	1		-1
 19	0	136	3	0	0	P	30
 19	0	136	5	0	1		-1
-19	0	136	6	0	1		-1
+19	0	136	6	0	0	N	16
 19	0	139	3	0	0	？	30
 19	0	139	4	0	1		-1
 19	0	139	6	0	0	G	16
