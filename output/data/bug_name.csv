@@ -32,6 +32,7 @@ name	e_no	icon_url
  くすりゆぴ	306	=icon1y.png
  くろいの	173	no_icon.jpg
  くろいの	173	/img/no.jpg
+ くろいの	173	kuroino.png
  こゆぴ	308	/LO/UP6.png
  こゆぴ	308	LO/HUP6.png
  こゆぴ	308	LO/UP6a.png
@@ -593,6 +594,7 @@ name	e_no	icon_url
  ＊＊＊＊	328	no_icon.jpg
  ＊＊＊＊	328	/img/no.jpg
 (自称)メイド わこちゃん	129	=konnko.png
+- くろいの	173	kuroino.png
 - 土偶	161	no_icon.jpg
 - 土偶	161	/img/no.jpg
 362	362	Mell013.png
@@ -832,6 +834,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 小さき魔女 レイゼ	387	no_icon.jpg
 小さなマイペース鍛冶屋 メイカ	34	meika01.png
 小さなマイペース鍛冶屋 メイカ	34	_IC2_01.png
+小さな小さな都市伝説 メリー	63	y_icon1.png
 少佐 ネルケ	288	Oicon00.png
 屍人喰らいの女子高生 祀里	105	asuo/i1.png
 崩れ行く黒土 チェノー	7	st_3_01.png
@@ -971,6 +974,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 第二書庫隊特殊調査班 ■▣■■☒■▮■	122	/icon00.png
 精霊魔導師見習い リーヴィア	300	K8ftWPv.gif
 純潔の淫魔 インクォ	267	0EDCF8.jpeg
+純白の毒花 千尋	190	hiro001.png
 継がれる憧憬 キャド	12	ohuteki.png
 緋桜の姫 アルテナ	90	con_2_1.png
 緋羽の巫姫 名も亡き者	124	icon000.png
