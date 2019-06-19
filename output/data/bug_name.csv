@@ -126,6 +126,7 @@ name	e_no	icon_url
  エヌ	137	le=NN_1.png
  エミール	157	le_0000.png
  エリストリア	334	4u/icon.jpg
+ エリストリア　※キャラ削除連れ出し厳禁	334	4u/icon.jpg
  エル	283	e=EL001.png
  エルタ	139	e=eruta.png
  エレナ	211	no_icon.jpg
@@ -217,6 +218,7 @@ name	e_no	icon_url
  シュティル	111	con_000.png
  シュナイド	293	orira00.png
  シュレー	79	hreyIC1.png
+ シラハギ	65	icon_00.png
  シリウス	172	e4/hal0.png
  シリウス	172	55.png?dl=1
  シリス	221	o1_75sq.png
@@ -404,6 +406,7 @@ name	e_no	icon_url
  ヨシノ	185	_icon02.png
  ヨハン	135	e=J.T.G.png
  ライム	125	=iconL1.png
+ ライム【Anotherなので連れ出し非推奨】	125	=iconL1.png
  ライモニアーノ	92	2544310.png
  ライラ	312	adq/ra1.png
  ラウルス	8	no_icon.jpg
@@ -501,6 +504,7 @@ name	e_no	icon_url
  喋るトカゲ	148	no_icon.jpg
  土偶	161	no_icon.jpg
  土偶	161	/img/no.jpg
+ 壊れたカメラ	142	nown-3-.png
  夜桜	84	no_icon.jpg
  夜桜	84	ozakura.png
  夜桜	84	akuraic.png
@@ -771,6 +775,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 不思議な死霊術師 ダリダ	287	ida_i04.png
 不思議な死霊術師 ダリダ	287	ida_i01.png
 不憫 ライモニアーノ	92	2544310.png
+九百九十九魔槍 シラハギ	65	icon_00.png
 乱れ撃つ魔弾の ジョーカー	259	ker60-0.png
 予言探偵 クォート	64	ote_i01.png
 二代目かろりーそーど イルメナ	352	ilmena0.jpg
@@ -804,6 +809,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 命と闇の天使 みしゅりん	316	no_icon.jpg
 命と闇の天使 みしゅりん	316	/img/no.jpg
 地質学者 雷刀	378	/light0.jpg
+壊れたカメラ 壊れたカメラ	142	nown-3-.png
 声亡しビト エヌ	137	le=NN_1.png
 変質者 ザク	82	no_icon.jpg
 多用途鑑賞群体（廃棄） 虫ちゃん	284	/mushi1.png
@@ -835,6 +841,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 小さなマイペース鍛冶屋 メイカ	34	meika01.png
 小さなマイペース鍛冶屋 メイカ	34	_IC2_01.png
 小さな小さな都市伝説 メリー	63	y_icon1.png
+小さな都市伝説 メリー	63	y_icon1.png
 少佐 ネルケ	288	Oicon00.png
 屍人喰らいの女子高生 祀里	105	asuo/i1.png
 崩れ行く黒土 チェノー	7	st_3_01.png
@@ -873,6 +880,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 持たざる者 マリア	63	loi-001.png
 撃ち貫く弾丸の ジョーカー	259	ker60-0.png
 擬態のスライム ライム	125	=iconL1.png
+擬態のスライム ライム【Anotherなので連れ出し非推奨】	125	=iconL1.png
 攫い手 ヨシノ	185	hino_02.png
 攫い手 ヨシノ	185	_icon02.png
 放浪者 ベオーク	199	be/ber1.png
@@ -1070,6 +1078,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 黄昏の手品師 黄昏の手品師	344	rm_0000.png
 黒い者 チェノー	7	st_5_01.png
 黒剣姫 エリストリア	334	4u/icon.jpg
+黒剣姫 エリストリア　※キャラ削除連れ出し厳禁	334	4u/icon.jpg
 （じしょう） 女神	250	p/ver04.png
 ＊魔術師 灰原	93	no_icon.jpg
 ＊魔術師 灰原	93	ihara60.png
