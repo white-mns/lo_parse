@@ -210,6 +210,7 @@ name	e_no	icon_url
  シフォン	33	/img/no.jpg
  シメキリ	255	no_icon.jpg
  シメキリ	255	/img/no.jpg
+ シャケ	9	no_icon.jpg
  シャポン	118	no_icon.jpg
  シャラヴィス	1	icon_00.png
  シャル	208	/img/no.jpg
@@ -370,6 +371,7 @@ name	e_no	icon_url
  マリー	232	/img/no.jpg
  マーサ	201	MEicon1.png
  ミィリス	219	0802-00.png
+ ミィリス(対Anotherの為連れ出し非推奨)	219	0802-00.png
  ミザール	242	o1_75sq.png
  ミナ	225	=mina01.png
  ミハク	187	mihaku1.png
@@ -943,6 +945,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 流離う機鋼の狼少年 ホムラ	9	no_icon.jpg
 深海に住まう隠者 アウロラ	70	o1_75sq.png
 深海の水竜姫 ミィリス	219	0802-00.png
+深海の水竜姫 ミィリス(対Anotherの為連れ出し非推奨)	219	0802-00.png
 漂流者 シヲ	37	iwoicon.png
 灰の歌姫 エレナ	211	no_icon.jpg
 灰の歌姫 エレナ	211	/img/no.jpg
