@@ -6,6 +6,7 @@ name	e_no	icon_url
  Past	142	Pface01.png
  ■▣■■☒■▮■	122	/icon00.png
  　　　	87	no_icon.jpg
+ 「世界」	20	le=1500.png
  『ホム』	60	omicon1.png
  『世界』	20	ile=685.png
  『世界』	20	le=1051.png
@@ -156,6 +157,7 @@ name	e_no	icon_url
  ガモリ	76	_icon01.png
  キトナフ	75	no_icon.jpg
  キャド	12	ohuteki.png
+ キャド	12	&file=7.png
  クォート	64	ote_i01.png
  クマダ	303	umada60.png
  クマダ	303	umada01.png
@@ -467,6 +469,7 @@ name	e_no	icon_url
  レジーナ	74	4_ic000.png
  レゼルト	77	ture014.jpg
  レテ	54	nnaikon.png
+ レテ	54	file=1R.png
  レトン	15	gAArKXR.png
  レナ	168	e=LENA1.png
  レーチェ	385	no_icon.jpg
@@ -607,6 +610,7 @@ name	e_no	icon_url
 - 土偶	161	/img/no.jpg
 362	362	Mell013.png
 362	362	Mell027.png
+Arcana Knights ⅩⅩⅠ「世界」 「世界」	20	le=1500.png
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	ile=685.png
 Arcana Knights ⅩⅩⅠ『世界』 『世界』	20	123-131.png
 Arcana Knights ⅩⅩⅠ『世界』反転体 『世界』	20	le=1051.png
@@ -615,6 +619,7 @@ ArcanaKnights No.XVIII 千尋	190	con1_60.png
 ArcanaKnights No.XVIII 千尋	190	hiro001.png
 ArcanaKnights No.|| シュレー	79	hreyIC1.png
 ArcanaKnights No.Ⅴ クラヴィス	100	youkou3.png
+Between_Libero 真音	35	=s_maoo.png
 High Roller ラズン	254	no_icon.jpg
 High Roller ラズン	254	/img/no.jpg
 JK 黄金原さん	369	no_icon.jpg
@@ -625,12 +630,14 @@ Prof. カグラ	379	swyQQjoido9
 V-i 預言者／探偵 クォート	64	ote_i01.png
 XIV-『節制』 アルシェ	58	LAicon6.png
 XV-『悪魔』 ブルース	197	eg28t/3.png
+vi-i『愛人』　 ワーティファナ	81	5FB18DE.png
 “支配” ヤトア様	53	yatoa02.png
 “死神探偵” アリス	354	no_icon.jpg
 “混沌を狩る者” シェリィ	270	erry-iA.jpg
 ≪希望の守護者≫ ランド	343	no_icon.jpg
 ≪希望の守護者≫ ランド	343	1847238.png
 ■■の眷属 ナイ	19	ile=asa.png
+《Eclipse》 千尋	190	hiro001.png
 《黄昏の射手》 月夜	75	kiya_i1.png
 「血」の ロズ	113	=loads1.png
 「血」のヤルカナ ロズ	113	=loads1.png
@@ -828,6 +835,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 奔放ノーブル フェル	279	t2_icon.png
 女神（自称） 女神	250	p/ver04.png
 妖服屋の娘 レテ	54	nnaikon.png
+妖服屋の娘 レテ	54	file=1R.png
 学生 ジーン	326	e_ico02.png
 学生 レジーナ	74	4_ic000.png
 宇宙冒険家（トラベラー） バル	313	no_icon.jpg
@@ -990,6 +998,7 @@ XV-『悪魔』 ブルース	197	eg28t/3.png
 純潔の淫魔 インクォ	267	0EDCF8.jpeg
 純白の毒花 千尋	190	hiro001.png
 継がれる憧憬 キャド	12	ohuteki.png
+継がれる憧憬 キャド	12	&file=7.png
 緋桜の姫 アルテナ	90	con_2_1.png
 緋羽の巫姫 名も亡き者	124	icon000.png
 緋羽の神子姫 名も亡き者	124	icon000.png
