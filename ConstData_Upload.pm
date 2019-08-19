@@ -64,5 +64,7 @@ use warnings;
         use constant EXE_COMMAND_ACTION                => 1;
         use constant EXE_COMMAND_ACTION_RANKING        => 1;
         use constant EXE_COMMAND_PARAMETER_DEVELOPMENT => 1;
+    use constant EXE_MAP                     => 1;
+        use constant EXE_MAP_FRONTIER                  => 1;
 
 1;

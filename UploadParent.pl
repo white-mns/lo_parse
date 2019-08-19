@@ -63,6 +63,12 @@ sub Main {
             $upload->Upload("./output/data/facility_division_data.csv", 'facility_division_data');
         }
     }
+    if (ConstData::EXE_MAP) {
+        if (ConstData::EXE_MAP_FRONTIER) {
+            $upload->DeleteSameResult('frontiers', $result_no, $generate_no);
+            $upload->Upload("./output/map/frontier_" . $result_no . "_" . $generate_no . ".csv", 'frontiers');
+        }
+    }
     if (ConstData::EXE_CHARA) {
         if (ConstData::EXE_CHARA_NAME) {
             $upload->DeleteSameResult('names', $result_no, $generate_no);

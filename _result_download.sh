@@ -12,6 +12,7 @@ mkdir ./data/utf/result${RESULT_NO}
 mkdir ./data/utf/result${RESULT_NO}/result_chara
 mkdir ./data/utf/result${RESULT_NO}/result_pre
 mkdir ./data/utf/result${RESULT_NO}/result_com
+mkdir ./data/utf/result${RESULT_NO}/result_map
 
 wget -O ./data/utf/result${RESULT_NO}/base.css http://ykamiya.ciao.jp/result/base.css
 wget -O ./data/utf/result${RESULT_NO}/manual.css http://ykamiya.ciao.jp/result/manual.css
@@ -50,6 +51,7 @@ for ((E_NO=1;E_NO <= 400;E_NO++)) {
 }
 find ./data/utf/result${RESULT_NO} -type f -empty -delete
 wget -O ./data/utf/result${RESULT_NO}/result_pre/ALLpre.html http://ykamiya.ciao.jp/result/result_pre/ALLpre.html
+wget -O ./data/utf/result${RESULT_NO}/result_map/ALLmap.html http://ykamiya.ciao.jp/result/result_map/ALLmap.html
 perl _GetPreDatas.pl $1 $2
 
 # ファイルを圧縮
